@@ -4,7 +4,6 @@ package ch.epfl.tchu.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PreconditionsTest {
