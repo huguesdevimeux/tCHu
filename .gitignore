@@ -23,4 +23,8 @@
 hs_err_pid*
 
 # Config stuff, not sure how it works
-.idea/workspace.xml
+.idea/
+
+# Gradle
+.gradle
+/build/
