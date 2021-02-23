@@ -12,6 +12,6 @@ public enum Color {
     RED,
     WHITE;
 
-    public static final List<Color> ALL = List.of(Color.values());
-    public static final int COUNT = ALL.size();
+    public final static List<Color> ALL = List.of(Color.values());
+    public final static int COUNT = ALL.size();
 }
