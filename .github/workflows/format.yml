@@ -15,5 +15,5 @@ jobs:
       - uses: actions/checkout@v2 # v2 minimum required
       - uses: axel-op/googlejavaformat-action@v3.4.0
         with:
-          args: "--set-exit-if-changed"
+          args: "--set-exit-if-changed --aosp"
           skipCommit: true
