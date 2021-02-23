@@ -4,8 +4,8 @@ import java.util.List;
 
 public enum Card {
     /**
-     * these colors represents the different types of cards you can encounter
-     * in the game (8 different possible cars (1 for each color) and a locomotive card)
+     * these colors represents the different types of cards you can encounter in the game (8
+     * different possible cars (1 for each color) and a locomotive card)
      */
     BLACK(Color.BLACK),
     VIOLET(Color.VIOLET),
@@ -17,10 +17,18 @@ public enum Card {
     WHITE(Color.WHITE),
     LOCOMOTIVE(null);
 
-    public final static List<Card> ALL = List.of(Card.values());
-    public final static int COUNT = ALL.size();
-    public final static List<Card> CARS = List.of(Card.BLACK, Card.VIOLET, Card.BLUE,
-            Card.GREEN, Card.YELLOW, Card.ORANGE, Card.RED, Card.WHITE);
+    public static final List<Card> ALL = List.of(Card.values());
+    public static final int COUNT = ALL.size();
+    public static final List<Card> CARS =
+            List.of(
+                    Card.BLACK,
+                    Card.VIOLET,
+                    Card.BLUE,
+                    Card.GREEN,
+                    Card.YELLOW,
+                    Card.ORANGE,
+                    Card.RED,
+                    Card.WHITE);
     private final Color color;
 
     Card(Color color) {
@@ -35,14 +43,8 @@ public enum Card {
         return Card.valueOf(color.name());
     }
 
-    /**
-     * @return the color of the car or null if the card is a locomotive
-     */
+    /** @return the color of the car or null if the card is a locomotive */
     public Color color() {
-        if (!Card.valueOf(color.toString()).equals(Card.LOCOMOTIVE)) {
-            return Color.valueOf(color.name());
-        }else{
-            return null;
-        }
+        return color;
     }
 }
