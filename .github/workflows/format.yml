@@ -1,3 +1,5 @@
+# THis will automatically format every push on main branch. 
+
 name: Format
 
 on:
