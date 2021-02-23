@@ -1,19 +1,22 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import ch.epfl.test.TestRandomizer;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 class StationTest {
     @Test
     void stationConstructorFailsForNegativeId() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Station(-1, "Lausanne");
-        });
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Station(-1, "Lausanne");
+                });
     }
 
     @Test
@@ -27,10 +30,10 @@ class StationTest {
     }
 
     private static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
+
     private static String randomName(Random rng, int length) {
         var sb = new StringBuilder();
-        for (int i = 0; i < length; i++)
-            sb.append(alphabet.charAt(rng.nextInt(alphabet.length())));
+        for (int i = 0; i < length; i++) sb.append(alphabet.charAt(rng.nextInt(alphabet.length())));
         return sb.toString();
     }
 
