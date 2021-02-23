@@ -1,0 +1,18 @@
+# THis will automatically format every push on main branch. 
+
+name: Format
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2 # v2 minimum required
+      - uses: axel-op/googlejavaformat-action@v3.4.0
+        with:
+          args: "--replace --aosp"
+          skipCommit: false
