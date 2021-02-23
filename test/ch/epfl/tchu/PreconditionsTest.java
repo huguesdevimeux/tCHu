@@ -14,8 +14,6 @@ class PreconditionsTest {
 
     @Test
     void checkArgumentFailsForFalse() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Preconditions.checkArgument(false);
-        });
+        assertThrows(IllegalArgumentException.class, () -> Preconditions.checkArgument(false));
     }
 }
