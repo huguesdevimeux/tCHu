@@ -26,7 +26,7 @@ class StationTest {
         }
     }
 
-    private static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        private static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
     private static String randomName(Random rng, int length) {
         var sb = new StringBuilder();
         for (int i = 0; i < length; i++)
