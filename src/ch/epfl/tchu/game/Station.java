@@ -2,9 +2,7 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-/**
- *  Represents a standard station. Immutable.
- */
+/** Represents a standard station. Immutable. */
 public final class Station {
     private final int id;
     private final String name;
