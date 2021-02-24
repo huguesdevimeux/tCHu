@@ -1,12 +1,13 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.Color.*;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static ch.epfl.tchu.game.Color.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ColorTest {
     @Test

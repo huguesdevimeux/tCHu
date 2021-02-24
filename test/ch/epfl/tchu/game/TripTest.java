@@ -1,11 +1,12 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ch.epfl.test.TestRandomizer;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TripTest {
     @Test
