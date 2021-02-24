@@ -4,9 +4,10 @@ package ch.epfl.tchu.game;
 public interface StationConnectivity {
     /**
      * Check the connectivity between two stations, s1 and s2.
-     * @param s1    First Station.
-     * @param s2    Second station.
-     * @return      Wether the two stations are connected.
+     *
+     * @param s1 First Station.
+     * @param s2 Second station.
+     * @return Wether the two stations are connected.
      */
     boolean connected(Station s1, Station s2);
 }
