@@ -44,7 +44,7 @@ public final class Trip {
      *     negative.
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
-        Preconditions.checkArgument(from.size() > 0 && to.size() > 0 && points >= 0);
+        Preconditions.checkArgument(from.size() > 0 && to.size() > 0 && points > 0);
         ArrayList<Trip> trips = new ArrayList<>();
         for (Station startingStation : from) {
             for (Station endingStation : to) {
