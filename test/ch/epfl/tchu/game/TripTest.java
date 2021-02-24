@@ -10,31 +10,28 @@ import static org.junit.jupiter.api.Assertions.*;
 class TripTest {
     @Test
     void allWorksOnKnownExample() {
-        var from = List.of(
-                new Station(0, "Lausanne"),
-                new Station(1, "Neuchâtel"));
-        var to = List.of(
-                new Station(2, "Berne"),
-                new Station(3, "Zürich"),
-                new Station(4, "Coire"));
+        var from = List.of(new Station(0, "Lausanne"), new Station(1, "Neuchâtel"));
+        var to =
+                List.of(new Station(2, "Berne"), new Station(3, "Zürich"), new Station(4, "Coire"));
         var points = 17;
 
-        var expectedFromToIds = new int[][]{
-                new int[]{0, 2},
-                new int[]{0, 3},
-                new int[]{0, 4},
-                new int[]{1, 2},
-                new int[]{1, 3},
-                new int[]{1, 4},
-        };
+        var expectedFromToIds =
+                new int[][] {
+                    new int[] {0, 2},
+                    new int[] {0, 3},
+                    new int[] {0, 4},
+                    new int[] {1, 2},
+                    new int[] {1, 3},
+                    new int[] {1, 4},
+                };
         var all = Trip.all(from, to, points);
         assertEquals(from.size() * to.size(), all.size());
-        outer: for (var expectedFromToId : expectedFromToIds) {
+        outer:
+        for (var expectedFromToId : expectedFromToIds) {
             var fromId = expectedFromToId[0];
             var toId = expectedFromToId[1];
             for (var trip : all) {
-                if (trip.from().id() == fromId && trip.to().id() == toId)
-                    continue outer;
+                if (trip.from().id() == fromId && trip.to().id() == toId) continue outer;
             }
             fail(String.format("Missing trip from %s to %s", fromId, toId));
         }
@@ -42,24 +39,32 @@ class TripTest {
 
     @Test
     void constructorFailsWithNullStations() {
-        assertThrows(NullPointerException.class, () -> {
-            new Trip(null, new Station(1, "Lausanne"), 1);
-        });
-        assertThrows(NullPointerException.class, () -> {
-            new Trip(new Station(1, "Lausanne"), null, 1);
-        });
+        assertThrows(
+                NullPointerException.class,
+                () -> {
+                    new Trip(null, new Station(1, "Lausanne"), 1);
+                });
+        assertThrows(
+                NullPointerException.class,
+                () -> {
+                    new Trip(new Station(1, "Lausanne"), null, 1);
+                });
     }
 
     @Test
     void constructorFailsWithInvalidPoints() {
         var s1 = new Station(0, "Lausanne");
         var s2 = new Station(1, "EPFL");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Trip(s1, s2, 0);
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Trip(s1, s2, -1);
-        });
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Trip(s1, s2, 0);
+                });
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Trip(s1, s2, -1);
+                });
     }
 
     @Test

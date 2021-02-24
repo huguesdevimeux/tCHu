@@ -33,18 +33,21 @@ public final class Trip {
     }
 
     /**
-     * Returns all the possible trips between each Station of <code> from </code> list to <code>to</code> list.
-     * @param from  Starting stations
-     * @param to    Ending stations
+     * Returns all the possible trips between each Station of <code> from </code> list to <code>to
+     * </code> list.
+     *
+     * @param from Starting stations
+     * @param to Ending stations
      * @param points Amount of points of each trip.
-     * @return  All the possible trips.
-     * @throws IllegalArgumentException if one of the list is empty or the amount of points is negative.
+     * @return All the possible trips.
+     * @throws IllegalArgumentException if one of the list is empty or the amount of points is
+     *     negative.
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
         Preconditions.checkArgument(from.size() > 0 && to.size() > 0 && points >= 0);
         ArrayList<Trip> trips = new ArrayList<>();
         for (Station startingStation : from) {
-            for (Station endingStation: to) {
+            for (Station endingStation : to) {
                 trips.add(new Trip(startingStation, endingStation, points));
             }
         }
@@ -64,12 +67,14 @@ public final class Trip {
     }
 
     /**
-     * Returns the number of points if the two <code>{@link Station}</code> are connected, the negation of the points otherwise.
+     * Returns the number of points if the two <code>{@link Station}</code> are connected, the
+     * negation of the points otherwise.
+     *
      * @param connectivity The connectivity to check.
      * @return Number of points.
      */
     public int points(StationConnectivity connectivity) {
         if (connectivity.connected(from, to)) return points;
-        return - points;
+        return -points;
     }
 }
