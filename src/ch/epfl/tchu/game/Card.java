@@ -47,7 +47,7 @@ public enum Card {
     }
 
     /**
-     * returns the color of the car
+     * Gets the color of the car
      * @param color
      * @return the color of the car
      */
