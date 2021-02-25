@@ -68,7 +68,7 @@ public final class Ticket implements Comparable<Ticket> {
      * @param connectivity Connectivity of the player whose belongs the ticket.
      * @return amount of points.
      */
-    int points(StationConnectivity connectivity) {
+    public int points(StationConnectivity connectivity) {
         // If some is connected, we get the max (positive value). Otherwise, we return the negation
         // of the minimum number of points of the trip.
         // Because Trip.points already returns negative values depending on the connectivity, we can
