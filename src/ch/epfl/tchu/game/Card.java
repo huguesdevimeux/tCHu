@@ -57,7 +57,7 @@ public enum Card {
 
     /**
      * Returns the color of the car or null if the card is a locomotive
-     * @return the color of the car or null if the card is a locomotive
+     * @return the color of the car or null if the card is a locomotive.
      */
     public Color color() {
         return color;
