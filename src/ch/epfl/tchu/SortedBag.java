@@ -15,6 +15,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Crée un multiensemble vide.
+     *
      * @param <E> le type des éléments du multiensemble.
      * @return un multiensemble vide.
      */
@@ -24,6 +25,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Crée un multiensemble contenant un seul élément.
+     *
      * @param e1 l'unique élément du multiensemble
      * @param <E> le type de l'élément du multiensemble
      * @return un multiensemble ne contenant que l'élément <code>e1</code>
@@ -34,6 +36,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Crée un multiensemble contenant un élément avec une multiplicité donnée.
+     *
      * @param n la multiplicité de l'élément <code>e</code> (>= 0)
      * @param e l'élément du multiensemble
      * @param <E> le type de l'élément du multiensemble
@@ -47,13 +50,14 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Crée un multiensemble contenant deux éléments, chacun avec une multiplicité donnée.
+     *
      * @param n1 la multiplicité de l'élément <code>e1</code> (>= 0)
      * @param e1 le premier élément du multiensemble
      * @param n2 la multiplicité de l'élément <code>e2</code> (>= 0)
      * @param e2 le second élément du multiensemble
      * @param <E> le type des éléments du multiensemble
-     * @return un multiensemble contenant <code>n1</code> occurrences de <code>e1</code>,
-     * et <code>n2</code> de <code>e2</code>
+     * @return un multiensemble contenant <code>n1</code> occurrences de <code>e1</code>, et <code>
+     *     n2</code> de <code>e2</code>
      * @throws IllegalArgumentException si <code>n1</code> ou <code>n2</code> est négatif
      */
     public static <E extends Comparable<E>> SortedBag<E> of(int n1, E e1, int n2, E e2) {
@@ -66,6 +70,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Crée un multiensemble contenant les éléments d'un itérable (p.ex. une liste)
+     *
      * @param iterable l'itérable fournissant les éléments du multiensemble
      * @param <E> le type des éléments du multiensemble
      * @return un multiensemble contenant exactement les mêmes éléments que <code>iterable</code>
@@ -86,6 +91,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne vrai ssi le multiensemble est vide.
+     *
      * @return vrai ssi le multiensemble est vide.
      */
     public boolean isEmpty() {
@@ -94,16 +100,16 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne le nombre d'éléments du multiensemble.
+     *
      * @return le nombre d'éléments dans le multiensemble.
      */
     public int size() {
-        return elements.values().stream()
-                .mapToInt(Integer::intValue)
-                .sum();
+        return elements.values().stream().mapToInt(Integer::intValue).sum();
     }
 
     /**
      * Retourne la multiplicité de l'élément donné.
+     *
      * @param element l'élément dont la multiplicité doit être retournée
      * @return la multiplicité de <code>element</code>, 0 s'il n'appartient pas au multiensemble
      */
@@ -113,6 +119,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne vrai ssi l'élément donné appartient au multiensemble (au moins une fois).
+     *
      * @param element l'élément dont la présence doit être testée
      * @return vrai ssi <code>element</code> appartient au multiensemble
      */
@@ -122,16 +129,17 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne vrai ssi le multiensemble donné est un sous-ensemble de celui-ci.
+     *
      * @param that le multiensemble dont on doit déterminer s'il est un sous-ensemble
      * @return vrai ssi <code>that</code> est un sous-ensemble de <code>this</code>
      */
     public boolean contains(SortedBag<E> that) {
-        return that.elements.entrySet().stream()
-                .allMatch(e -> e.getValue() <= countOf(e.getKey()));
+        return that.elements.entrySet().stream().allMatch(e -> e.getValue() <= countOf(e.getKey()));
     }
 
     /**
      * Retourne l'élément du sous-ensemble d'index donné.
+     *
      * @param index l'index de l'élément à retourner
      * @return l'élément d'index donné
      * @throws IndexOutOfBoundsException si l'index est invalide
@@ -140,8 +148,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
         Objects.checkIndex(index, size());
         for (var elementsAndCount : elements.entrySet()) {
             var count = elementsAndCount.getValue();
-            if (index < count)
-                return elementsAndCount.getKey();
+            if (index < count) return elementsAndCount.getKey();
             index -= count;
         }
         throw new Error(); // ne devrait jamais se produire
@@ -149,6 +156,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne l'union du multiensemble récepteur et du multiensemble donné.
+     *
      * @param that le multiensemble à combiner avec le récepteur
      * @return l'union de <code>this</code> et de <code>that</code>
      */
@@ -160,40 +168,40 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne la différence entre le multiensemble récepteur et le multiensemble donné.
+     *
      * @param that le multiensemble à combiner avec le récepteur
      * @return la différence entre <code>this</code> et <code>that</code>
      */
     public SortedBag<E> difference(SortedBag<E> that) {
         var newElements = new TreeMap<>(elements);
-        that.elements.forEach((eR, nR) ->
-                newElements.compute(eR, (e, n) -> n != null && n > nR ? n - nR : null));
+        that.elements.forEach(
+                (eR, nR) -> newElements.compute(eR, (e, n) -> n != null && n > nR ? n - nR : null));
         return new SortedBag<>(newElements);
     }
 
     /**
      * Retourne tous les sous-ensembles du multiensemble ayant une taille donnée.
+     *
      * @param size la taille des sous-ensembles à retourner
      * @return l'ensemble des sous-ensembles de <code>this</code> de taille <code>size</code>
-     * @throws IllegalArgumentException si <code>size</code> n'est pas comprise entre 0 et
-     * la taille du multiensemble
+     * @throws IllegalArgumentException si <code>size</code> n'est pas comprise entre 0 et la taille
+     *     du multiensemble
      */
     public Set<SortedBag<E>> subsetsOfSize(int size) {
         Preconditions.checkArgument(0 <= size && size <= size());
-        if (size == 0)
-            return Set.of(SortedBag.of());
+        if (size == 0) return Set.of(SortedBag.of());
 
         var result = new HashSet<SortedBag<E>>();
         for (var e1 : elements.keySet()) {
             var s1 = SortedBag.of(e1);
-            this.difference(s1)
-                    .subsetsOfSize(size - 1)
-                    .forEach(e -> result.add(s1.union(e)));
+            this.difference(s1).subsetsOfSize(size - 1).forEach(e -> result.add(s1.union(e)));
         }
         return result;
     }
 
     /**
      * Retourne une liste contenant les éléments du multiensemble, dans l'ordre.
+     *
      * @return une liste contenant les éléments de <code>this</code>
      */
     public List<E> toList() {
@@ -204,16 +212,21 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne un flot des éléments du multiensemble, dans l'ordre.
+     *
      * @return un flot des éléments de <code>this</code>
      */
     public Stream<E> stream() {
         var builder = Stream.<E>builder();
-        elements.forEach((v, n) -> { for (var i = 0; i < n; i++) builder.add(v); });
+        elements.forEach(
+                (v, n) -> {
+                    for (var i = 0; i < n; i++) builder.add(v);
+                });
         return builder.build();
     }
 
     /**
      * Retourne un itérateur sur les éléments du multiensemble.
+     *
      * @return un itérateur sur les éléments de <code>this</code>
      */
     @Override
@@ -223,6 +236,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne une table (immuable) associant sa multiplicité à chaque élément du multiensemble.
+     *
      * @return une table associant sa multiplicité à chaque élément de <code>this</code>
      */
     public Map<E, Integer> toMap() {
@@ -230,9 +244,9 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
     }
 
     /**
-     * Retourne l'ensemble des éléments du multiensemble.
-     * Attention : les éléments apparaissant plus d'une fois dans le multiensemble
-     * n'apparaissent qu'une seule fois dans l'ensemble retourné !
+     * Retourne l'ensemble des éléments du multiensemble. Attention : les éléments apparaissant plus
+     * d'une fois dans le multiensemble n'apparaissent qu'une seule fois dans l'ensemble retourné !
+     *
      * @return l'ensemble des éléments du multiensemble.
      */
     public Set<E> toSet() {
@@ -241,6 +255,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne la valeur de hachage du multiensemble.
+     *
      * @return la valeur de hachage du multiensemble.
      */
     @Override
@@ -250,17 +265,18 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Retourne vrai ssi ce multiensemble est égal à l'objet donné (comparaison structurelle).
+     *
      * @param that l'objet avec lequel comparer <code>this</code>
      * @return vrai ssi <code>that</code> est un multiensemble égal à <code>this</code>
      */
     @Override
     public boolean equals(Object that) {
-        return (that instanceof SortedBag<?>)
-                && (elements.equals(((SortedBag<?>) that).elements));
+        return (that instanceof SortedBag<?>) && (elements.equals(((SortedBag<?>) that).elements));
     }
 
     /**
      * Retourne la représentation textuelle du multiensemble.
+     *
      * @return la représentation textuelle de <code>this</code>
      */
     @Override
@@ -272,6 +288,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
     /**
      * Bâtisseur de multiensemble.
+     *
      * @param <E> le type des éléments du multiensemble à bâtir.
      */
     public static final class Builder<E extends Comparable<E>> {
@@ -279,6 +296,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
         /**
          * Ajoute un nombre donné d'occurrences d'un élément au bâtisseur.
+         *
          * @param count le nombre d'occurrences de l'élément à ajouter
          * @param element l'élément à ajouter
          * @return le bâtisseur (<code>this</code>)
@@ -292,6 +310,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
         /**
          * Ajoute une occurrence de l'élément au bâtisseur.
+         *
          * @param e l'élément à ajouter
          * @return le bâtisseur (<code>this</code>)
          */
@@ -301,6 +320,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
         /**
          * Ajoute tous les éléments du multiensemble donné au bâtisseur.
+         *
          * @param that le multiensemble dont les éléments sont à ajouter
          * @return le bâtisseur (<code>this</code>)
          */
@@ -311,6 +331,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
         /**
          * Retourne vrai ssi le bâtisseur est actuellement vide.
+         *
          * @return vrai ssi le bâtisseur est actuellement vide.
          */
         public boolean isEmpty() {
@@ -319,16 +340,16 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
 
         /**
          * Retourne la taille actuelle du bâtisseur.
+         *
          * @return le nombre d'éléments ajoutés au bâtisseur jusqu'à présent
          */
         public int size() {
-            return elements.values().stream()
-                    .mapToInt(Integer::intValue)
-                    .sum();
+            return elements.values().stream().mapToInt(Integer::intValue).sum();
         }
 
         /**
          * Retourne un multiensemble contenant les éléments ajoutés jusqu'à présent au bâtisseur.
+         *
          * @return un multiensemble contenant les éléments ajoutés à <code>this</code>
          */
         public SortedBag<E> build() {
