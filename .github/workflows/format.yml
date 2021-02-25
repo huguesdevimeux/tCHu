@@ -15,4 +15,4 @@ jobs:
       - uses: axel-op/googlejavaformat-action@v3.4.0
         with:
           args: "--replace --aosp"
-          skipCommit: false
+          commitMessage: github.event.head_commit.message
