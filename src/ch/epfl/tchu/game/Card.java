@@ -39,7 +39,7 @@ public enum Card {
 
     private final Color color;
     /**
-     * default card constructor
+     * Default card constructor
      * @param color
      */
     Card(Color color) {
