@@ -1,18 +1,20 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class TicketTest {
     @Test
     void constructorFailsWithNoTrips() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Ticket(List.of());
-        });
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> {
+                    new Ticket(List.of());
+                });
     }
 
     @Test
@@ -38,8 +40,7 @@ class TicketTest {
                 "Berne - {Allemagne (6), Autriche (11), France (5), Italie (8)}",
                 map.BER_NEIGHBORS.text());
         assertEquals(
-                "France - {Allemagne (5), Autriche (14), Italie (11)}",
-                map.FR_NEIGHBORS.text());
+                "France - {Allemagne (5), Autriche (14), Italie (11)}", map.FR_NEIGHBORS.text());
     }
 
     @Test
@@ -63,9 +64,10 @@ class TicketTest {
     @Test
     void pointsAreCorrectWithPartialConnectivity() {
         var map = new TestMap();
-        var connectivity = new TestConnectivity(
-                List.of(map.LAU, map.BER, map.BER, map.FR1, map.FR2, map.FR2),
-                List.of(map.BER, map.FR2, map.DE3, map.IT1, map.IT2, map.DE1));
+        var connectivity =
+                new TestConnectivity(
+                        List.of(map.LAU, map.BER, map.BER, map.FR1, map.FR2, map.FR2),
+                        List.of(map.BER, map.FR2, map.DE3, map.IT1, map.IT2, map.DE1));
         assertEquals(-13, map.LAU_STG.points(connectivity));
         assertEquals(+6, map.BER_NEIGHBORS.points(connectivity));
         assertEquals(+11, map.FR_NEIGHBORS.points(connectivity));
@@ -103,8 +105,7 @@ class TicketTest {
                 var t1 = stations1.get(i);
                 var t2 = stations2.get(i);
 
-                if (t1.equals(s1) && t2.equals(s2) || t1.equals(s2) && t2.equals(s1))
-                    return true;
+                if (t1.equals(s1) && t2.equals(s2) || t1.equals(s2) && t2.equals(s1)) return true;
             }
             return false;
         }

@@ -74,9 +74,13 @@ public final class Ticket implements Comparable<Ticket> {
         // Because Trip.points already returns negative values depending on the connectivity, we can
         // simply take the maximum of all the points of all the trips.
 
-        // On the technical side: This maps the trips List to a List of int corresponding to the points of each trip. Then it computes the max.
+        // On the technical side: This maps the trips List to a List of int corresponding to the
+        // points of each trip. Then it computes the max.
         // If there is no max (trips is empty) then throw NoSuchElementException.
-        return trips.stream().mapToInt(trip -> trip.points(connectivity)).max().orElseThrow(NoSuchElementException::new);
+        return trips.stream()
+                .mapToInt(trip -> trip.points(connectivity))
+                .max()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     /**
