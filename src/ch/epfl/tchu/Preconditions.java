@@ -4,7 +4,7 @@ public final class Preconditions {
     /**
      * Preconditions constructor: not instantiable
      *
-     * @author Luca Mouchel(324748)
+     * @author Luca Mouchel (324748)
      */
     private Preconditions() {
         // Instantiation is impossible.
