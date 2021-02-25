@@ -4,7 +4,7 @@ import java.util.List;
 
 public enum Card {
     /**
-     * the following enumeration represents the different types of cards you can encounter in the
+     * The following enumeration represents the different types of cards you can encounter in the
      * game (8 different possible cars (1 for each color) and a locomotive card)
      *
      * @author Luca Mouchel (324748)
