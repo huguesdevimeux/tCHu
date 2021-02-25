@@ -2,7 +2,11 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-/** Represents a standard station. Immutable. */
+/**
+ * Represents a standard station. Immutable.
+ *
+ * @author Hugues Devimeux (327282)
+ */
 public final class Station {
     private final int id;
     private final String name;
@@ -19,14 +23,29 @@ public final class Station {
         this.name = name;
     }
 
+    /**
+     * Returns the name of the station
+     *
+     * @return name of the station
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the station's id
+     *
+     * @return Station's id
+     */
     public int id() {
         return id;
     }
 
+    /**
+     * Returns the station's name
+     *
+     * @return Station's name
+     */
     @Override
     public String toString() {
         return name;

@@ -7,7 +7,8 @@ public interface StationConnectivity {
      *
      * @param s1 First Station.
      * @param s2 Second station.
-     * @return Wether the two stations are connected.
+     * @return Whether the two stations are connected.
+     * @author Hugues Devimeux (327282)
      */
     boolean connected(Station s1, Station s2);
 }
