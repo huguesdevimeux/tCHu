@@ -40,6 +40,7 @@ public enum Card {
     private final Color color;
     /**
      * Default card constructor
+     *
      * @param color
      */
     Card(Color color) {
@@ -48,6 +49,7 @@ public enum Card {
 
     /**
      * Gets the color of the car
+     *
      * @param color
      * @return the color of the car
      */
@@ -57,6 +59,7 @@ public enum Card {
 
     /**
      * Returns the color of the car or null if the card is a locomotive
+     *
      * @return the color of the car or null if the card is a locomotive.
      */
     public Color color() {
