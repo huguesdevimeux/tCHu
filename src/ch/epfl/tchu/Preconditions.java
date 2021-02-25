@@ -9,8 +9,7 @@ public final class Preconditions {
      * throws IllegalArgumentException parameter is false
      * @param shouldBeTrue Expression to check.
      */
-    public static 
-        void checkArgument(boolean shouldBeTrue) {
+    public static void checkArgument(boolean shouldBeTrue) {
         if (!shouldBeTrue) throw new IllegalArgumentException();
     }
 }
