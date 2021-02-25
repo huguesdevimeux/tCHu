@@ -11,7 +11,7 @@ public final class Preconditions {
     }
 
     /**
-     * throws exception if argument passed is parameter is false
+     * Throws IllegalArgumentException when the argument is false.
      *
      * @throws IllegalArgumentException parameter is false
      * @param shouldBeTrue Expression to check.
