@@ -6,6 +6,7 @@ import ch.epfl.tchu.Preconditions;
  * Represents a standard station. Immutable.
  *
  * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
  */
 public final class Station {
     private final int id;

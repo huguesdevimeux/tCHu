@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
  * Ticket from a city to a city, country to country, country to city or city to country.
  *
  * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
  */
 public final class Ticket implements Comparable<Ticket> {
 

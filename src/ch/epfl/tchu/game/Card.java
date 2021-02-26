@@ -7,6 +7,7 @@ public enum Card {
      * The following enumeration represents the different types of cards you can encounter in the
      * game (8 different possible cars (1 for each color) and a locomotive card)
      *
+     * @author Hugues Devimeux (327282)
      * @author Luca Mouchel (324748)
      */
     BLACK(Color.BLACK),

@@ -5,6 +5,7 @@ import java.util.List;
 /**
  * Representation of all the cars' colors. immutable enumeration
  *
+ * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
 public enum Color {

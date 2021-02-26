@@ -11,6 +11,7 @@ import java.util.Objects;
  * version of the game. Immutable class.
  *
  * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
  */
 public final class Trip {
 
