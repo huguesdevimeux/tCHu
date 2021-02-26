@@ -5,6 +5,7 @@ public final class Preconditions {
      * Preconditions constructor: not instantiable
      *
      * @author Luca Mouchel (324748)
+     * @author Hugues Devimeux (327282)
      */
     private Preconditions() {
         // Instantiation is impossible.
