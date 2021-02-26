@@ -123,7 +123,8 @@ public final class Route {
      * Returns the opposite station from which this method is called
      *
      * @param station station
-     * @throws IllegalArgumentException if argument station is neither of the stations called in the constructor
+     * @throws IllegalArgumentException if argument station is neither of the stations called in the
+     *     constructor
      * @return opposite station
      */
     public Station stationOpposite(Station station) {
