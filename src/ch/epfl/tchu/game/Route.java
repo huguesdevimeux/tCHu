@@ -3,6 +3,7 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class Route {
     /**
@@ -22,7 +23,7 @@ public final class Route {
     /** Enum defines the type of route. */
     public enum Level {
         OVERGROUND,
-        UNDERGROUND;
+        UNDERGROUND
     }
 
     /**
@@ -34,26 +35,21 @@ public final class Route {
      * @param length Length of the route
      * @param level Defines what type of route it is
      * @param color Can be any color
-     * @throws IllegalArgumentException If stations have same name or if length is out of bounds
+     * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of bounds
      *     defined by Constants.java
      * @throws NullPointerException if either id, station1, station2 or level are null
      */
     public Route(
             String id, Station station1, Station station2, int length, Level level, Color color) {
-        this.id = id;
-        this.station1 = station1;
-        this.station2 = station2;
+        this.id = Objects.requireNonNull(id);
+        this.station1 = Objects.requireNonNull(station1);
+        this.station2 = Objects.requireNonNull(station2);
+        this.level = Objects.requireNonNull(level);
         this.length = length;
-        this.level = level;
         this.color = color;
-
+        Preconditions.checkArgument(!(station1.equals(station2)));
         Preconditions.checkArgument(
-                !(station1.name().equals(station2.name())
-                        && (length < Constants.MIN_ROUTE_LENGTH
-                                && length > Constants.MAX_ROUTE_LENGTH)));
-        if ((id == null) || (station1 == null) || (station2 == null) || (level == null)) {
-            throw new NullPointerException();
-        }
+                length >= Constants.MIN_ROUTE_LENGTH && length <= Constants.MAX_ROUTE_LENGTH);
     }
 
     /**
@@ -128,8 +124,8 @@ public final class Route {
      */
     public Station stationOpposite(Station station) {
         Preconditions.checkArgument(
-                (station.name().equals(station1.name()) || station.name().equals(station2.name())));
-        if (station.name().equals(station1.name())) {
+                (station.equals(station1) || station.equals(station2)));
+        if (station.equals(station1)) {
             return station2;
         } else {
             return station1;

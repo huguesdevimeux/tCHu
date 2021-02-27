@@ -40,7 +40,7 @@ class RouteTest {
                                 "ID",
                                 s1,
                                 s2,
-                                Constants.MAX_ROUTE_LENGTH - 1,
+                                Constants.MAX_ROUTE_LENGTH + 1,
                                 Route.Level.UNDERGROUND,
                                 Color.RED));
         assertThrows(
