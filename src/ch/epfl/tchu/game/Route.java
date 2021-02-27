@@ -111,7 +111,7 @@ public final class Route {
     }
 
     /**
-     * Returns List of the two stations in the order in which they appear in the constructor.
+     * Returns List of the two stations in the order they appear in the constructor.
      *
      * @return list of the two stations
      */
