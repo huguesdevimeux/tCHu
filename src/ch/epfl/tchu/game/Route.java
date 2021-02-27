@@ -35,8 +35,8 @@ public final class Route {
      * @param length Length of the route
      * @param level Defines what type of route it is
      * @param color Can be any color
-     * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of bounds
-     *     defined by Constants.java
+     * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of
+     *     bounds defined by Constants.java
      * @throws NullPointerException if either id, station1, station2 or level are null
      */
     public Route(
@@ -123,8 +123,7 @@ public final class Route {
      * @return opposite station
      */
     public Station stationOpposite(Station station) {
-        Preconditions.checkArgument(
-                (station.equals(station1) || station.equals(station2)));
+        Preconditions.checkArgument((station.equals(station1) || station.equals(station2)));
         if (station.equals(station1)) {
             return station2;
         } else {
