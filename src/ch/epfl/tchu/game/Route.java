@@ -188,8 +188,8 @@ public final class Route {
             } else {
                 for (int i = this.length; i > 0; i--) {
                     for (int j = 0; j < i; j++) {
-                        //same instructions but the color here does not matter
-                        //we just assign the color that is given
+                        // same instructions but the color here does not matter
+                        // we just assign the color that is given
                         cardBuilder.add(Card.of(this.color));
                     }
                     while (cardBuilder.size() < length) {
@@ -199,7 +199,7 @@ public final class Route {
                     cardBuilder = new SortedBag.Builder<>();
                 }
             }
-            //this single for loop allows to add the subArray in the list with 2 locomotive cards
+            // this single for loop allows to add the subArray in the list with 2 locomotive cards
             for (int i = 0; i < this.length; i++) {
                 cardBuilder.add(Card.LOCOMOTIVE);
             }
