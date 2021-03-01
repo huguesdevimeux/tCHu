@@ -86,7 +86,7 @@ class RouteTest {
     }
 
     @Test
-    void claimPoints(){
+    void claimPoints() {
         assertEquals(standardRoute.claimPoints(), 10);
     }
 }
