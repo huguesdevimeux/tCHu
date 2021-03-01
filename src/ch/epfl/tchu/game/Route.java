@@ -197,8 +197,8 @@ public final class Route {
 
     /**
      * Returns the additional amount of cards one must play to take over a route knowing that the
-     * player has played with <code> claimCards </code> and the three cards taken from the stack
-     * of cards are the <code> drawnCards </code>
+     * player has played with <code> claimCards </code> and the three cards taken from the stack of
+     * cards are the <code> drawnCards </code>
      *
      * @param claimCards
      * @param drawnCards
