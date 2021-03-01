@@ -132,7 +132,7 @@ class RouteTest {
     }
 
     @Test
-    void RaisesIllegalArgumentExceptionIfRouteIsOverground() {
+    void RaisesIllegalArgumentExceptionIfRouteIsOvergroundForAdditionalClaimCards() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> overGroundRoute.additionalClaimCardsCount(c, d));
