@@ -149,24 +149,34 @@ public final class Route {
                     for (int i = 0; i < this.length; i++) {
                         cardBuilder.add(cards);
                     }
+                    /// adding all the cars that were added to cardBuilder into cardList
                     cardList.add(cardBuilder.build());
+                    // resetting cardBuilder to prevent from having subArrays of cardList to have
+                    // more
+                    // than lengths' elements
                     cardBuilder = new SortedBag.Builder<>();
                 }
             } else {
                 for (int j = 0; j < this.length; j++) {
+                    // if color is assigned, we just add the number of length of the route with the
+                    // given colors
                     cardBuilder.add(Card.of(this.color));
                 }
                 cardList.add(cardBuilder.build());
             }
 
         } else {
-
+            // if <\code> level </\code> is <\code> OVERGROUND </\code>, Locomotive cards come into
+            // play
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
                     for (Card all : Card.CARS) {
+                        // same instructions as before
                         for (int j = 0; j < i; j++) {
                             cardBuilder.add(all);
                         }
+                        // adding locomotive cards to complete all the possible claim cards
+                        // when route is a tunnel
                         while (cardBuilder.size() < length) {
                             cardBuilder.add(Card.LOCOMOTIVE);
                         }
@@ -178,6 +188,8 @@ public final class Route {
             } else {
                 for (int i = this.length; i > 0; i--) {
                     for (int j = 0; j < i; j++) {
+                        //same instructions but the color here does not matter
+                        //we just assign the color that is given
                         cardBuilder.add(Card.of(this.color));
                     }
                     while (cardBuilder.size() < length) {
@@ -187,6 +199,7 @@ public final class Route {
                     cardBuilder = new SortedBag.Builder<>();
                 }
             }
+            //this single for loop allows to add the subArray in the list with 2 locomotive cards
             for (int i = 0; i < this.length; i++) {
                 cardBuilder.add(Card.LOCOMOTIVE);
             }
@@ -205,7 +218,7 @@ public final class Route {
      * @throws IllegalArgumentException if the route is not a tunnel
      * @throws IllegalArgumentException if <\code> drawnCards </\code> does not contain exactly
      *     three cards
-     * @return
+     * @return number of additional cards the player must play to take over route
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
