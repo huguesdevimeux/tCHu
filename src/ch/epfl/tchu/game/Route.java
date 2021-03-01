@@ -197,8 +197,8 @@ public final class Route {
 
     /**
      * Returns the additional amount of cards one must play to take over a route knowing that the
-     * player has played with <code> claimCards </code> and the three cards taken from the stack
-     * of cards are the <code> drawnCards </code>
+     * player has played with <code> claimCards </code> and the three cards taken from the stack of
+     * cards are the <code> drawnCards </code>
      *
      * @param claimCards
      * @param drawnCards
@@ -233,24 +233,5 @@ public final class Route {
      */
     public int claimPoints() {
         return Constants.ROUTE_CLAIM_POINTS.get(length);
-    }
-
-    public static void main(String[] args) {
-        String id = "ID";
-        Station station1 = new Station(23, "Lau");
-        Station station2 = new Station(43, "Ber");
-        int length = 2;
-        Level level = Level.UNDERGROUND;
-        Color color = null;
-        Route a = new Route(id, station1, station2, length, level, color);
-
-        List<Card> claim = List.of(Card.BLACK);
-        SortedBag<Card> c = SortedBag.of(claim);
-
-        List<Card> drawn = List.of(Card.BLACK, Card.LOCOMOTIVE, Card.LOCOMOTIVE);
-        SortedBag<Card> d = SortedBag.of(drawn);
-
-        // System.out.println(a.additionalClaimCardsCount(c, d));
-        System.out.println(a.possibleClaimCards());
     }
 }
