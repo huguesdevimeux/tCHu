@@ -106,7 +106,7 @@ class RouteTest {
         for (int i = 0; i < overGroundRoute.length(); i++) {
             cardBuilder.add(Card.RED);
         }
-        assertEquals(overGroundRoute.possibleClaimCards(), List.of(cardBuilder.build()));
+        assertEquals(List.of(cardBuilder.build()), overGroundRoute.possibleClaimCards());
     }
 
     @Test
