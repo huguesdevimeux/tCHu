@@ -84,4 +84,9 @@ class RouteTest {
                 () -> standardRoute.stationOpposite(new Station(3, "caca")));
         assertEquals(s1, standardRoute.stationOpposite(s2));
     }
+
+    @Test
+    void claimPoints(){
+        assertEquals(standardRoute.claimPoints(), 10);
+    }
 }

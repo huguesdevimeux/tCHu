@@ -1,7 +1,9 @@
 package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
+import ch.epfl.tchu.SortedBag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,8 +37,8 @@ public final class Route {
      * @param length Length of the route
      * @param level Defines what type of route it is
      * @param color Can be any color
-     * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of bounds
-     *     defined by Constants.java
+     * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of
+     *     bounds defined by Constants.java
      * @throws NullPointerException if either id, station1, station2 or level are null
      */
     public Route(
@@ -119,16 +121,136 @@ public final class Route {
      * Returns the opposite station from which this method is called.
      *
      * @param station
-     * @throws IllegalArgumentException if argument station is neither of the start/end stations.
+     * @throws IllegalArgumentException if argument station is neither of the start/end stations
      * @return opposite station
      */
     public Station stationOpposite(Station station) {
-        Preconditions.checkArgument(
-                (station.equals(station1) || station.equals(station2)));
+        Preconditions.checkArgument((station.equals(station1) || station.equals(station2)));
         if (station.equals(station1)) {
             return station2;
         } else {
             return station1;
         }
+    }
+
+    /**
+     * Returns List of all the possible cards one can use to take over a route.
+     *
+     * @return possible claim cards (playable cards)
+     */
+    public List<SortedBag<Card>> possibleClaimCards() {
+        SortedBag.Builder<Card> cardBuilder = new SortedBag.Builder<>();
+        List<SortedBag<Card>> cardList = new ArrayList<>();
+
+        if (level.equals(Level.OVERGROUND)) {
+            // when route is overground locomotive cards cannot be used
+            if (color == null) {
+                for (Card cards : Card.CARS) {
+                    for (int i = 0; i < this.length; i++) {
+                        cardBuilder.add(cards);
+                    }
+                    cardList.add(cardBuilder.build());
+                    cardBuilder = new SortedBag.Builder<>();
+                }
+            } else {
+                for (int j = 0; j < this.length; j++) {
+                    cardBuilder.add(Card.of(this.color));
+                }
+                cardList.add(cardBuilder.build());
+            }
+
+        } else {
+
+            if (color == null) {
+                for (int i = this.length; i > 0; i--) {
+                    for (Card all : Card.CARS) {
+                        for (int j = 0; j < i; j++) {
+                            cardBuilder.add(all);
+                        }
+                        while (cardBuilder.size() < length) {
+                            cardBuilder.add(Card.LOCOMOTIVE);
+                        }
+                        cardList.add(cardBuilder.build());
+                        cardBuilder = new SortedBag.Builder<>();
+                    }
+                }
+
+            } else {
+                for (int i = this.length; i > 0; i--) {
+                    for (int j = 0; j < i; j++) {
+                        cardBuilder.add(Card.of(this.color));
+                    }
+                    while (cardBuilder.size() < length) {
+                        cardBuilder.add(Card.LOCOMOTIVE);
+                    }
+                    cardList.add(cardBuilder.build());
+                    cardBuilder = new SortedBag.Builder<>();
+                }
+            }
+            for (int i = 0; i < this.length; i++) {
+                cardBuilder.add(Card.LOCOMOTIVE);
+            }
+            cardList.add(cardBuilder.build());
+        }
+        return cardList;
+    }
+
+    /**
+     * Returns the additional amount of cards one must play to take over a route knowing that the
+     * player has played with <code> claimCards </code> and the three cards taken from the stack
+     * of cards are the <code> drawnCards </code>
+     *
+     * @param claimCards
+     * @param drawnCards
+     * @throws IllegalArgumentException if the route is not a tunnel
+     * @throws IllegalArgumentException if <\code> drawnCards </\code> does not contain exactly
+     *     three cards
+     * @return
+     */
+    public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
+        Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
+        Preconditions.checkArgument(drawnCards.size() == 3);
+        int additionalClaimCards = 0;
+        for (Card drawn : drawnCards) {
+            for (Card claim : claimCards) {
+                if (!drawn.equals(Card.LOCOMOTIVE)) {
+                    if (drawn.equals(claim)) {
+                        additionalClaimCards++;
+                    }
+                } else {
+                    additionalClaimCards++;
+                }
+            }
+        }
+        return additionalClaimCards;
+    }
+
+    /**
+     * Returns the number of claimPoints (construction points) that a player gets when taking over a
+     * route. Depends on the routes' length.
+     *
+     * @return claimPoints
+     */
+    public int claimPoints() {
+        return Constants.ROUTE_CLAIM_POINTS.get(length);
+    }
+
+    public static void main(String[] args) {
+        String id = "ID";
+        Station station1 = new Station(23, "Lau");
+        Station station2 = new Station(43, "Ber");
+        int length = 2;
+        Level level = Level.UNDERGROUND;
+        Color color = null;
+        Route a = new Route(id, station1, station2, length, level, color);
+
+        List<Card> claim = List.of(Card.BLACK);
+        SortedBag<Card> c = SortedBag.of(claim);
+
+        List<Card> drawn = List.of(Card.BLACK, Card.LOCOMOTIVE, Card.LOCOMOTIVE);
+        SortedBag<Card> d = SortedBag.of(drawn);
+
+        // System.out.println(a.additionalClaimCardsCount(c, d));
+        System.out.println(a.possibleClaimCards());
     }
 }
