@@ -1,15 +1,14 @@
 package ch.epfl.tchu.game;
 
 import java.util.List;
-
+/**
+ * The following enumeration represents the different types of cards you can encounter in the
+ * game (8 different possible cars (1 for each color) and a locomotive card)
+ *
+ * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
+ */
 public enum Card {
-    /**
-     * The following enumeration represents the different types of cards you can encounter in the
-     * game (8 different possible cars (1 for each color) and a locomotive card)
-     *
-     * @author Hugues Devimeux (327282)
-     * @author Luca Mouchel (324748)
-     */
     BLACK(Color.BLACK),
     VIOLET(Color.VIOLET),
     BLUE(Color.BLUE),

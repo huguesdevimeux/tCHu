@@ -6,16 +6,14 @@ import ch.epfl.tchu.SortedBag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * Representation of a route that links two nearby stations.
+ *
+ * @author Luca Mouchel (324748)
+ * @author Hugues Devimeux (327282)
+ */
 public final class Route {
-    /**
-     * Representation of a route that links two nearby stations.
-     *
-     * @author Luca Mouchel (324748)
-     * @author Hugues Devimeux (327282)
-     */
     private final String id;
-
     private final Station station1;
     private final Station station2;
     private final int length;
