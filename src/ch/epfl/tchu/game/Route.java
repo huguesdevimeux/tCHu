@@ -148,7 +148,7 @@ public final class Route {
                     for (int i = 0; i < this.length; i++) {
                         cardBuilder.add(cards);
                     }
-                    /// adding all the cars that were added to cardBuilder into cardList
+                    /// adding all the cars added to cardBuilder into cardList
                     cardList.add(cardBuilder.build());
                     // resetting cardBuilder to prevent from having subArrays of cardList to have
                     // more
