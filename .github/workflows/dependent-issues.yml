@@ -12,6 +12,7 @@ on:
       - edited
       - reopened
       - synchronize
+  pull_request:
   schedule:
     - cron: '0 0 * * *' # schedule daily check
 
