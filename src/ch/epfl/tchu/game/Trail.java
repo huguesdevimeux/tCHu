@@ -85,13 +85,17 @@ public final class Trail {
             List<Trail> newIterationTrails = new ArrayList<>();
 
             for (Trail trail : constructingTrails) {
-                // There are two "direction to check : one where the route station1 is the future tip of the trail, one where the route's station 2 is the future tip of the trail.
+                // There are two "direction to check : one where the route station1 is the future
+                // tip of the trail, one where the route's station 2 is the future tip of the trail.
                 // A route can be added these two conditions are satisfied:
                 //  - the end station of the trail is one of the stations of the route.
                 //  - the route does not blongs to the trail.
                 Predicate<Route> belongsToTrail = (route) -> trail.compoundRoutes().contains(route);
 
-                Predicate<Route> filterRoutesConnectedWithStation1 = (route) -> !belongsToTrail.test(route) &&  (trail.station2().id() == route.station1().id());
+                Predicate<Route> filterRoutesConnectedWithStation1 =
+                        (route) ->
+                                !belongsToTrail.test(route)
+                                        && (trail.station2().id() == route.station1().id());
                 // rs in the paper.
                 List<Route> routesConnectedWithStation1 = new ArrayList<>();
                 for (Route route1 : routes) {
@@ -99,7 +103,7 @@ public final class Trail {
                         routesConnectedWithStation1.add(route1);
                     }
                 }
-                for (Route r: routesConnectedWithStation1) {
+                for (Route r : routesConnectedWithStation1) {
                     // The new ending station will be station2. (station1 was the connected node).
                     Trail newTrail = appendToTrail(trail, r.station2(), r);
                     newIterationTrails.add(newTrail);
@@ -109,10 +113,16 @@ public final class Trail {
                     }
                 }
 
-                Predicate<Route> filterRouteConnectedWithStation2 = (route) -> !belongsToTrail.test(route) && trail.station2().equals(route.station2());
+                Predicate<Route> filterRouteConnectedWithStation2 =
+                        (route) ->
+                                !belongsToTrail.test(route)
+                                        && trail.station2().equals(route.station2());
                 // rs in the paper.
-                List<Route> routesConnectedWithStation2 = routes.stream().filter(filterRouteConnectedWithStation2).collect(Collectors.toList());
-                for (Route r: routesConnectedWithStation2) {
+                List<Route> routesConnectedWithStation2 =
+                        routes.stream()
+                                .filter(filterRouteConnectedWithStation2)
+                                .collect(Collectors.toList());
+                for (Route r : routesConnectedWithStation2) {
                     // The new ending station will be station1. (station2 was the connected node).
                     Trail newTrail = appendToTrail(trail, r.station1(), r);
                     newIterationTrails.add(newTrail);
@@ -125,7 +135,6 @@ public final class Trail {
             constructingTrails = newIterationTrails;
         }
         return currentLongestTrail;
-
     }
 
     /**
@@ -182,15 +191,13 @@ public final class Trail {
             intermediateStations.add(route.stationOpposite(lastStationTemp));
         }
 
-         String namesIntermediateStations =
+        String namesIntermediateStations =
                 String.join(
                         " - ",
                         intermediateStations.stream()
                                 .map(Station::name)
                                 .collect(Collectors.toCollection(ArrayList::new)));
-        return String.format(
-                "%s (%s)",
-                namesIntermediateStations, length);
+        return String.format("%s (%s)", namesIntermediateStations, length);
     }
 
     /**

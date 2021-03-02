@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Representation of a route that links two nearby stations.
- * Immutable.
+ * Representation of a route that links two nearby stations. Immutable.
  *
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
