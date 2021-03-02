@@ -5,13 +5,14 @@ import ch.epfl.tchu.Preconditions;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Representation of a route that links two nearby stations.
+ * Immutable.
+ *
+ * @author Luca Mouchel (324748)
+ * @author Hugues Devimeux (327282)
+ */
 public final class Route {
-    /**
-     * Representation of a route that links two nearby stations.
-     *
-     * @author Luca Mouchel (324748)
-     * @author Hugues Devimeux (327282)
-     */
     private final String id;
 
     private final Station station1;
@@ -118,7 +119,7 @@ public final class Route {
     /**
      * Returns the opposite station from which this method is called.
      *
-     * @param station
+     * @param station The station to get the opposite of.
      * @throws IllegalArgumentException if argument station is neither of the start/end stations.
      * @return opposite station
      */
