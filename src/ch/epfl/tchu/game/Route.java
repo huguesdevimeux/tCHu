@@ -144,9 +144,9 @@ public final class Route {
         if (level.equals(Level.OVERGROUND)) {
             // when route is overground locomotive cards cannot be used
             if (color == null) {
-                for (Card cards : Card.CARS) {
+                for (Card card : Card.CARS) {
                     for (int i = 0; i < this.length; i++) {
-                        cardBuilder.add(cards);
+                        cardBuilder.add(card);
                     }
                     /// adding all the cars added to cardBuilder into cardList
                     cardList.add(cardBuilder.build());
@@ -169,10 +169,10 @@ public final class Route {
             // play
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
-                    for (Card all : Card.CARS) {
+                    for (Card card : Card.CARS) {
                         // same instructions as before
                         for (int j = 0; j < i; j++) {
-                            cardBuilder.add(all);
+                            cardBuilder.add(card);
                         }
                         // adding locomotive cards to complete all the possible claim cards
                         // when route is a tunnel
@@ -212,8 +212,8 @@ public final class Route {
      * player has played with <code> claimCards </code> and the three cards taken from the stack of
      * cards are the <code> drawnCards </code>
      *
-     * @param claimCards
-     * @param drawnCards
+     * @param claimCards cards the player uses to play
+     * @param drawnCards 3 cards drawn from the stack of cards
      * @throws IllegalArgumentException if the route is not a tunnel
      * @throws IllegalArgumentException if <\code> drawnCards </\code> does not contain exactly
      *     three cards
