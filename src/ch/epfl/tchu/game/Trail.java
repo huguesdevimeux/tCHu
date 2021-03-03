@@ -1,7 +1,5 @@
 package ch.epfl.tchu.game;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -12,6 +10,7 @@ import java.util.stream.Collectors;
  * : A {@link Trail} is directed, while a {@link Route} is not!
  *
  * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
  */
 public final class Trail {
 
@@ -145,7 +144,7 @@ public final class Trail {
      * @param route : route to add.
      * @return the new Trail object.
      */
-    private static Trail appendToTrail(@NotNull Trail trail, Station newStation, Route route) {
+    private static Trail appendToTrail(Trail trail, Station newStation, Route route) {
         List<Route> newRoutes = new ArrayList<>(trail.compoundRoutes());
         newRoutes.add(route);
         return new Trail(trail.station1(), newStation, newRoutes);
