@@ -165,7 +165,7 @@ public final class Route {
             }
 
         } else {
-            // if <\code> level </\code> is <\code> OVERGROUND </\code>, Locomotive cards come into
+            // if <\code> level </\code> is <\code> UNDERGROUND </\code>, Locomotive cards come into
             // play
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
@@ -198,7 +198,8 @@ public final class Route {
                     cardBuilder = new SortedBag.Builder<>();
                 }
             }
-            // this single for loop allows to add the subArray in the list with 2 locomotive cards
+            // this single for loop allows to add the final subArray in the list with ONLY
+            // locomotive cards
             for (int i = 0; i < this.length; i++) {
                 cardBuilder.add(Card.LOCOMOTIVE);
             }
@@ -225,11 +226,10 @@ public final class Route {
         int additionalClaimCards = 0;
         for (Card drawn : drawnCards) {
             for (Card claim : claimCards) {
-                if (!drawn.equals(Card.LOCOMOTIVE)) {
-                    if (drawn.equals(claim)) {
-                        additionalClaimCards++;
-                    }
-                } else {
+                // for every card that is drawn, if it is a locomotive or the same color as the
+                // claim card
+                // the additionalClaimCards increases
+                if (drawn.equals(Card.LOCOMOTIVE) || (drawn.equals(claim))) {
                     additionalClaimCards++;
                 }
             }

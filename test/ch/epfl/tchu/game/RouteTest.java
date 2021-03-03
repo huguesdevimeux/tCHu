@@ -94,6 +94,8 @@ class RouteTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> overGroundRoute.stationOpposite(new Station(3, "caca")));
+        //return the opposite station to the station you input when calling stationOpposite()
+        //ie calling the method with station2 must return station1
         assertEquals(s1, overGroundRoute.stationOpposite(s2));
     }
 
