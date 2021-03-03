@@ -1,14 +1,12 @@
 package ch.epfl.tchu.game;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import ch.epfl.tchu.SortedBag;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class RouteTest {
 
@@ -16,8 +14,6 @@ class RouteTest {
     private Route overGroundRoute;
     private Route underGroundRoute;
     private Station s2;
-    private SortedBag.Builder<Card> cardBuilder;
-    private List<SortedBag<Card>> cardList;
     private List<Card> claimCards;
     private SortedBag<Card> c;
     private List<Card> drawnCards;
@@ -29,8 +25,6 @@ class RouteTest {
         s2 = new Station(2, "to");
         overGroundRoute = new Route("ID", s1, s2, 5, Route.Level.OVERGROUND, Color.RED);
         underGroundRoute = new Route("ID", s1, s2, 2, Route.Level.UNDERGROUND, null);
-        cardBuilder = new SortedBag.Builder<>();
-        cardList = new ArrayList<>();
         claimCards = List.of(Card.RED);
         c = SortedBag.of(claimCards);
         drawnCards = List.of(Card.BLACK, Card.RED, Card.LOCOMOTIVE);
@@ -104,31 +98,34 @@ class RouteTest {
 
     @Test
     void possibleClaimCardsForOverGroundAndNonNullColor() {
+        SortedBag.Builder<Card> cardBuilder = new SortedBag.Builder<>();
         for (int i = 0; i < overGroundRoute.length(); i++) {
             cardBuilder.add(Card.RED);
         }
-        assertEquals(List.of(cardBuilder.build()), overGroundRoute.possibleClaimCards());
+        assertEquals(overGroundRoute.possibleClaimCards(), List.of(cardBuilder.build()));
     }
 
     @Test
     void possibleClaimCardsForUnderGroundAndNullColor() {
-        for (int i = underGroundRoute.length(); i > 0; i--) {
-            for (Card card : Card.CARS) {
-                for (int j = 0; j < i; j++) {
-                    cardBuilder.add(card);
-                }
-                while (cardBuilder.size() < underGroundRoute.length()) {
-                    cardBuilder.add(Card.LOCOMOTIVE);
-                }
-                cardList.add(cardBuilder.build());
-                cardBuilder = new SortedBag.Builder<>();
-            }
-        }
-        for (int k = 0; k < underGroundRoute.length(); k++) {
-            cardBuilder.add(Card.LOCOMOTIVE);
-        }
-        cardList.add(cardBuilder.build());
-        assertEquals(cardList, underGroundRoute.possibleClaimCards());
+        SortedBag.Builder<Card> cB1 = new SortedBag.Builder<>();
+        SortedBag.Builder<Card> cB2 = new SortedBag.Builder<>();
+        SortedBag.Builder<Card> cB3 = new SortedBag.Builder<>();
+        List<SortedBag<Card>> cardList;
+
+        // First index of the example given on {@link https://cs108.epfl.ch/p/02_routes-trails.html}
+        cB1.add(Card.BLACK);
+        cB1.add(Card.BLACK);
+        // 9th index of the example given
+        cB2.add(Card.VIOLET);
+        cB2.add(Card.LOCOMOTIVE);
+        // 16th index of the example given
+        cB3.add(Card.LOCOMOTIVE);
+        cB3.add(Card.LOCOMOTIVE);
+
+        cardList = List.of(cB1.build(), cB2.build(), cB3.build());
+        assertEquals(underGroundRoute.possibleClaimCards().get(0), cardList.get(0));
+        assertEquals(underGroundRoute.possibleClaimCards().get(9), cardList.get(1));
+        assertEquals(underGroundRoute.possibleClaimCards().get(16), cardList.get(2));
     }
 
     @Test
