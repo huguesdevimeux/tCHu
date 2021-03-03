@@ -40,7 +40,6 @@ public class TrailTest {
     @Test
     void assertLongestTrailIsCorrect() {
         listOfRoutes = List.of(route1, route2, route3);
-        System.out.println(longest(listOfRoutes).toString());
         assertEquals("S2 - S1 - S4 - S3 (12)", longest(listOfRoutes).toString());
     }
 
