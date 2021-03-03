@@ -188,7 +188,7 @@ public final class Route {
                 for (int i = this.length; i > 0; i--) {
                     for (int j = 0; j < i; j++) {
                         // same instructions but the color here does not matter
-                        // we just assign the color that is given
+                        // we just assign the given color
                         cardBuilder.add(Card.of(this.color));
                     }
                     while (cardBuilder.size() < length) {
