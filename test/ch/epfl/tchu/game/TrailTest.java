@@ -1,13 +1,14 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.Trail.longest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static ch.epfl.tchu.game.Trail.longest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TrailTest {
     private Station s1;
