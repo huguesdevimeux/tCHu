@@ -18,8 +18,7 @@ public class PublicCardState {
     private final int discardsSize;
 
     /**
-     * Public constructor.
-     * Builds public cards, seen by both players
+     * Public constructor. Builds public cards, seen by both players
      *
      * @param faceUpCards 5 cards visible by both players
      * @param deckSize number of cards composing the deck
