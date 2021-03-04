@@ -139,8 +139,8 @@ class RouteTest {
     }
 
     @Test
-    void raisesIllegalArgumentExceptionIfDrawnCardsIsOutOfBounds(){
-        //purposefully creating and list of only two elements when it must be three
+    void raisesIllegalArgumentExceptionIfDrawnCardsIsOutOfBounds() {
+        // purposefully creating and list of only two elements when it must be three
         drawnCards = List.of(Card.BLACK, Card.LOCOMOTIVE);
         d = SortedBag.of(drawnCards);
         assertThrows(
