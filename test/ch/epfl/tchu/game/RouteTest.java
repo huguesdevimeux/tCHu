@@ -90,7 +90,7 @@ class RouteTest {
     }
 
     @Test
-    void stationOpposite() {
+    void assertOppositeStationIsReturned() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> overGroundRoute.stationOpposite(new Station(3, "caca")));
