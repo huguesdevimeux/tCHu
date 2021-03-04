@@ -1,11 +1,11 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PublicCardStateTest {
 
@@ -14,7 +14,7 @@ class PublicCardStateTest {
 
     @BeforeEach
     public void setUp() {
-        cards = new PublicCardState(Card.ALL.subList(0,4), 10, 10);
+        cards = new PublicCardState(Card.ALL.subList(0, 4), 10, 10);
         emptyCards = new PublicCardState(Card.ALL.subList(0, 4), 0, 0);
     }
 
