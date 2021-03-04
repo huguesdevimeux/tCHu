@@ -1,19 +1,20 @@
 package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
+import ch.epfl.tchu.SortedBag;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Representation of a route that links two nearby stations. Immutable.
+ * Representation of a route that links two nearby stations.
  *
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
 public final class Route {
     private final String id;
-
     private final Station station1;
     private final Station station2;
     private final int length;
@@ -118,8 +119,8 @@ public final class Route {
     /**
      * Returns the opposite station from which this method is called.
      *
-     * @param station The station to get the opposite of.
-     * @throws IllegalArgumentException if argument station is neither of the start/end stations.
+     * @param station
+     * @throws IllegalArgumentException if argument station is neither of the start/end stations
      * @return opposite station
      */
     public Station stationOpposite(Station station) {
@@ -129,5 +130,120 @@ public final class Route {
         } else {
             return station1;
         }
+    }
+
+    /**
+     * Returns List of all the possible cards one can use to take over a route.
+     *
+     * @return possible claim cards (playable cards)
+     */
+    public List<SortedBag<Card>> possibleClaimCards() {
+        SortedBag.Builder<Card> cardBuilder = new SortedBag.Builder<>();
+        List<SortedBag<Card>> cardList = new ArrayList<>();
+
+        if (level.equals(Level.OVERGROUND)) {
+            // when route is overground locomotive cards cannot be used
+            if (color == null) {
+                for (Card card : Card.CARS) {
+                    for (int i = 0; i < this.length; i++) {
+                        cardBuilder.add(card);
+                    }
+                    /// adding all the cars added to cardBuilder into cardList
+                    cardList.add(cardBuilder.build());
+                    // resetting cardBuilder to prevent from having subArrays of cardList to have
+                    // more
+                    // than lengths' elements
+                    cardBuilder = new SortedBag.Builder<>();
+                }
+            } else {
+                for (int j = 0; j < this.length; j++) {
+                    // if color is assigned, we just add the number of length of the route with the
+                    // given colors
+                    cardBuilder.add(Card.of(this.color));
+                }
+                cardList.add(cardBuilder.build());
+            }
+
+        } else {
+            // if <\code> level </\code> is <\code> UNDERGROUND </\code>, Locomotive cards come into
+            // play
+            if (color == null) {
+                for (int i = this.length; i > 0; i--) {
+                    for (Card card : Card.CARS) {
+                        // same instructions as before
+                        for (int j = 0; j < i; j++) {
+                            cardBuilder.add(card);
+                        }
+                        // adding locomotive cards to complete all the possible claim cards
+                        // when route is a tunnel
+                        while (cardBuilder.size() < length) {
+                            cardBuilder.add(Card.LOCOMOTIVE);
+                        }
+                        cardList.add(cardBuilder.build());
+                        cardBuilder = new SortedBag.Builder<>();
+                    }
+                }
+
+            } else {
+                for (int i = this.length; i > 0; i--) {
+                    for (int j = 0; j < i; j++) {
+                        // same instructions but the color here does not matter
+                        // we just assign the given color
+                        cardBuilder.add(Card.of(this.color));
+                    }
+                    while (cardBuilder.size() < length) {
+                        cardBuilder.add(Card.LOCOMOTIVE);
+                    }
+                    cardList.add(cardBuilder.build());
+                    cardBuilder = new SortedBag.Builder<>();
+                }
+            }
+            // this single for loop allows to add the final subArray in the list with ONLY
+            // locomotive cards
+            for (int i = 0; i < this.length; i++) {
+                cardBuilder.add(Card.LOCOMOTIVE);
+            }
+            cardList.add(cardBuilder.build());
+        }
+        return cardList;
+    }
+
+    /**
+     * Returns the additional amount of cards one must play to take over a route knowing that the
+     * player has played with <code> claimCards </code> and the three cards taken from the stack of
+     * cards are the <code> drawnCards </code>
+     *
+     * @param claimCards cards the player uses to play
+     * @param drawnCards 3 cards drawn from the stack of cards
+     * @throws IllegalArgumentException if the route is not a tunnel
+     * @throws IllegalArgumentException if <\code> drawnCards </\code> does not contain exactly
+     *     three cards
+     * @return number of additional cards the player must play to take over route
+     */
+    public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
+        Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
+        Preconditions.checkArgument(drawnCards.size() == 3);
+        int additionalClaimCards = 0;
+        for (Card drawn : drawnCards) {
+            for (Card claim : claimCards) {
+                // for every card that is drawn, if it is a locomotive or the same color as the
+                // claim card
+                // the additionalClaimCards increases
+                if (drawn.equals(Card.LOCOMOTIVE) || (drawn.equals(claim))) {
+                    additionalClaimCards++;
+                }
+            }
+        }
+        return additionalClaimCards;
+    }
+
+    /**
+     * Returns the number of claimPoints (construction points) that a player gets when taking over a
+     * route. Depends on the routes' length.
+     *
+     * @return claimPoints
+     */
+    public int claimPoints() {
+        return Constants.ROUTE_CLAIM_POINTS.get(length);
     }
 }
