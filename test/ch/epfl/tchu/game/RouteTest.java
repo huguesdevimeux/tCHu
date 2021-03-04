@@ -132,19 +132,24 @@ class RouteTest {
     }
 
     @Test
-    void RaisesIllegalArgumentExceptionIfRouteIsOvergroundOrDrawnCardsOutOfBounds() {
-        drawnCards = List.of(Card.BLACK, Card.LOCOMOTIVE);
-        d = SortedBag.of(drawnCards);
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> overGroundRoute.additionalClaimCardsCount(c, d));
+    void raisesIllegalArgumentExceptionIfRouteIsOverground() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> overGroundRoute.additionalClaimCardsCount(c, d));
     }
 
     @Test
-    void ReturnsCorrectAmountOfAdditionalCards() {
+    void raisesIllegalArgumentExceptionIfDrawnCardsIsOutOfBounds(){
+        //purposefully creating and list of only two elements when it must be three
+        drawnCards = List.of(Card.BLACK, Card.LOCOMOTIVE);
+        d = SortedBag.of(drawnCards);
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> overGroundRoute.additionalClaimCardsCount(c, d));
+    }
+
+    @Test
+    void returnsCorrectAmountOfAdditionalCards() {
         assertEquals(2, underGroundRoute.additionalClaimCardsCount(c, d));
     }
 
