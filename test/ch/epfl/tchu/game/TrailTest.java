@@ -1,14 +1,15 @@
 package ch.epfl.tchu.game;
 
-import static ch.epfl.tchu.game.Trail.longest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static ch.epfl.tchu.game.Trail.longest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TrailTest {
     private Station s1;
@@ -44,6 +45,27 @@ public class TrailTest {
     }
 
     @Test
+    void assertLongestReturnsCorrectTrailWithRealStations() {
+        // this test comes from {@link https://cs108.epfl.ch/p/02_routes-trails.html#sec/longest-trail-example}
+        // there are four possible outcomes, as mentioned on the link
+        List<String> toAdd =
+                Arrays.asList(
+                        "NEU_YVE_1",
+                        "NEU_SOL_1",
+                        "BER_SOL_1",
+                        "BER_NEU_1",
+                        "BER_FRI_1",
+                        "BER_LUC_1");
+        String longestTrail =
+                Trail.longest(
+                                ChMap.routes().stream()
+                                        .filter(p -> toAdd.contains(p.id()))
+                                        .collect(Collectors.toList()))
+                        .toString();
+        assertEquals("Fribourg - Berne - Neuchâtel - Soleure - Berne - Lucerne (13)", longestTrail);
+    }
+
+    @Test
     void assertStationsAndLengthAreNullWithEmptyRouteList() {
         listOfRoutes = List.of();
         assertNull(longest(listOfRoutes).station1());
@@ -53,7 +75,7 @@ public class TrailTest {
 
     @Test
     void station1() {
-        // route is the longest route in listOfRoutes so
+        // route1 is the longest route in listOfRoutes so
         // s1 must be station1
         assertEquals(s1, longest(listOfRoutes).station1());
     }
