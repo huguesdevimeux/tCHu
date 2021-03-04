@@ -9,18 +9,18 @@ import java.util.List;
 
 class PublicCardStateTest {
 
-    PublicCardState cards;
+    private PublicCardState cards;
     private PublicCardState emptyCards;
 
     @BeforeEach
     public void setUp() {
-        cards = new PublicCardState(Card.ALL.subList(0, 4), 10, 10);
-        emptyCards = new PublicCardState(Card.ALL.subList(0, 4), 0, 0);
+        cards = new PublicCardState(Card.ALL.subList(0, 5), 10, 10);
+        emptyCards = new PublicCardState(Card.ALL.subList(0, 5), 0, 0);
     }
 
     @Test
     public void RaisesIllegalArgumentWhenWrongNumberOfCards() {
-        List<Card> fourCards = Card.ALL.subList(0, 3);
+        List<Card> fourCards = Card.ALL.subList(0, 4);
         assertThrows(IllegalArgumentException.class, () -> new PublicCardState(fourCards, 4, 4));
     }
 
@@ -37,13 +37,13 @@ class PublicCardStateTest {
 
     @Test
     void faceUpCards() {
-        assertEquals(Card.ALL.subList(0, 4), cards.faceUpCards());
+        assertEquals(Card.ALL.subList(0, 5), cards.faceUpCards());
     }
 
     @Test
     void faceUpCard() {
-        assertEquals(Card.ALL.subList(0, 4).get(0), cards.faceUpCard(0));
-        assertEquals(Card.ALL.subList(0, 4).get(4), cards.faceUpCard(4));
+        assertEquals(Card.ALL.subList(0, 5).get(0), cards.faceUpCard(0));
+        assertEquals(Card.ALL.subList(0, 5).get(4), cards.faceUpCard(4));
 
         assertThrows(IndexOutOfBoundsException.class, () -> cards.faceUpCard(-1));
         assertThrows(IndexOutOfBoundsException.class, () -> cards.faceUpCard(6));
