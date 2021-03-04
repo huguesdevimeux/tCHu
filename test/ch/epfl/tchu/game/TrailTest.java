@@ -1,15 +1,16 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.Trail.longest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ch.epfl.tchu.game.Trail.longest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TrailTest {
     private Station s1;
@@ -46,7 +47,8 @@ public class TrailTest {
 
     @Test
     void assertLongestReturnsCorrectTrailWithRealStations() {
-        // this test comes from {@link https://cs108.epfl.ch/p/02_routes-trails.html#sec/longest-trail-example}
+        // this test comes from {@link
+        // https://cs108.epfl.ch/p/02_routes-trails.html#sec/longest-trail-example}
         // there are four possible outcomes, as mentioned on the link
         List<String> toAdd =
                 Arrays.asList(
