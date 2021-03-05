@@ -76,6 +76,7 @@ public final class Deck<C extends Comparable<C>> {
     }
     /**
      * Returns an identical Deck but without the top card.
+     *
      * @throws IllegalArgumentException if the Deck is empty.
      * @return The same Deck but without the top card. j
      */
@@ -85,6 +86,7 @@ public final class Deck<C extends Comparable<C>> {
 
     /**
      * Returns an indentical Deck but without the n top cards, where n is count parameter.
+     *
      * @param count Number of cards to substract from the Deck.
      * @return the Deck substracted from count cards.
      * @ŧhrows IllegalArgumentException count is not within 0 and the size of the Deck.

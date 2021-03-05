@@ -76,6 +76,7 @@ public final class StringsFr {
 
     /**
      * Retourne une chaîne marquant le pluriel, ou la chaîne vide.
+     *
      * @param value la valeur déterminant la chaîne retournée
      * @return la chaîne vide si la valeur vaut ±1, la chaîne "s" sinon
      */
