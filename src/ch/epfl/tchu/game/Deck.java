@@ -88,8 +88,8 @@ public final class Deck<C extends Comparable<C>> {
      * Returns an indentical Deck but without the n top cards, where n is count parameter.
      *
      * @param count Number of cards to substract from the Deck.
-     * @return the Deck substracted from count cards.
-     * @ŧhrows IllegalArgumentException count is not within 0 and the size of the Deck.
+     * @return the Deck substracted from count cards. @ŧhrows IllegalArgumentException count is not
+     *     within 0 and the size of the Deck.
      */
     public Deck<C> withoutTopCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
