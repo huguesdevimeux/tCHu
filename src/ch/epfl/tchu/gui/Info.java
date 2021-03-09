@@ -29,7 +29,7 @@ public final class Info {
     /**
      * Returns the name (french) of the given card, singular iff the absolute value of count is 1.
      *
-     * @param card  the card to be represented.
+     * @param card the card to be represented.
      * @param count 1 if singular.
      * @return String representation of the card
      */
@@ -49,7 +49,7 @@ public final class Info {
      * Returns the message saying that the given players finished the game ex-aeqo.
      *
      * @param playerNames The players names.
-     * @param points      The point shared by the players.
+     * @param points The point shared by the players.
      * @return The message.
      */
     public static String draw(List<String> playerNames, int points) {
@@ -157,7 +157,7 @@ public final class Info {
      * Returns the message saying that the player wants to take the given tuennel using the given
      * cards.
      *
-     * @param route        The route the player wants to take.
+     * @param route The route the player wants to take.
      * @param initialCards The cards the player wants to take the tunnel with.
      * @return The message.
      */
@@ -174,13 +174,16 @@ public final class Info {
      * imply an additional cost. Note : the message change depending on the addionalCost is 0 or
      * not.
      *
-     * @param drawnCards     The drawn cards.
+     * @param drawnCards The drawn cards.
      * @param additionalCost The additional cards.
      * @return the message.
      */
     public String drewAdditionalCards(SortedBag<Card> drawnCards, int additionalCost) {
         StringBuilder s =
-                new StringBuilder(String.format(StringsFr.ADDITIONAL_CARDS_ARE, displaySortedBagOfCards(drawnCards)));
+                new StringBuilder(
+                        String.format(
+                                StringsFr.ADDITIONAL_CARDS_ARE,
+                                displaySortedBagOfCards(drawnCards)));
         if (additionalCost == 0) s.append(StringsFr.NO_ADDITIONAL_COST);
         else
             s.append(
@@ -234,7 +237,7 @@ public final class Info {
      * Returns the message saying the player wins the game with the given amount of points, when
      * their opponent has collected loserPoints.
      *
-     * @param points      The points.
+     * @param points The points.
      * @param loserPoints The points of the loser.
      * @return The message.
      */
