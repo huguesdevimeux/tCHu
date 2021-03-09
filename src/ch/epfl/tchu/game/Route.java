@@ -6,6 +6,7 @@ import ch.epfl.tchu.SortedBag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 
 /**
  * Representation of a route that links two nearby stations.
@@ -223,13 +224,16 @@ public final class Route {
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
+        //creating a TreeSet from claimCards so that each element in ClaimCards only appears once
+        TreeSet<Card> claimedCardsCopy = new TreeSet<>(claimCards.toList());
         int additionalClaimCards = 0;
         for (Card drawn : drawnCards) {
-            for (Card claim : claimCards) {
-                // for every card that is drawn, if it is a locomotive or the same color as the
-                // claim card
-                // the additionalClaimCards increases
-                if (drawn.equals(Card.LOCOMOTIVE) || (drawn.equals(claim))) {
+            //automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn cards
+            if (drawn.equals(Card.LOCOMOTIVE)) {
+                additionalClaimCards++;
+            }
+            for (Card claim : claimedCardsCopy) {
+                if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) {
                     additionalClaimCards++;
                 }
             }
@@ -245,5 +249,24 @@ public final class Route {
      */
     public int claimPoints() {
         return Constants.ROUTE_CLAIM_POINTS.get(length);
+    }
+
+    public static void main(String[] args) {
+        String id = "ID";
+        Station station1 = new Station(23, "Lau");
+        Station station2 = new Station(43, "Ber");
+        int length = 2;
+        Level level = Level.UNDERGROUND;
+        Color color = null;
+        Route a = new Route(id, station1, station2, length, level, color);
+
+        List<Card> claim = List.of(Card.BLUE, Card.YELLOW, Card.RED, Card.YELLOW);
+        SortedBag<Card> c = SortedBag.of(claim);
+
+        List<Card> drawn = List.of(Card.YELLOW, Card.BLUE, Card.BLUE);
+        SortedBag<Card> d = SortedBag.of(drawn);
+
+        // System.out.println(a.additionalClaimCardsCount(c, d));
+        System.out.println(a.additionalClaimCardsCount(c, d));
     }
 }
