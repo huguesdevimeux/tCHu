@@ -224,11 +224,12 @@ public final class Route {
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
-        //creating a TreeSet from claimCards so that each element in ClaimCards only appears once
+        // creating a TreeSet from claimCards so that each element in ClaimCards only appears once
         TreeSet<Card> claimedCardsCopy = new TreeSet<>(claimCards.toList());
         int additionalClaimCards = 0;
         for (Card drawn : drawnCards) {
-            //automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn cards
+            // automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn
+            // cards
             if (drawn.equals(Card.LOCOMOTIVE)) {
                 additionalClaimCards++;
             }
