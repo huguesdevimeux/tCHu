@@ -251,23 +251,4 @@ public final class Route {
     public int claimPoints() {
         return Constants.ROUTE_CLAIM_POINTS.get(length);
     }
-
-    public static void main(String[] args) {
-        String id = "ID";
-        Station station1 = new Station(23, "Lau");
-        Station station2 = new Station(43, "Ber");
-        int length = 2;
-        Level level = Level.UNDERGROUND;
-        Color color = null;
-        Route a = new Route(id, station1, station2, length, level, color);
-
-        List<Card> claim = List.of(Card.BLUE, Card.YELLOW, Card.RED, Card.YELLOW);
-        SortedBag<Card> c = SortedBag.of(claim);
-
-        List<Card> drawn = List.of(Card.YELLOW, Card.BLUE, Card.BLUE);
-        SortedBag<Card> d = SortedBag.of(drawn);
-
-        // System.out.println(a.additionalClaimCardsCount(c, d));
-        System.out.println(a.additionalClaimCardsCount(c, d));
-    }
 }
