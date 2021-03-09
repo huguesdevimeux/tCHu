@@ -225,7 +225,7 @@ public final class Route {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
         // creating a TreeSet from claimCards so that each element in ClaimCards only appears once
-        TreeSet<Card> claimedCardsCopy = new TreeSet<>(claimCards.toList());
+        TreeSet<Card> claimCardsCopy = new TreeSet<>(claimCards.toList());
         int additionalClaimCards = 0;
         for (Card drawn : drawnCards) {
             // automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn
@@ -233,7 +233,7 @@ public final class Route {
             if (drawn.equals(Card.LOCOMOTIVE)) {
                 additionalClaimCards++;
             }
-            for (Card claim : claimedCardsCopy) {
+            for (Card claim : claimCardsCopy) {
                 if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) {
                     additionalClaimCards++;
                 }
