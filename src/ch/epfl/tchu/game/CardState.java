@@ -15,7 +15,6 @@ import java.util.Random;
  * @author Hugues Devimeux (327282)
  */
 public final class CardState extends PublicCardState {
-    private final List<Card> totalDeckCards = new ArrayList<>();
     private final Deck<Card> deck;
     private final SortedBag<Card> discardCards;
     /**
@@ -87,14 +86,7 @@ public final class CardState extends PublicCardState {
      * @return top <code>deck</code> card
      */
     public Card topDeckCard() {
-        // petit sushi ici pelo je comprends pas ou ca bug
-        Preconditions.checkArgument(!isDeckEmpty());
-        for (Card card : deck.topCards(deck.size())) {
-            totalDeckCards.add(card);
-        }
-        // cest sensé etre "return deck.topCard();"
-        // tout simplement mais en testant ca bug hm
-        return totalDeckCards.get(deckSize() - 1);
+        return deck.topCard();
     }
 
     /**
