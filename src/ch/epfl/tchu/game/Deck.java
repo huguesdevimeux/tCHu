@@ -10,6 +10,7 @@ import java.util.Random;
 /**
  * Represents a deck of cards. Immutable.
  *
+ * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
 public final class Deck<C extends Comparable<C>> {
@@ -31,7 +32,6 @@ public final class Deck<C extends Comparable<C>> {
     public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng) {
         List<C> shuffledCards = cards.toList();
         Collections.shuffle(shuffledCards, rng);
-        System.out.println(shuffledCards);
         return new Deck<>(shuffledCards);
     }
 
@@ -76,6 +76,7 @@ public final class Deck<C extends Comparable<C>> {
     }
     /**
      * Returns an identical Deck but without the top card.
+     *
      * @throws IllegalArgumentException if the Deck is empty.
      * @return The same Deck but without the top card. j
      */
@@ -85,12 +86,16 @@ public final class Deck<C extends Comparable<C>> {
 
     /**
      * Returns an indentical Deck but without the n top cards, where n is count parameter.
+     *
      * @param count Number of cards to substract from the Deck.
-     * @return the Deck substracted from count cards.
-     * @ŧhrows IllegalArgumentException count is not within 0 and the size of the Deck.
+     * @return the Deck substracted from count cards. @ŧhrows IllegalArgumentException count is not
+     *     within 0 and the size of the Deck.
+     * @throws IllegalArgumentException if count is not within 0 and the size of the deck, or if the
+     *     Deck is empty.
      */
     public Deck<C> withoutTopCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
+        if (cards.isEmpty()) throw new IllegalArgumentException("Deck is empty");
         return new Deck<>(cards.subList(0, cards.size() - count));
     }
 }
