@@ -1,18 +1,19 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.Card.*;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static ch.epfl.tchu.game.Card.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CardTest {
     @Test
     void cardValuesAreDefinedInTheRightOrder() {
         var expectedValues =
-                new Card[]{BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE, LOCOMOTIVE};
+                new Card[] {BLACK, VIOLET, BLUE, GREEN, YELLOW, ORANGE, RED, WHITE, LOCOMOTIVE};
         assertArrayEquals(expectedValues, Card.values());
     }
 

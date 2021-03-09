@@ -1,12 +1,13 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import ch.epfl.test.TestRandomizer;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class StationTest {
     private static final String alphabet = "abcdefghijklmnopqrstuvwxyz";

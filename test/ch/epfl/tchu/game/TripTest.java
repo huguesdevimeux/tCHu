@@ -1,11 +1,12 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ch.epfl.test.TestRandomizer;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TripTest {
     @Test
@@ -16,13 +17,13 @@ class TripTest {
         var points = 17;
 
         var expectedFromToIds =
-                new int[][]{
-                        new int[]{0, 2},
-                        new int[]{0, 3},
-                        new int[]{0, 4},
-                        new int[]{1, 2},
-                        new int[]{1, 3},
-                        new int[]{1, 4},
+                new int[][] {
+                    new int[] {0, 2},
+                    new int[] {0, 3},
+                    new int[] {0, 4},
+                    new int[] {1, 2},
+                    new int[] {1, 3},
+                    new int[] {1, 4},
                 };
         var all = Trip.all(from, to, points);
         assertEquals(from.size() * to.size(), all.size());

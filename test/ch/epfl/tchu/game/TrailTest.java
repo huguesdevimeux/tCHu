@@ -1,15 +1,16 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.Trail.longest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ch.epfl.tchu.game.Trail.longest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TrailTest {
     private Station s1;
@@ -59,9 +60,9 @@ public class TrailTest {
                         "BER_LUC_1");
         String longestTrail =
                 Trail.longest(
-                        ChMap.routes().stream()
-                                .filter(p -> toAdd.contains(p.id()))
-                                .collect(Collectors.toList()))
+                                ChMap.routes().stream()
+                                        .filter(p -> toAdd.contains(p.id()))
+                                        .collect(Collectors.toList()))
                         .toString();
         assertEquals("Fribourg - Berne - Neuchâtel - Soleure - Berne - Lucerne (13)", longestTrail);
     }
