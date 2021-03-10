@@ -75,7 +75,7 @@ public final class Info {
 
     private static String displayRoute(Route route) {
         return String.format(
-                "%s %s %s",
+                "%s%s%s",
                 route.station1().name(), StringsFr.EN_DASH_SEPARATOR, route.station2().name());
     }
 
@@ -226,7 +226,7 @@ public final class Info {
     public String getsLongestTrailBonus(Trail longestTrail) {
         String trailString =
                 String.format(
-                        "%s %s %s",
+                        "%s%s%s",
                         longestTrail.station1().name(),
                         StringsFr.EN_DASH_SEPARATOR,
                         longestTrail.station2().name());
