@@ -68,15 +68,19 @@ public final class CardState extends PublicCardState {
      * @return card state with switched face up card at index slot with decks' top card
      */
     public CardState withDrawnFaceUpCard(int slot) {
-        // faire des copies de faceUpCard()?
+        List<Card> faceUpCards = new ArrayList<>(faceUpCards());
         Objects.checkIndex(slot, Constants.FACE_UP_CARDS_COUNT);
         Preconditions.checkArgument(!isDeckEmpty());
-        faceUpCards().set(slot, topDeckCard());
+        faceUpCards.set(slot, topDeckCard());
         // in the return statement we make sure we use deck but without the top card as it is
         // removed
         // once it replaces the face up card at index <code>slot</code>
         return new CardState(
-                faceUpCards(), deckSize(), discardsSize(), deck.withoutTopCard(), discardCards);
+                faceUpCards,
+                deck.withoutTopCard().size(),
+                discardsSize(),
+                deck.withoutTopCard(),
+                discardCards);
     }
 
     /**
@@ -114,13 +118,15 @@ public final class CardState extends PublicCardState {
      */
     public CardState withDeckRecreatedFromDiscards(Random rng) {
         Preconditions.checkArgument(isDeckEmpty());
+        List<Card> discards = new ArrayList<>(discardCards.toList());
         // creating a shuffled deck from the discards as they're in a SortedBag thanks to
         // Deck.of(...)
         Deck<Card> randomDeckFromDiscards = Deck.of(discardCards, rng);
+        discards.clear();
         return new CardState(
                 faceUpCards(),
-                deckSize(),
                 randomDeckFromDiscards.size(),
+                discards.size(),
                 randomDeckFromDiscards,
                 SortedBag.of());
     }
