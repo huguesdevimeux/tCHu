@@ -10,6 +10,7 @@ import java.util.Random;
 /**
  * Represents a deck of cards. Immutable.
  *
+ * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
 public final class Deck<C extends Comparable<C>> {
