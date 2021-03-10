@@ -2,6 +2,7 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,13 +26,12 @@ public class PublicCardState {
      * @param discardsSize number of discarded cards
      */
     public PublicCardState(List<Card> faceUpCards, int deckSize, int discardsSize) {
-        this.faceUpCards = faceUpCards;
+        this.faceUpCards = new ArrayList<>(faceUpCards);
         this.deckSize = deckSize;
         this.discardsSize = discardsSize;
         Preconditions.checkArgument(faceUpCards.size() == 5);
         Preconditions.checkArgument(deckSize >= 0 || discardsSize >= 0);
     }
-
     /**
      * Returns the total number of cards that are not in the players' hands. ie the face up cards,
      * the cards in the deck and the discarded cards.
