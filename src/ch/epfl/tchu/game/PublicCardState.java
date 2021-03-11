@@ -30,7 +30,7 @@ public class PublicCardState {
         this.deckSize = deckSize;
         this.discardsSize = discardsSize;
         Preconditions.checkArgument(faceUpCards.size() == 5);
-        Preconditions.checkArgument(deckSize >= 0 || discardsSize >= 0);
+        Preconditions.checkArgument(deckSize >= 0 && discardsSize >= 0);
     }
     /**
      * Returns the total number of cards that are not in the players' hands. ie the face up cards,
