@@ -158,7 +158,7 @@ public final class Info {
      * Returns the message saying that the player wants to take the given tunnel using the given
      * cards.
      *
-     * @param route        The route the player wants to take.
+     * @param route The route the player wants to take.
      * @param initialCards The cards the player wants to take the tunnel with.
      * @return The message.
      */
