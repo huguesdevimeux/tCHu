@@ -1,5 +1,6 @@
 package ch.epfl.tchu.gui;
 
+import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Route;
@@ -177,8 +178,10 @@ public final class Info {
      * @param drawnCards The drawn cards.
      * @param additionalCost The additional cards.
      * @return the message.
+     * @throws IllegalArgumentException if there if there is not exactly 3 drawn cards.
      */
     public String drewAdditionalCards(SortedBag<Card> drawnCards, int additionalCost) {
+        Preconditions.checkArgument(drawnCards.size() == 3);
         StringBuilder s =
                 new StringBuilder(
                         String.format(
