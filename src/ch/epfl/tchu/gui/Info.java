@@ -36,7 +36,7 @@ public final class Info {
      */
     public static String cardName(Card card, int count) {
         // This is slightly hacky, and will get the the attribute named card.name()_CARD (eg
-        // BLACK_CARD) from StringsFr.
+        // BLACK_CARD) from StringsFr. That's probably too pythonic for Java.
         try {
             return StringsFr.class.getDeclaredField(card.name() + "_CARD").get(null)
                     + StringsFr.plural(count);
@@ -155,10 +155,10 @@ public final class Info {
     }
 
     /**
-     * Returns the message saying that the player wants to take the given tuennel using the given
+     * Returns the message saying that the player wants to take the given tunnel using the given
      * cards.
      *
-     * @param route The route the player wants to take.
+     * @param route        The route the player wants to take.
      * @param initialCards The cards the player wants to take the tunnel with.
      * @return The message.
      */
@@ -215,6 +215,7 @@ public final class Info {
      * @return the message.
      */
     public String lastTurnBegins(int carCount) {
+        Preconditions.checkArgument(carCount <= 2);
         return String.format(
                 StringsFr.LAST_TURN_BEGINS, this.playerName, carCount, StringsFr.plural(carCount));
     }
