@@ -1,17 +1,15 @@
 package ch.epfl.tchu.game;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 import ch.epfl.tchu.gui.StringsFr;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class InfoTest {
     private List<Card> cardList;
@@ -122,10 +120,7 @@ public class InfoTest {
                         + r.station1().name()
                         + " – "
                         + r.station2().name()
-                        + " au moyen de "
-                        + dispaySortedBag(sBag)
-                        + ".\n";
-        System.out.println(info1.claimedRoute(r, sBag));
+                        + " au moyen de 1 noire, 1 violette et 1 bleue.\n";
         assertEquals(expected, info1.claimedRoute(r, sBag));
     }
 
@@ -139,9 +134,7 @@ public class InfoTest {
                         + r.station1().name()
                         + " – "
                         + r.station2().name()
-                        + " au moyen de "
-                        + dispaySortedBag(sBag)
-                        + ".\n";
+                        + " au moyen de 2 rouges et 1 locomotive.\n";
         assertEquals(expected, info1.claimedRoute(r, sBag));
     }
 
@@ -154,32 +147,29 @@ public class InfoTest {
                         + r.station1().name()
                         + " – "
                         + r.station2().name()
-                        + " au moyen de "
-                        + dispaySortedBag(sBag)
-                        + " !\n";
+                        + " au moyen de 1 noire, 1 violette et 1 bleue !\n";
         assertEquals(expected, info1.attemptsTunnelClaim(r, sBag));
     }
 
     @Test
     void drewAdditionalCards() {
         expected =
-                "Les cartes supplémentaires sont "
-                        + dispaySortedBag(sBag)
-                        + ". Elles impliquent un coût additionnel de 2 cartes.\n";
+                "Les cartes supplémentaires sont 1 noire, 1 violette et 1 bleue. "
+                        + "Elles impliquent un coût additionnel de 2 cartes.\n";
         assertEquals(expected, info1.drewAdditionalCards(sBag, 2));
+        sBag = SortedBag.of(List.of(Card.VIOLET, Card.BLUE, Card.BLUE));
         expected =
-                "Les cartes supplémentaires sont "
-                        + dispaySortedBag(sBag)
-                        + ". Elles n'impliquent aucun coût additionnel.\n";
+                "Les cartes supplémentaires sont 1 violette et 2 bleues."
+                        + " Elles n'impliquent aucun coût additionnel.\n";
         assertEquals(expected, info1.drewAdditionalCards(sBag, 0));
+    }
 
-        // enoncé dit qui retourne le message déclarant que le joueur a tiré les TROIS cartes
-        // additionnelles données, et qu'elles impliquent un coût additionel du nombre de cartes
-        // donné -> sBag doit comporter 3 trucs nn?
-        // ca fail pas en tt cas si sortedbag contient 4 trucs
-
+    @Test
+    void assertThrowsExceptionIfDrawnCardsDifferentThanThree() {
         SortedBag<Card> a = SortedBag.of(List.of(Card.BLUE, Card.VIOLET, Card.BLUE, Card.VIOLET));
         assertThrows(IllegalArgumentException.class, () -> info1.drewAdditionalCards(a, 1));
+        SortedBag<Card> b = SortedBag.of(List.of(Card.BLUE, Card.VIOLET));
+        assertThrows(IllegalArgumentException.class, () -> info1.drewAdditionalCards(b, 2));
     }
 
     @Test
@@ -198,8 +188,13 @@ public class InfoTest {
     void lastTurnBeginsReturnsCorrectString() {
         expected = "\n" + playerOneName + " n'a plus que 1 wagon, le dernier tour commence !\n";
         assertEquals(expected, info1.lastTurnBegins(1));
-        expected = "\n" + playerTwoName + " n'a plus que 7 wagons, le dernier tour commence !\n";
-        assertEquals(expected, info2.lastTurnBegins(7));
+        expected = "\n" + playerTwoName + " n'a plus que 2 wagons, le dernier tour commence !\n";
+        assertEquals(expected, info2.lastTurnBegins(2));
+    }
+
+    @Test
+    void assertThrowsExceptionIfCountCountOutOfBounds() {
+        assertThrows(IllegalArgumentException.class, () -> info1.lastTurnBegins(3));
     }
 
     @Test
@@ -221,21 +216,7 @@ public class InfoTest {
     void winningReturnsCorrectString() {
         expected = "\n" + playerOneName + " remporte la victoire avec 3 points, contre 1 point !\n";
         assertEquals(expected, info1.won(3, 1));
-        expected = "\n" + playerOneName + " remporte la victoire avec 1 point, contre 4 points !\n";
-        assertEquals(expected, info1.won(1, 4));
-    }
-
-    private String dispaySortedBag(SortedBag<Card> cards) {
-        List<String> displayed = new java.util.ArrayList<>(Collections.emptyList());
-        cards.toMap()
-                .forEach(
-                        (card, number) -> {
-                            String cardStringPiece =
-                                    String.format("%s %s", number, Info.cardName(card, number));
-                            displayed.addAll(List.of(cardStringPiece, ", "));
-                        });
-        displayed.set(displayed.size() - 3, StringsFr.AND_SEPARATOR);
-        displayed.remove(displayed.size() - 1);
-        return String.join("", displayed);
+        expected = "\n" + playerOneName + " remporte la victoire avec 1 point, contre 1 point !\n";
+        assertEquals(expected, info1.won(1, 1));
     }
 }
