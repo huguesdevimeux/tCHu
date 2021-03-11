@@ -32,7 +32,6 @@ public final class Deck<C extends Comparable<C>> {
     public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng) {
         List<C> shuffledCards = cards.toList();
         Collections.shuffle(shuffledCards, rng);
-        System.out.println(shuffledCards);
         return new Deck<>(shuffledCards);
     }
 
@@ -78,8 +77,9 @@ public final class Deck<C extends Comparable<C>> {
     /**
      * Returns an identical Deck but without the top card.
      *
+     * @return The same Deck but without the top card.
      * @throws IllegalArgumentException if the Deck is empty.
-     * @return The same Deck but without the top card. j
+     * @throws IllegalArgumentException if the Deck is empty.
      */
     public Deck<C> withoutTopCard() {
         return withoutTopCards(1);
@@ -91,6 +91,7 @@ public final class Deck<C extends Comparable<C>> {
      * @param count Number of cards to substract from the Deck.
      * @return the Deck substracted from count cards. @ŧhrows IllegalArgumentException count is not
      *     within 0 and the size of the Deck.
+     * @throws IllegalArgumentException if count is not within the size of the Deck.
      */
     public Deck<C> withoutTopCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
