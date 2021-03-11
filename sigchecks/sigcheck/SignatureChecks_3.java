@@ -55,6 +55,7 @@ final class SignatureChecks_3 {
     }
 
     interface C extends Comparable<C> {}
+
     ch.epfl.tchu.SortedBag<C> v01;
     java.util.Random v02;
     ch.epfl.tchu.game.Deck<C> v03;
