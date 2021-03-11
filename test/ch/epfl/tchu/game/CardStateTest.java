@@ -29,10 +29,6 @@ class CardStateTest {
     }
 
     @Test
-    void of() {
-    }
-
-    @Test
     void withDrawnFaceUpCard() {
         CardState c = testedCardState.withDrawnFaceUpCard(4);
         assertEquals(Card.RED, c.faceUpCard(4));
