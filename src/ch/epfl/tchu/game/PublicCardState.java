@@ -2,7 +2,6 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +25,7 @@ public class PublicCardState {
      * @param discardsSize number of discarded cards
      */
     public PublicCardState(List<Card> faceUpCards, int deckSize, int discardsSize) {
-        this.faceUpCards = new ArrayList<>(faceUpCards);
+        this.faceUpCards = List.copyOf(faceUpCards);
         this.deckSize = deckSize;
         this.discardsSize = discardsSize;
         Preconditions.checkArgument(faceUpCards.size() == 5);
