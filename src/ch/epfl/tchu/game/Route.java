@@ -6,6 +6,7 @@ import ch.epfl.tchu.SortedBag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 
 /**
  * Representation of a route that links two nearby stations.
@@ -223,13 +224,17 @@ public final class Route {
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
+        // creating a TreeSet from claimCards so that each element in ClaimCards only appears once
+        TreeSet<Card> claimCardsCopy = new TreeSet<>(claimCards.toList());
         int additionalClaimCards = 0;
         for (Card drawn : drawnCards) {
-            for (Card claim : claimCards) {
-                // for every card that is drawn, if it is a locomotive or the same color as the
-                // claim card
-                // the additionalClaimCards increases
-                if (drawn.equals(Card.LOCOMOTIVE) || (drawn.equals(claim))) {
+            // automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn
+            // cards
+            if (drawn.equals(Card.LOCOMOTIVE)) {
+                additionalClaimCards++;
+            }
+            for (Card claim : claimCardsCopy) {
+                if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) {
                     additionalClaimCards++;
                 }
             }
