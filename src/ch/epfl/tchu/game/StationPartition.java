@@ -38,7 +38,7 @@ public final class StationPartition implements StationConnectivity {
             return deepPartition[stationId];
         }
 
-        public Builder connect(Station s1, Station s2) {
+        public Builder connect (Station s1, Station s2) {
             int representative = representative(s1.id());
             // dont really know what to do in these two last methods
             Arrays.fill(deepPartition, representative);
