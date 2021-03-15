@@ -15,6 +15,8 @@ public final class PublicPlayerState {
     private final int ticketCount;
     private final List<Route> routes;
     private final int cardCount;
+    private final int claimPoints;
+    private final int carCount;
 
     /**
      * Constructs the public state of a player who has the given number of tickets and cards, and
@@ -31,6 +33,8 @@ public final class PublicPlayerState {
         this.cardCount = cardCount;
         this.ticketCount = ticketCount;
         this.routes = List.copyOf(routes);
+        this.claimPoints = this.routes.stream().mapToInt(Route::claimPoints).sum();
+        this.carCount = Constants.INITIAL_CAR_COUNT - this.routes().stream().mapToInt(Route::length).sum();
     }
 
     /**
@@ -66,6 +70,17 @@ public final class PublicPlayerState {
      * @return the number of construction points the player obtained.
      */
     public int claimPoints() {
-        return this.routes.stream().mapToInt(Route::claimPoints).sum();
+        return this.claimPoints;
     }
+
+    /**
+     * Returns the number of wagons the player has.
+     *
+     * @return the number of wagons the player has.
+     */
+    public int carCount() {
+        return this.carCount;
+    }
+
+
 }
