@@ -4,7 +4,6 @@ import ch.epfl.tchu.Preconditions;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 /** The type Station partition. */
@@ -41,7 +40,7 @@ public final class StationPartition implements StationConnectivity {
 
         public Builder connect(Station s1, Station s2) {
             int representative = representative(s1.id());
-            //dont really know what to do in these two last methods
+            // dont really know what to do in these two last methods
             Arrays.fill(deepPartition, representative);
             return new Builder(representative);
         }
