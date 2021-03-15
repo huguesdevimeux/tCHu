@@ -72,5 +72,4 @@ public class PublicPlayerState {
     public int claimPoints() {
         return claimPoints;
     }
-
 }
