@@ -1,12 +1,12 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PublicPlayerStateTest {
     private int ticketCount;
@@ -53,12 +53,12 @@ public class PublicPlayerStateTest {
         assertEquals(25, publicPlayerState.claimPoints());
         route1 = new Route("a", a, b, 1, Route.Level.OVERGROUND, null);
         routes = List.of(route1);
-        assertEquals(1, new PublicPlayerState(1,1, routes).claimPoints());
+        assertEquals(1, new PublicPlayerState(1, 1, routes).claimPoints());
     }
 
     @Test
-    void returnsCorrectCarCount(){
-        //40 - 5 - 6
+    void returnsCorrectCarCount() {
+        // 40 - 5 - 6
         assertEquals(29, publicPlayerState.carCount());
     }
 }
