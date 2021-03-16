@@ -2,7 +2,6 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -10,8 +9,8 @@ import java.util.stream.IntStream;
 public final class StationPartition implements StationConnectivity {
     private final int[] flatPartition;
 
-    private StationPartition(int[] partition) {
-        this.flatPartition = partition;
+    private StationPartition(int[] flatPartition) {
+        this.flatPartition = flatPartition;
     }
 
     @Override
@@ -39,10 +38,8 @@ public final class StationPartition implements StationConnectivity {
         }
 
         public Builder connect(Station s1, Station s2) {
-            int representative = representative(s1.id());
-            // dont really know what to do in these two last methods
-            Arrays.fill(deepPartition, representative);
-            return new Builder(representative);
+            deepPartition[s2.id()] = representative(s1.id());
+            return this;
         }
 
         public StationPartition build() {
