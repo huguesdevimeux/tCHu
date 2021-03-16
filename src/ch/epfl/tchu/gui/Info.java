@@ -54,7 +54,8 @@ public final class Info {
      * @return The message.
      */
     public static String draw(List<String> playerNames, int points) {
-        return String.format(StringsFr.DRAW, String.join(StringsFr.AND_SEPARATOR, playerNames), points);
+        return String.format(
+                StringsFr.DRAW, String.join(StringsFr.AND_SEPARATOR, playerNames), points);
     }
 
     private static String displaySortedBagOfCards(SortedBag<Card> cards) {
