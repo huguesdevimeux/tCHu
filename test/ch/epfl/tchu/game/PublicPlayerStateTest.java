@@ -43,7 +43,6 @@ public class PublicPlayerStateTest {
     void returnsCorrectRoutes() {
         assertEquals(routes, publicPlayerState.routes());
         routes = List.of();
-        ;
         assertEquals(routes, new PublicPlayerState(1, 1, List.of()).routes());
     }
 
