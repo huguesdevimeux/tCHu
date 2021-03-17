@@ -25,7 +25,7 @@ public enum PlayerId {
     /**
      * Returns the ID of the next player
      *
-     * @return other players' ID
+     * @return other player's ID
      */
     public PlayerId next() {
         if (this.equals(PLAYER_1)) return PLAYER_2;
