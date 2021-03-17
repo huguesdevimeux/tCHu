@@ -2,7 +2,6 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.Preconditions;
 
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
@@ -53,14 +52,18 @@ public final class StationPartition implements StationConnectivity {
          * @throws IllegalArgumentException if stationCount is negative.
          */
         public Builder(int stationCount) {
-            Objects.checkIndex(0, stationCount);
             Preconditions.checkArgument(stationCount >= 0);
             this.stationCount = stationCount;
-            this.deepPartition = new int[stationCount - 1];
+            this.deepPartition = new int[stationCount];
         }
 
         /*elects a representative*/
         private int representative(int stationId) {
+            int temp = deepPartition[stationId];
+            while (stationId != temp) {
+                stationId = temp;
+                temp = deepPartition[stationId];
+            }
             return deepPartition[stationId];
         }
 
@@ -82,7 +85,18 @@ public final class StationPartition implements StationConnectivity {
          * @return station partition of the deep partition
          */
         public StationPartition build() {
-            return new StationPartition(deepPartition);
+            int[] flatPartition = deepPartition;
+            for (int i = 0; i < deepPartition.length; i++) {
+                if (flatPartition[i] != representative(i)) {
+                    flatPartition[i] = representative(i);
+                }
+            }
+            return new StationPartition(flatPartition);
         }
+    }
+
+    public static void main(String[] args) {
+        Builder a = new Builder(4);
+        System.out.println(a.representative(2));
     }
 }
