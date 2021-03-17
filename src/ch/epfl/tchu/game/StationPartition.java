@@ -29,7 +29,7 @@ public final class StationPartition implements StationConnectivity {
      *
      * @param s1 First Station.
      * @param s2 Second station.
-     * @return true if s1 and s2 are in the same partition.
+     * @return true if s1 and s2 are considered connected.
      */
     @Override
     public boolean connected(Station s1, Station s2) {
