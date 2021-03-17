@@ -1,11 +1,11 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class StationPartitionTest {
 
@@ -53,7 +53,6 @@ class StationPartitionTest {
                 assertTrue(partition2.connected(s, sPrime));
             }
         }
-
     }
 
     @Test
