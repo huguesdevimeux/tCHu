@@ -168,7 +168,7 @@ public final class PlayerState extends PublicPlayerState {
     public int ticketPoints() {
         // For each route, take the max id of the two stations of the route. Then, take the maximum of these maxima.
         int maxID = this.routes.stream().mapToInt(route -> Math.max(route.station1().id(), route.station2().id())).max().orElse(0);
-        StationPartition.Builder builder = new StationPartition.Builder(maxID);
+        StationPartition.Builder builder = new StationPartition.Builder(maxID + 1);
         this.routes.forEach(
                 (route) -> builder.connect(route.station1(), route.station2())
         );
