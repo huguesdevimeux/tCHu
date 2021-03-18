@@ -33,7 +33,7 @@ public class PlayerStateTest {
         assertEquals(0, staticPlayerState.tickets().size());
         assertEquals(0, staticPlayerState.routes().size());
         assertEquals(4, staticPlayerState.cards().size());
-        // setting initial cards < 4 to see if exception is thrown
+        // setting initial cards > 4 to see if exception is thrown
         assertThrows(
                 IllegalArgumentException.class,
                 () -> PlayerState.initial(SortedBag.of(Card.ALL.subList(0, 2))));
@@ -111,14 +111,6 @@ public class PlayerStateTest {
 
     @Test
     void claimCardsExceptionIsThrown() {
-        Route toFail =
-                new Route(
-                        "id",
-                        ChMap.stations().get(0),
-                        ChMap.stations().get(1),
-                        5,
-                        Route.Level.UNDERGROUND,
-                        Color.BLACK);
         PlayerState a =
                 new PlayerState(
                         tickets, cards, ChMap.routes().subList(0, 17)); // reduces car count to 4
@@ -162,7 +154,7 @@ public class PlayerStateTest {
         allRoutes.add(plainRoute);
         playerState = new PlayerState(tickets, SortedBag.of(cardList), allRoutes);
         assertEquals(
-                "[{BLUE, LOCOMOTIVE}, {2×BLUE]",
+                "[{BLUE, LOCOMOTIVE}, {2×BLUE}]",
                 playerState.possibleClaimCards(plainRoute).toString());
     }
 
@@ -211,24 +203,14 @@ public class PlayerStateTest {
                                 1, SortedBag.of(Card.BLUE), SortedBag.of()));
     }
 
-    @Test
-    void testingExampleOnPaperForPossibleAdditionalCards() {
-        int additionalCardsCount = 7;
-        SortedBag<Card> initialCards =
-                SortedBag.of(
-                        List.of(
-                                Card.GREEN,
-                                Card.GREEN,
-                                Card.GREEN,
-                                Card.BLUE,
-                                Card.BLUE,
-                                Card.LOCOMOTIVE,
-                                Card.LOCOMOTIVE));
 
-        SortedBag<Card> drawnCards = SortedBag.of(List.of(Card.GREEN, Card.GREEN, Card.RED));
-        System.out.println(
-                playerState.possibleAdditionalCards(
-                        additionalCardsCount, initialCards, drawnCards));
+        @Test
+        void possibleAdditionalCardWhenPeuDeCartes(){//3 RED 2 BLEU
+            Station s1 = new Station(1, "Lausanne");
+            Station s2 = new Station(2, "Geneve");
+            Route b =new Route("7", s1, s2, 2, Route.Level.UNDERGROUND, Color.RED);
+            List<SortedBag<Card>> addCards= playerState.possibleAdditionalCards(2,SortedBag.of(2,Card.RED),SortedBag.of( 3, Card.LOCOMOTIVE));
+            assertEquals(List.of(),playerState.possibleAdditionalCards(2,SortedBag.of(2,Card.RED),SortedBag.of( 3, Card.LOCOMOTIVE)));
     }
 
     @Test
@@ -242,9 +224,22 @@ public class PlayerStateTest {
 
     @Test
     void returnsCorrectTicketPoints() {
-        // errrs thrown at following statement
-        System.out.println(playerState.ticketPoints());
-        assertEquals(33, playerState.ticketPoints());
+        Station s1 = new Station(3, "SUH DUDE");
+        Station s2 = new Station(3, "42069");
+        Station s3 = new Station(5, "ID");
+        Station s4 = new Station(6, "hi");
+        Route a = new Route("id1", s1, s2, 3, Route.Level.UNDERGROUND, Color.BLUE);
+        Route b = new Route("id2", s1, s3, 4, Route.Level.UNDERGROUND, Color.BLUE);
+        Route c = new Route("id3", s3, s4, 5, Route.Level.OVERGROUND, Color.BLACK);
+        SortedBag<Ticket> tickets2 = SortedBag.of(List.of(new Ticket(s1, s2, 10), new Ticket(s3, s1, 8)));
+
+        List<Route> routes = List.of(a,b);
+        playerState = new PlayerState(tickets2, cards, routes);
+        assertEquals(18, playerState.ticketPoints());
+
+        routes = List.of(a, c);
+        playerState = new PlayerState(tickets2, cards, routes);
+        assertEquals(2, playerState.ticketPoints());
     }
 
     @Test
