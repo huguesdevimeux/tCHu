@@ -1,11 +1,11 @@
 package ch.epfl.tchu.game;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class StationPartitionTest {
 
@@ -22,14 +22,14 @@ class StationPartitionTest {
         this.s2 = new Station(1, "Station2");
         this.s3 = new Station(2, "Station3");
         this.s4 = new Station(3, "Station4");
-        this.s5 = new Station(3, "Station5");
+        this.s5 = new Station(4, "Station5");
 
         this.allStations = List.of(s1, s2, s3, s4, s5);
     }
 
     @Test
     void connectedWithStationsOfTheSameSubset() {
-        StationPartition partition = new StationPartition.Builder(2).connect(s1, s2).build();
+        StationPartition partition = new StationPartition.Builder(3).connect(s1, s2).build();
         assertTrue(partition.connected(s1, s2));
         assertTrue(partition.connected(s1, s1));
 
@@ -47,6 +47,7 @@ class StationPartitionTest {
 
         // Add a new disjoint set of two station and connect them to the bug one.
         builder.connect(s4, s5);
+        builder.connect(s1, s4);
         StationPartition partition2 = builder.build();
         for (Station s : allStations) {
             for (Station sPrime : allStations) {
@@ -61,6 +62,7 @@ class StationPartitionTest {
         builder.connect(s1, s2);
         StationPartition partition = builder.build();
         assertFalse(partition.connected(s1, s3));
+        assertTrue(partition.connected(s1, s2));
     }
 
     @Test

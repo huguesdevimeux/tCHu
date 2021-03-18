@@ -32,17 +32,19 @@ public final class StationPartition implements StationConnectivity {
      */
     @Override
     public boolean connected(Station s1, Station s2) {
-        boolean notInPartition =
-                IntStream.of(flatPartition).noneMatch(x -> x == s1.id())
-                        || IntStream.of(flatPartition).noneMatch(y -> y == s2.id());
-        if (notInPartition) return s1.id() == s2.id();
-        return true;
+        // Check if  one of the two station is is out of bound of the partition.
+        // Following the paper, we return true iff the two ids are equals (they are the same station).
+        if (Math.min(s1.id(), s2.id()) > flatPartition.length) return s1.id() == s2.id();
+        // Returns whether the two stations have the same representative.
+        return flatPartition[s1.id()] == flatPartition[s2.id()];
     }
 
-    /** Represents the deep partition. */
+    /**
+     * Represents the deep partition.
+     */
     public static final class Builder {
-        private int stationCount;
-        private int[] deepPartition;
+        private final int stationCount;
+        private final int[] partition;
 
         /**
          * Instantiates a new Builder as well as an array with the number of stations.
@@ -54,29 +56,40 @@ public final class StationPartition implements StationConnectivity {
         public Builder(int stationCount) {
             Preconditions.checkArgument(stationCount >= 0);
             this.stationCount = stationCount;
-            this.deepPartition = new int[stationCount];
-        }
-
-        /*elects a representative*/
-        private int representative(int stationId) {
-            int temp = deepPartition[stationId];
-            while (stationId != temp) {
-                stationId = temp;
-                temp = deepPartition[stationId];
-            }
-            return deepPartition[stationId];
+            // Creates the partition by setting each station representative to itself.
+            // The array will be [0,1,2,3,4....stationCount]. Hence, the n-th index correspond to n.
+            // So, station with id n is linked to station with id n. (to itself).
+            this.partition = IntStream.range(0, stationCount).toArray();
         }
 
         /**
-         * Joins sets containing the stations and elects one as the representative of the partition.
+         * Connect two stations in the partition.
          *
          * @param s1 first station.
          * @param s2 second station.
          * @return the builder.
          */
         public Builder connect(Station s1, Station s2) {
-            deepPartition[s2.id()] = representative(s1.id());
+            // Sets the representative of s1 to s2. that's all.
+            // The partition is still "deep": a station can have as a representative a station that also have a representative, etc.
+            // The partition is flatted in build method.
+            int representativeOfS1 = representative(s1.id());
+            int representativeOfS2 = representative(s2.id());
+            // We arbitrarily choose that the representative will be ALWAYS the biggest number,
+            // To avoid two stations being linked to each other (i.e, a station with id 1 has for representative a station B with id 2, and vice versa.
+            // Hence, we get an acyclic directed graph.
+            partition[Math.min(representativeOfS1, representativeOfS2)] = Math.max(representativeOfS1, representativeOfS2);
             return this;
+        }
+
+        private int representative(int stationId) {
+            int tempRepresentative = stationId;
+            // Go "up" in the parent chain until a representative in found.
+            // A representative is defined by being connected to itself.
+            while (tempRepresentative != partition[tempRepresentative]) {
+                tempRepresentative = partition[tempRepresentative];
+            }
+            return tempRepresentative;
         }
 
         /**
@@ -85,18 +98,9 @@ public final class StationPartition implements StationConnectivity {
          * @return station partition of the deep partition
          */
         public StationPartition build() {
-            int[] flatPartition = deepPartition;
-            for (int i = 0; i < deepPartition.length; i++) {
-                if (flatPartition[i] != representative(i)) {
-                    flatPartition[i] = representative(i);
-                }
-            }
-            return new StationPartition(flatPartition);
+            // We iterates through every station of the partition, and compute its representative.
+            // Hence, we will get an array where the station at n-th index is the representative of the station with id n.
+            return new StationPartition(IntStream.range(0, stationCount).map(this::representative).toArray());
         }
-    }
-
-    public static void main(String[] args) {
-        Builder a = new Builder(4);
-        System.out.println(a.representative(2));
     }
 }
