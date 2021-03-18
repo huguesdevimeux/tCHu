@@ -166,15 +166,22 @@ public final class PlayerState extends PublicPlayerState {
      * @return The number of points.
      */
     public int ticketPoints() {
-        throw new Un;
-    } // TODO Needs station builder.
+        // For each route, take the max id of the two stations of the route. Then, take the maximum of these maxima.
+        int maxID = this.routes.stream().mapToInt(route -> Math.max(route.station1().id(), route.station2().id())).max().orElse(0);
+        StationPartition.Builder builder = new StationPartition.Builder(maxID);
+        this.routes.forEach(
+                (route) -> builder.connect(route.station1(), route.station2())
+        );
+        StationPartition playerPartition = builder.build();
+        return this.tickets.stream().mapToInt(ticket -> ticket.points(playerPartition)).sum();
+    }
 
     /**
-     * retourne la totalité des points obtenus par le joueur à la fin de la partie, à savoir la somme des points retournés par les méthodes claimPoints et ticketPoints.
+     * Returns the total points obtained by the player at the end of the game.
      *
-     * @return
+     * @return Total amount of points.
      */
     public int finalPoints() {
-        throw new UnsupportedOperationException();
-    } // TODO depends on StationBuilder
+        return this.claimPoints() + this.ticketPoints();
+    }
 }
