@@ -1,11 +1,11 @@
 package ch.epfl.tchu.game;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class StationPartitionTest {
 
@@ -69,5 +69,12 @@ class StationPartitionTest {
     void builderFails() {
         assertThrows(IllegalArgumentException.class, () -> new StationPartition.Builder(-1));
         assertDoesNotThrow(() -> new StationPartition.Builder(0));
+    }
+
+    @Test
+    void emptyBuilderBehavesCorrectly() {
+        StationPartition.Builder b = new StationPartition.Builder(0);
+        assertTrue(b.build().connected(s1, s1));
+        assertFalse(b.build().connected(s1, s2));
     }
 }
