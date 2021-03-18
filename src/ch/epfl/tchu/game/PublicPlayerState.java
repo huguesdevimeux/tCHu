@@ -34,7 +34,8 @@ public class PublicPlayerState {
         this.ticketCount = ticketCount;
         this.routes = List.copyOf(routes);
         this.claimPoints = this.routes.stream().mapToInt(Route::claimPoints).sum();
-        this.carCount = Constants.INITIAL_CAR_COUNT - this.routes().stream().mapToInt(Route::length).sum();
+        this.carCount =
+                Constants.INITIAL_CAR_COUNT - this.routes().stream().mapToInt(Route::length).sum();
     }
 
     /**
@@ -81,6 +82,4 @@ public class PublicPlayerState {
     public int carCount() {
         return this.carCount;
     }
-
-
 }

@@ -19,8 +19,8 @@ public final class PlayerState extends PublicPlayerState {
      * Construcs the state of a player having tickets, cards and routes.
      *
      * @param tickets The tickets of the player.
-     * @param cards   The cards of the player.
-     * @param routes  The routes of the player.
+     * @param cards The cards of the player.
+     * @param routes The routes of the player.
      */
     public PlayerState(SortedBag<Ticket> tickets, SortedBag<Card> cards, List<Route> routes) {
         super(tickets.size(), cards.size(), routes);
@@ -30,8 +30,8 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Returns the initial state of a player to whom the initial cards have been dealt;
-     * in this initial state, the player does not yet have any tickets, and has not taken any roads.
+     * Returns the initial state of a player to whom the initial cards have been dealt; in this
+     * initial state, the player does not yet have any tickets, and has not taken any roads.
      *
      * @param initialCards The initial cards of the player.
      * @return The initial State of the player.
@@ -91,18 +91,21 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Returns true if the player can take the given road, i.e. if he has enough cars left and if he has the necessary cards.
+     * Returns true if the player can take the given road, i.e. if he has enough cars left and if he
+     * has the necessary cards.
      *
      * @param route The route to analyze.
      * @return Whether the player can take the route.
      */
     public boolean canClaimRoute(Route route) {
-        int totalNumberOfPlayableCards = this.cards.countOf(Card.LOCOMOTIVE) + this.cards.countOf(Card.of(route.color()));
+        int totalNumberOfPlayableCards =
+                this.cards.countOf(Card.LOCOMOTIVE) + this.cards.countOf(Card.of(route.color()));
         return this.carCount() >= route.length() && totalNumberOfPlayableCards >= route.length();
     }
 
     /**
-     * Returns a list of all the sets of cards the player could use to take possession of the given road.
+     * Returns a list of all the sets of cards the player could use to take possession of the given
+     * road.
      *
      * @param route The route to be tested.
      * @return The list of all the tests of cards that could be played.
@@ -112,23 +115,33 @@ public final class PlayerState extends PublicPlayerState {
         Preconditions.checkArgument(this.carCount() >= route.length());
         Card cardOfRoute = Card.of(route.color());
         // Filter the cards to keep only locomotives and cards of the color of the route.
-        SortedBag<Card> cardsCanBePlayedAdditionally = SortedBag.of(this.cards.stream().filter(p -> (p.equals(Card.LOCOMOTIVE) || p.equals(cardOfRoute))).collect(Collectors.toList()));
+        SortedBag<Card> cardsCanBePlayedAdditionally =
+                SortedBag.of(
+                        this.cards.stream()
+                                .filter(p -> (p.equals(Card.LOCOMOTIVE) || p.equals(cardOfRoute)))
+                                .collect(Collectors.toList()));
         // Does this needs to be sorted?
         return new ArrayList<>(cardsCanBePlayedAdditionally.subsetsOfSize(route.length()));
     }
 
     /**
-     * Returns a list of all the sets of cards the player could use to take over a tunnel, sorted in ascending order of the number of locomotive cards, knowing that he initially laid down the initialCards, that the 3 cards drawn from the top of the deck are drawnCards, and that these force the player to lay down additionalCardsCount cards;
+     * Returns a list of all the sets of cards the player could use to take over a tunnel, sorted in
+     * ascending order of the number of locomotive cards, knowing that he initially laid down the
+     * initialCards, that the 3 cards drawn from the top of the deck are drawnCards, and that these
+     * force the player to lay down additionalCardsCount cards;
      *
      * @param additionalCardsCount The additional cards the player needs to play.
-     * @param initialCards         The initialCards the player has played for the tunnel.
-     * @param drawnCards           The three cards the have been drawn for the tunnel.
+     * @param initialCards The initialCards the player has played for the tunnel.
+     * @param drawnCards The three cards the have been drawn for the tunnel.
      * @return All the possibilities, sorted by the number of locomotives.
-     * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3 (inclusive)
-     * @throws IllegalArgumentException if the set of initial cards is empty or contains more than 2 different card types
+     * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3
+     *     (inclusive)
+     * @throws IllegalArgumentException if the set of initial cards is empty or contains more than 2
+     *     different card types
      * @throws IllegalArgumentException if the set of drawn cards does not contain exactly 3 cards.
      */
-    public List<SortedBag<Card>> possibleAdditionalCards(int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
+    public List<SortedBag<Card>> possibleAdditionalCards(
+            int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
         // WARNING drawnCards is useless for the logic. See Piazza @613
         Preconditions.checkArgument(1 <= additionalCardsCount && additionalCardsCount <= 3);
         // The set does not allow duplicates, so it returns the different types of cards of the set.
@@ -138,19 +151,26 @@ public final class PlayerState extends PublicPlayerState {
         SortedBag<Card> cardsToPlay = this.cards.difference(initialCards);
         // The set gets every different type of cards that has initialCards.
         Set<Card> cardsPlayedForTheTunnel = initialCards.toSet();
-        // Filter the cards that the player can play (CardsToPlay) to keep only the ones that are in initial cards (the one that needs to be played).
-        SortedBag<Card> cardsCanBePlayedAdditionally = SortedBag.of(cardsToPlay.stream().filter(cardsPlayedForTheTunnel::contains).collect(Collectors.toList()));
-        List<SortedBag<Card>> subsetsOfCardsPossiblyPlayed = new ArrayList<>(cardsCanBePlayedAdditionally.subsetsOfSize(additionalCardsCount));
-        subsetsOfCardsPossiblyPlayed.sort(Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
+        // Filter the cards that the player can play (CardsToPlay) to keep only the ones that are in
+        // initial cards (the one that needs to be played).
+        SortedBag<Card> cardsCanBePlayedAdditionally =
+                SortedBag.of(
+                        cardsToPlay.stream()
+                                .filter(cardsPlayedForTheTunnel::contains)
+                                .collect(Collectors.toList()));
+        List<SortedBag<Card>> subsetsOfCardsPossiblyPlayed =
+                new ArrayList<>(cardsCanBePlayedAdditionally.subsetsOfSize(additionalCardsCount));
+        subsetsOfCardsPossiblyPlayed.sort(
+                Comparator.comparingInt(cs -> cs.countOf(Card.LOCOMOTIVE)));
         return subsetsOfCardsPossiblyPlayed;
-
     }
 
     /**
-     * Returns an identical state to the receiver, except that the player has additionally seized the given route with the given cards.
-     * It means that the player sees the route ADDED and the claimCard subtracted from them.
+     * Returns an identical state to the receiver, except that the player has additionally seized
+     * the given route with the given cards. It means that the player sees the route ADDED and the
+     * claimCard subtracted from them.
      *
-     * @param route      The route the player is taking.
+     * @param route The route the player is taking.
      * @param claimCards The cards used to seize the route.
      * @return The new PlayerState.
      */
@@ -161,17 +181,21 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Returns the number of points - possibly negative - obtained by the player thanks to their tickets.
+     * Returns the number of points - possibly negative - obtained by the player thanks to their
+     * tickets.
      *
      * @return The number of points.
      */
     public int ticketPoints() {
-        // For each route, take the max id of the two stations of the route. Then, take the maximum of these maxima.
-        int maxID = this.routes.stream().mapToInt(route -> Math.max(route.station1().id(), route.station2().id())).max().orElse(0);
+        // For each route, take the max id of the two stations of the route. Then, take the maximum
+        // of these maxima.
+        int maxID =
+                this.routes.stream()
+                        .mapToInt(route -> Math.max(route.station1().id(), route.station2().id()))
+                        .max()
+                        .orElse(0);
         StationPartition.Builder builder = new StationPartition.Builder(maxID);
-        this.routes.forEach(
-                (route) -> builder.connect(route.station1(), route.station2())
-        );
+        this.routes.forEach((route) -> builder.connect(route.station1(), route.station2()));
         StationPartition playerPartition = builder.build();
         return this.tickets.stream().mapToInt(ticket -> ticket.points(playerPartition)).sum();
     }
