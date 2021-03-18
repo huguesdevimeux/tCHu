@@ -42,7 +42,7 @@ public class PublicPlayerStateTest {
     @Test
     void returnsCorrectRoutes() {
         assertEquals(routes, publicPlayerState.routes());
-        //testing also with empty lists of routes
+        // testing also with empty lists of routes
         routes = List.of();
         assertEquals(routes, new PublicPlayerState(1, 1, List.of()).routes());
     }
