@@ -113,15 +113,9 @@ public final class PlayerState extends PublicPlayerState {
      */
     public List<SortedBag<Card>> possibleClaimCards(Route route) {
         Preconditions.checkArgument(this.carCount() >= route.length());
-        Card cardOfRoute = Card.of(route.color());
-        // Filter the cards to keep only locomotives and cards of the color of the route.
-        SortedBag<Card> cardsCanBePlayedAdditionally =
-                SortedBag.of(
-                        this.cards.stream()
-                                .filter(p -> (p.equals(Card.LOCOMOTIVE) || p.equals(cardOfRoute)))
-                                .collect(Collectors.toList()));
-        // Does this needs to be sorted?
-        return new ArrayList<>(cardsCanBePlayedAdditionally.subsetsOfSize(route.length()));
+        return route.possibleClaimCards().stream()
+                .filter(this.cards::contains)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -131,13 +125,13 @@ public final class PlayerState extends PublicPlayerState {
      * force the player to lay down additionalCardsCount cards;
      *
      * @param additionalCardsCount The additional cards the player needs to play.
-     * @param initialCards         The initialCards the player has played for the tunnel.
-     * @param drawnCards           The three cards the have been drawn for the tunnel.
+     * @param initialCards The initialCards the player has played for the tunnel.
+     * @param drawnCards The three cards the have been drawn for the tunnel.
      * @return All the possibilities, sorted by the number of locomotives.
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3
-     *                                  (inclusive)
+     *     (inclusive)
      * @throws IllegalArgumentException if the set of initial cards is empty or contains more than 2
-     *                                  different card types
+     *     different card types
      * @throws IllegalArgumentException if the set of drawn cards does not contain exactly 3 cards.
      */
     public List<SortedBag<Card>> possibleAdditionalCards(
