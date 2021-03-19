@@ -11,7 +11,7 @@ import java.util.List;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public final class PublicPlayerState {
+public class PublicPlayerState {
     private final int ticketCount;
     private final List<Route> routes;
     private final int cardCount;

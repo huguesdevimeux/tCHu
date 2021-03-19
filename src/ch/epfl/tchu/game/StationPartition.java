@@ -35,7 +35,7 @@ public final class StationPartition implements StationConnectivity {
         // Check if  one of the two station is is out of bound of the partition.
         // Following the paper, we return true iff the two ids are equals (they are the same
         // station).
-        if (Math.min(s1.id(), s2.id()) >= flatPartition.length) return s1.id() == s2.id();
+        if (Math.max(s1.id(), s2.id()) >= flatPartition.length) return s1.id() == s2.id();
         // Returns whether the two stations have the same representative.
         return flatPartition[s1.id()] == flatPartition[s2.id()];
     }
