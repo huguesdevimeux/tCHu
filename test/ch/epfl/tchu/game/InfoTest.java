@@ -58,7 +58,7 @@ public class InfoTest {
         expected =
                 "\n"
                         + playerNames.get(0)
-                        + ", "
+                        + " et "
                         + playerNames.get(1)
                         + " sont ex æqo avec "
                         + points
