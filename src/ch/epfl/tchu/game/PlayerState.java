@@ -19,8 +19,8 @@ public final class PlayerState extends PublicPlayerState {
      * Construcs the state of a player having tickets, cards and routes.
      *
      * @param tickets The tickets of the player.
-     * @param cards   The cards of the player.
-     * @param routes  The routes of the player.
+     * @param cards The cards of the player.
+     * @param routes The routes of the player.
      */
     public PlayerState(SortedBag<Ticket> tickets, SortedBag<Card> cards, List<Route> routes) {
         super(tickets.size(), cards.size(), routes);

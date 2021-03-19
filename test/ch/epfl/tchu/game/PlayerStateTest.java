@@ -1,14 +1,15 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ch.epfl.tchu.SortedBag;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerStateTest {
     private PlayerState playerState;
@@ -234,7 +235,8 @@ public class PlayerStateTest {
                 newPS.possibleAdditionalCards(
                         additionalCards, SortedBag.of(Card.GREEN), drawnCards));
         // to Test if it should return an empty list when you play with all the initial cards?
-        // assertEquals(Collections.emptyList(), newPS.possibleAdditionalCards(additionalCards, SortedBag.of(initialCards), drawnCards) );
+        // assertEquals(Collections.emptyList(), newPS.possibleAdditionalCards(additionalCards,
+        // SortedBag.of(initialCards), drawnCards) );
     }
 
     @Test
