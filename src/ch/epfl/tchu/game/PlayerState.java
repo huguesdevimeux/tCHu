@@ -98,7 +98,8 @@ public final class PlayerState extends PublicPlayerState {
      * @return Whether the player can take the route.
      */
     public boolean canClaimRoute(Route route) {
-        return this.carCount() >= route.length() && route.possibleClaimCards().stream().anyMatch(this.cards::contains);
+        return this.carCount() >= route.length()
+                && route.possibleClaimCards().stream().anyMatch(this.cards::contains);
     }
 
     /**
@@ -154,7 +155,8 @@ public final class PlayerState extends PublicPlayerState {
                                                 cardsPlayedForTheTunnel.contains(p)
                                                         || p.equals(Card.LOCOMOTIVE))
                                 .collect(Collectors.toList()));
-        if (cardsCanBePlayedAdditionally.size() < additionalCardsCount) return Collections.emptyList();
+        if (cardsCanBePlayedAdditionally.size() < additionalCardsCount)
+            return Collections.emptyList();
         List<SortedBag<Card>> subsetsOfCardsPossiblyPlayed =
                 new ArrayList<>(cardsCanBePlayedAdditionally.subsetsOfSize(additionalCardsCount));
         subsetsOfCardsPossiblyPlayed.sort(
