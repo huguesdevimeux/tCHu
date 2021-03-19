@@ -135,7 +135,7 @@ public class PlayerStateTest {
         allRoutes.add(plainRoute);
         playerState = new PlayerState(tickets, SortedBag.of(cardList), allRoutes);
         assertEquals(
-                "[{LOCOMOTIVE}, {BLUE}]", playerState.possibleClaimCards(plainRoute).toString());
+                "[{BLUE}, {LOCOMOTIVE}]", playerState.possibleClaimCards(plainRoute).toString());
     }
 
     @Test
@@ -204,21 +204,7 @@ public class PlayerStateTest {
     }
 
     @Test
-    void possibleAdditionalCardsss() { // 3 RED 2 BLEU
-        Station s1 = new Station(1, "Lausanne");
-        Station s2 = new Station(2, "Geneve");
-        Route b = new Route("7", s1, s2, 2, Route.Level.UNDERGROUND, Color.RED);
-        List<SortedBag<Card>> addCards =
-                playerState.possibleAdditionalCards(
-                        2, SortedBag.of(2, Card.RED), SortedBag.of(3, Card.LOCOMOTIVE));
-        assertEquals(
-                List.of(),
-                playerState.possibleAdditionalCards(
-                        2, SortedBag.of(2, Card.RED), SortedBag.of(3, Card.LOCOMOTIVE)));
-    }
-
-    @Test
-    void possibleAdditionalCards() {
+    void possibleAdditionalCards2() {
         int additionalCards = 2;
         List<Card> initialCards =
                 List.of(
@@ -246,7 +232,9 @@ public class PlayerStateTest {
         assertEquals(
                 expectedList,
                 newPS.possibleAdditionalCards(
-                        additionalCards, SortedBag.of(initialCards), drawnCards));
+                        additionalCards, SortedBag.of(Card.GREEN), drawnCards));
+        // to Test if it should return an empty list when you play with all the initial cards?
+        // assertEquals(Collections.emptyList(), newPS.possibleAdditionalCards(additionalCards, SortedBag.of(initialCards), drawnCards) );
     }
 
     @Test
