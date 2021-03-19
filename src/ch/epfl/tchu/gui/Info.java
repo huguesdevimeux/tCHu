@@ -54,7 +54,8 @@ public final class Info {
      * @return The message.
      */
     public static String draw(List<String> playerNames, int points) {
-        return String.format(StringsFr.DRAW, String.join(", ", playerNames), points);
+        return String.format(
+                StringsFr.DRAW, String.join(StringsFr.AND_SEPARATOR, playerNames), points);
     }
 
     private static String displaySortedBagOfCards(SortedBag<Card> cards) {
@@ -68,7 +69,9 @@ public final class Info {
                             displayed.addAll(List.of(cardStringPiece, ", "));
                         });
         // Change the before last comma to "and".
-        displayed.set(displayed.size() - 3, StringsFr.AND_SEPARATOR);
+        if (displayed.size() > 2) {
+            displayed.set(displayed.size() - 3, StringsFr.AND_SEPARATOR);
+        }
         // Remove the last comma.
         displayed.remove(displayed.size() - 1);
         return String.join("", displayed);

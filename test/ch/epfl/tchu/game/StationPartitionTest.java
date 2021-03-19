@@ -70,4 +70,11 @@ class StationPartitionTest {
         assertThrows(IllegalArgumentException.class, () -> new StationPartition.Builder(-1));
         assertDoesNotThrow(() -> new StationPartition.Builder(0));
     }
+
+    @Test
+    void emptyBuilderBehavesCorrectly() {
+        StationPartition.Builder b = new StationPartition.Builder(0);
+        assertTrue(b.build().connected(s1, s1));
+        assertFalse(b.build().connected(s1, s2));
+    }
 }
