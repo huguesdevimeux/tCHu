@@ -38,7 +38,7 @@ public final class GameState extends PublicGameState {
      * used to randomly choose the identity of the first player.
      *
      * @param tickets The tickets for the new game.
-     * @param rng     The random generator used.
+     * @param rng The random generator used.
      * @return An instance of {@link GameState} with the specified attributes.
      */
     public static GameState initial(SortedBag<Ticket> tickets, Random rng) {
@@ -97,7 +97,7 @@ public final class GameState extends PublicGameState {
      * @param count Number of tickets to get.
      * @return The count top card(s).
      * @throws IllegalArgumentException if count is not within 0 and the size of the deck
-     *                                  (included).
+     *     (included).
      */
     public SortedBag<Ticket> topTickets(int count) {
         return this.deckTickets.topCards(count);
@@ -110,7 +110,7 @@ public final class GameState extends PublicGameState {
      * @param count The number of tickets to remove.
      * @return The state.
      * @throws IllegalArgumentException if count is not within 0 and the size of the deck
-     *                                  (inclusive).
+     *     (inclusive).
      */
     public GameState withoutTopTickets(int count) {
         return GameStateWithSamePlayers(
@@ -175,7 +175,7 @@ public final class GameState extends PublicGameState {
      * Returns a state identical to the receiver but in which the given tickets have been added to
      * the given player's hand.
      *
-     * @param playerId      the player Id.
+     * @param playerId the player Id.
      * @param chosenTickets The tickets chosen by the player.
      * @return The new {@link GameState} instance.
      * @throws IllegalArgumentException if the given player already has at least one ticket.
@@ -196,11 +196,11 @@ public final class GameState extends PublicGameState {
      * Returns a state identical to the receiver, but in which the current player has drawn the
      * drawnTickets from the top of the deck, and chosen to keep the ones contained in chosenTicket.
      *
-     * @param drawnTickets  The drawn tickets.
+     * @param drawnTickets The drawn tickets.
      * @param chosenTickets The chosen tickets.
      * @return The new State.
      * @throws IllegalArgumentException if the set of chosen tickets is not included in the set of
-     *                                  drawn tickets.
+     *     drawn tickets.
      */
     public GameState withChosenAdditionalTickets(
             SortedBag<Ticket> drawnTickets, SortedBag<Ticket> chosenTickets) {
@@ -224,7 +224,7 @@ public final class GameState extends PublicGameState {
      * @param slot The slot of the card drawn.
      * @return The new state.
      * @throws IllegalArgumentException if it is not possible to draw cards, i.e. if canDrawCards
-     *                                  returns false.
+     *     returns false.
      */
     public GameState withDrawnFaceUpCard(int slot) {
         Preconditions.checkArgument(this.canDrawCards());
@@ -244,7 +244,7 @@ public final class GameState extends PublicGameState {
      *
      * @return The state.
      * @throws IllegalArgumentException if it is not possible to draw cards, i.e. if canDrawCards
-     *                                  returns false.
+     *     returns false.
      */
     public GameState withBlindlyDrawnCard() {
         Preconditions.checkArgument(this.canDrawCards());
