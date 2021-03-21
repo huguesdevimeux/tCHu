@@ -164,7 +164,7 @@ public final class Route {
                         IntStream.range(0, i).forEach(y -> cardList.add(card));
                         // adding locomotive cards to complete all the possible claim cards
                         // when route is a tunnel
-                        while (cardList.size() < length)cardList.add(Card.LOCOMOTIVE);
+                        while (cardList.size() < length) cardList.add(Card.LOCOMOTIVE);
                         cardBag.add(SortedBag.of(cardList));
                         cardList.clear();
                     }
