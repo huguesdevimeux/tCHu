@@ -136,39 +136,37 @@ public final class Route {
      * @return possible claim cards (playable cards)
      */
     public List<SortedBag<Card>> possibleClaimCards() {
-        List<Card> cards = new ArrayList<>();
-        List<SortedBag<Card>> cardList = new ArrayList<>();
+        List<Card> cardList = new ArrayList<>();
+        List<SortedBag<Card>> cardBag = new ArrayList<>();
 
         if (level.equals(Level.OVERGROUND)) {
             // when route is overground locomotive cards cannot be used
             if (color == null) {
                 for (Card card : Card.CARS) {
-                    IntStream.range(0, length).forEach(y -> cards.add(card));
-                    /// adding all the cars added to cardBuilder into cardList
-                    cardList.add(SortedBag.of(cards));
-                    // resetting cardBuilder to prevent from having subArrays of cardList to have
+                    IntStream.range(0, length).forEach(y -> cardList.add(card));
+                    /// adding all the cars added to cardBuilder into cardBag
+                    cardBag.add(SortedBag.of(cardList));
+                    // resetting cardBuilder to prevent from having subArrays of cardBag to have
                     // more than lengths' elements
-                    cards.clear();
+                    cardList.clear();
                 }
             } else {
-                IntStream.range(0, length).forEach(y -> cards.add(Card.of(this.color)));
-                cardList.add(SortedBag.of(cards));
+                IntStream.range(0, length).forEach(y -> cardList.add(Card.of(this.color)));
+                cardBag.add(SortedBag.of(cardList));
             }
 
         } else {
-            // if </code>level</code> is <code>UNDERGROUND</code>, Locomotive cards come into play.
+            // if level is UNDERGROUND, Locomotive cards come into play.
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
                     for (Card card : Card.CARS) {
                         // same instructions as before
-                        IntStream.range(0, i).forEach(y -> cards.add(card));
+                        IntStream.range(0, i).forEach(y -> cardList.add(card));
                         // adding locomotive cards to complete all the possible claim cards
                         // when route is a tunnel
-                        while (cards.size() < length) {
-                            cards.add(Card.LOCOMOTIVE);
-                        }
-                        cardList.add(SortedBag.of(cards));
-                        cards.clear();
+                        while (cardList.size() < length)cardList.add(Card.LOCOMOTIVE);
+                        cardBag.add(SortedBag.of(cardList));
+                        cardList.clear();
                     }
                 }
 
@@ -176,20 +174,18 @@ public final class Route {
                 for (int i = this.length; i > 0; i--) {
                     // same instructions but the color here does not matter
                     // we just assign the given color
-                    IntStream.range(0, i).forEach(y -> cards.add(Card.of(this.color)));
-                    while (cards.size() < length) {
-                        cards.add(Card.LOCOMOTIVE);
-                    }
-                    cardList.add(SortedBag.of(cards));
-                    cards.clear();
+                    IntStream.range(0, i).forEach(y -> cardList.add(Card.of(this.color)));
+                    while (cardList.size() < length) cardList.add(Card.LOCOMOTIVE);
+                    cardBag.add(SortedBag.of(cardList));
+                    cardList.clear();
                 }
             }
             // this single for loop allows to add the final subArray in the list with ONLY
             // locomotive cards
-            IntStream.range(0, length).forEach(y -> cards.add(Card.LOCOMOTIVE));
-            cardList.add(SortedBag.of(cards));
+            IntStream.range(0, length).forEach(y -> cardList.add(Card.LOCOMOTIVE));
+            cardBag.add(SortedBag.of(cardList));
         }
-        return cardList;
+        return cardBag;
     }
     /**
      * Returns the additional amount of cards one must play to take over a route knowing that the
