@@ -156,7 +156,7 @@ public final class Route {
             }
 
         } else {
-            // if </code>level</code> is <code>UNDERGROUND</code>, Locomotive cards come into play.
+            //if </code>level</code> is <code>UNDERGROUND</code>, Locomotive cards come into play.
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
                     for (Card card : Card.CARS) {
