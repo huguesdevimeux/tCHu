@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 /**
  * Representation of a route that links two nearby stations.
@@ -135,72 +136,58 @@ public final class Route {
      * @return possible claim cards (playable cards)
      */
     public List<SortedBag<Card>> possibleClaimCards() {
-        SortedBag.Builder<Card> cardBuilder = new SortedBag.Builder<>();
+        List<Card> cards = new ArrayList<>();
         List<SortedBag<Card>> cardList = new ArrayList<>();
 
         if (level.equals(Level.OVERGROUND)) {
             // when route is overground locomotive cards cannot be used
             if (color == null) {
                 for (Card card : Card.CARS) {
-                    for (int i = 0; i < this.length; i++) {
-                        cardBuilder.add(card);
-                    }
+                    IntStream.range(0, length).forEach(y -> cards.add(card));
                     /// adding all the cars added to cardBuilder into cardList
-                    cardList.add(cardBuilder.build());
+                    cardList.add(SortedBag.of(cards));
                     // resetting cardBuilder to prevent from having subArrays of cardList to have
-                    // more
-                    // than lengths' elements
-                    cardBuilder = new SortedBag.Builder<>();
+                    // more than lengths' elements
+                    cards.clear();
                 }
             } else {
-                for (int j = 0; j < this.length; j++) {
-                    // if color is assigned, we just add the number of length of the route with the
-                    // given colors
-                    cardBuilder.add(Card.of(this.color));
-                }
-                cardList.add(cardBuilder.build());
+                IntStream.range(0, length).forEach(y -> cards.add(Card.of(this.color)));
+                cardList.add(SortedBag.of(cards));
             }
 
         } else {
-            // if <\code> level </\code> is <\code> UNDERGROUND </\code>, Locomotive cards come into
-            // play
+            //if </code>level</code> is <code>UNDERGROUND</code>, Locomotive cards come into play.
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
                     for (Card card : Card.CARS) {
                         // same instructions as before
-                        for (int j = 0; j < i; j++) {
-                            cardBuilder.add(card);
-                        }
+                        IntStream.range(0, i).forEach(y -> cards.add(card));
                         // adding locomotive cards to complete all the possible claim cards
                         // when route is a tunnel
-                        while (cardBuilder.size() < length) {
-                            cardBuilder.add(Card.LOCOMOTIVE);
+                        while (cards.size() < length) {
+                            cards.add(Card.LOCOMOTIVE);
                         }
-                        cardList.add(cardBuilder.build());
-                        cardBuilder = new SortedBag.Builder<>();
+                        cardList.add(SortedBag.of(cards));
+                        cards.clear();
                     }
                 }
 
             } else {
                 for (int i = this.length; i > 0; i--) {
-                    for (int j = 0; j < i; j++) {
-                        // same instructions but the color here does not matter
-                        // we just assign the given color
-                        cardBuilder.add(Card.of(this.color));
+                    // same instructions but the color here does not matter
+                    // we just assign the given color
+                    IntStream.range(0, i).forEach(y -> cards.add(Card.of(this.color)));
+                    while (cards.size() < length) {
+                        cards.add(Card.LOCOMOTIVE);
                     }
-                    while (cardBuilder.size() < length) {
-                        cardBuilder.add(Card.LOCOMOTIVE);
-                    }
-                    cardList.add(cardBuilder.build());
-                    cardBuilder = new SortedBag.Builder<>();
+                    cardList.add(SortedBag.of(cards));
+                    cards.clear();
                 }
             }
             // this single for loop allows to add the final subArray in the list with ONLY
             // locomotive cards
-            for (int i = 0; i < this.length; i++) {
-                cardBuilder.add(Card.LOCOMOTIVE);
-            }
-            cardList.add(cardBuilder.build());
+            IntStream.range(0, length).forEach(y -> cards.add(Card.LOCOMOTIVE));
+            cardList.add(SortedBag.of(cards));
         }
         return cardList;
     }
