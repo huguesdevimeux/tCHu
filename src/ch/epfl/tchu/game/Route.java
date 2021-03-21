@@ -4,9 +4,9 @@ import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.TreeSet;
 
 /**
  * Representation of a route that links two nearby stations.
@@ -126,11 +126,7 @@ public final class Route {
      */
     public Station stationOpposite(Station station) {
         Preconditions.checkArgument((station.equals(station1) || station.equals(station2)));
-        if (station.equals(station1)) {
-            return station2;
-        } else {
-            return station1;
-        }
+        return station.equals(station1) ? station2 : station1;
     }
 
     /**
@@ -208,7 +204,6 @@ public final class Route {
         }
         return cardList;
     }
-
     /**
      * Returns the additional amount of cards one must play to take over a route knowing that the
      * player has played with <code> claimCards </code> and the three cards taken from the stack of
@@ -224,19 +219,13 @@ public final class Route {
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
-        // creating a TreeSet from claimCards so that each element in ClaimCards only appears once
-        TreeSet<Card> claimCardsCopy = new TreeSet<>(claimCards.toList());
+        // creating a Hashset from claimCards so that each element in ClaimCards only appears once
+        HashSet<Card> claimCardsCopy = new HashSet<>(claimCards.toList());
         int additionalClaimCards = 0;
+        additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
         for (Card drawn : drawnCards) {
-            // automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn
-            // cards
-            if (drawn.equals(Card.LOCOMOTIVE)) {
-                additionalClaimCards++;
-            }
             for (Card claim : claimCardsCopy) {
-                if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) {
-                    additionalClaimCards++;
-                }
+                if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) additionalClaimCards++;
             }
         }
         return additionalClaimCards;

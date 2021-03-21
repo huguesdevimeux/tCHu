@@ -138,9 +138,8 @@ public final class CardState extends PublicCardState {
      * @return cardState with additional cards to the discards.
      */
     public CardState withMoreDiscardedCards(SortedBag<Card> additionalDiscards) {
-        SortedBag.Builder<Card> totalDiscards = new SortedBag.Builder<>();
-        totalDiscards.add(discardCards);
-        for (Card card : additionalDiscards) totalDiscards.add(card);
+        SortedBag.Builder<Card> totalDiscards = new SortedBag.Builder<Card>().add(discardCards);
+        additionalDiscards.stream().forEach(totalDiscards::add);
         return new CardState(
                 faceUpCards(), deckSize(), totalDiscards.size(), deck, totalDiscards.build());
     }
