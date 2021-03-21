@@ -206,11 +206,10 @@ public final class Route {
         HashSet<Card> claimCardsCopy = new HashSet<>(claimCards.toList());
         int additionalClaimCards = 0;
         additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
-        for (Card drawn : drawnCards) {
-            for (Card claim : claimCardsCopy) {
-                if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) additionalClaimCards++;
-            }
-        }
+        for (Card drawn : drawnCards)
+            additionalClaimCards += claimCardsCopy.stream()
+                            .filter(x -> !x.equals(Card.LOCOMOTIVE) && x.equals(drawn))
+                            .count();
         return additionalClaimCards;
     }
 
