@@ -207,7 +207,8 @@ public final class Route {
         int additionalClaimCards = 0;
         additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
         for (Card drawn : drawnCards)
-            additionalClaimCards += claimCardsCopy.stream()
+            additionalClaimCards +=
+                    claimCardsCopy.stream()
                             .filter(x -> !x.equals(Card.LOCOMOTIVE) && x.equals(drawn))
                             .count();
         return additionalClaimCards;
