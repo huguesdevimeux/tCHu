@@ -210,11 +210,21 @@ public final class Route {
         // for all claimCards and drawnCards, additionalClaimCards increments when drawnCards
         // contains a card from claimCards and when drawn cards are not locomotives as we've already
         // taken that into account.
-        additionalClaimCards += drawnCards.stream()
-                                .mapToInt(drawn -> (int) claimCardsCopy.stream()
-                                        .filter( claimed -> !claimed.equals(Card.LOCOMOTIVE) && claimed.equals(drawn))
-                                        .count())
-                                .sum();
+        additionalClaimCards +=
+                drawnCards.stream()
+                        .mapToInt(
+                                drawn ->
+                                        (int)
+                                                claimCardsCopy.stream()
+                                                        .filter(
+                                                                claimed ->
+                                                                        !claimed.equals(
+                                                                                        Card
+                                                                                                .LOCOMOTIVE)
+                                                                                && claimed.equals(
+                                                                                        drawn))
+                                                        .count())
+                        .sum();
         return additionalClaimCards;
     }
 
