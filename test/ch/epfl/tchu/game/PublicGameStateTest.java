@@ -1,15 +1,16 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PublicGameStateTest {
     int ticketsCount;
@@ -39,7 +40,6 @@ public class PublicGameStateTest {
             new PublicPlayerState(ticketsCount, Constants.TOTAL_CARDS_COUNT, List.of(r1));
     PublicPlayerState publicPlayerState2 =
             new PublicPlayerState(ticketsCount, Constants.TOTAL_CARDS_COUNT, List.of(r2));
-
 
     @BeforeEach
     void setup() {
@@ -159,7 +159,9 @@ public class PublicGameStateTest {
         playerState.remove(lastPlayer, publicPlayerState2);
         playerState.put(PLAYER_1, publicPlayerState2);
         playerState.put(PLAYER_2, publicPlayerState2);
-        publicGameState = new PublicGameState(ticketsCount, cardState, currentPlayerId, playerState, lastPlayer);
+        publicGameState =
+                new PublicGameState(
+                        ticketsCount, cardState, currentPlayerId, playerState, lastPlayer);
         assertEquals(List.of(r2), publicGameState.claimedRoutes());
     }
 }
