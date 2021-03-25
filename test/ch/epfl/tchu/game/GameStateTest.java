@@ -1,14 +1,16 @@
 package ch.epfl.tchu.game;
 
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import ch.epfl.tchu.SortedBag;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateTest {
     PlayerId currentPlayerId;
@@ -51,13 +53,13 @@ public class GameStateTest {
                     return i - 1;
                 }
             };
+
     @Test
     void returnsTheCompletePlayerStateDependingOnId() {
         // test fails
         assertEquals(playerState1, gameState.playerState(PLAYER_1));
         assertEquals(playerState2, gameState.playerState(PLAYER_2));
     }
-
 
     @Test
     void returnsCompleteCurrentPlayerState() {
@@ -191,11 +193,13 @@ public class GameStateTest {
         // stays at 2 -weird
         SortedBag<Ticket> chosenTickets = SortedBag.of(ChMap.tickets().subList(0, 3));
         assertEquals(
-                3, gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets).ticketsCount());
+                3,
+                gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets).ticketsCount());
 
         chosenTickets = SortedBag.of(ChMap.tickets().subList(0, 1));
         assertEquals(
-                1, gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets).ticketsCount());
+                1,
+                gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets).ticketsCount());
     }
 
     @Test
