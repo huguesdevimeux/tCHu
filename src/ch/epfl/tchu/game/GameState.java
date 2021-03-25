@@ -45,7 +45,8 @@ public final class GameState extends PublicGameState {
         Deck<Card> deckCards = Deck.of(Constants.ALL_CARDS, rng);
         Map<PlayerId, PlayerState> playerStates = new EnumMap<>(PlayerId.class);
         for (PlayerId player : PlayerId.ALL) {
-            playerStates.put(player, PlayerState.initial(deckCards.topCards(Constants.INITIAL_CARDS_COUNT)));
+            playerStates.put(
+                    player, PlayerState.initial(deckCards.topCards(Constants.INITIAL_CARDS_COUNT)));
             deckCards = deckCards.withoutTopCards(Constants.INITIAL_CARDS_COUNT);
         }
         int choice = (int) Math.round(rng.nextDouble());
