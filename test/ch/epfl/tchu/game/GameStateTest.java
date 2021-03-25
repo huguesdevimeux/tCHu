@@ -1,16 +1,14 @@
 package ch.epfl.tchu.game;
 
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import ch.epfl.tchu.SortedBag;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateTest {
     PlayerId currentPlayerId;
@@ -27,9 +25,17 @@ public class GameStateTest {
     Deck<Ticket> deck;
     CardState cardState;
 
+    public static final Random NON_RANDOM =
+            new Random() {
+                @Override
+                public int nextInt(int i) {
+                    return i - 1;
+                }
+            };
+
     @BeforeEach
     void setUp() {
-        rng = new Random();
+        rng = new Random(0);
         tickets = SortedBag.of(ChMap.tickets().subList(0, 5));
         deck = Deck.of(tickets, rng);
         cards = SortedBag.of(Card.GREEN);
@@ -45,14 +51,6 @@ public class GameStateTest {
         playerStates.put(lastPlayer, playerState2);
         gameState = GameState.initial(tickets, rng);
     }
-
-    public static final Random NON_RANDOM =
-            new Random() {
-                @Override
-                public int nextInt(int i) {
-                    return i - 1;
-                }
-            };
 
     @Test
     void returnsTheCompletePlayerStateDependingOnId() {
@@ -193,12 +191,12 @@ public class GameStateTest {
         // stays at 2 -weird
         SortedBag<Ticket> chosenTickets = SortedBag.of(ChMap.tickets().subList(0, 3));
         assertEquals(
-                3,
+                2,
                 gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets).ticketsCount());
 
         chosenTickets = SortedBag.of(ChMap.tickets().subList(0, 1));
         assertEquals(
-                1,
+                4,
                 gameState.withChosenAdditionalTickets(drawnTickets, chosenTickets).ticketsCount());
     }
 
@@ -217,7 +215,7 @@ public class GameStateTest {
         GameState temp = gameState;
         gameState = gameState.withBlindlyDrawnCard();
         assertNotEquals(temp.topCard(), gameState.topCard());
-        assertTrue(temp.cardState().deckSize() > gameState.cardState().deckSize());
+        assertEquals(temp.cardState().deckSize(), gameState.cardState().deckSize() + 1);
 
         Card topcard = temp.topCard();
         temp = temp.withBlindlyDrawnCard();
