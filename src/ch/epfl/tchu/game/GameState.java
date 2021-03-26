@@ -56,7 +56,7 @@ public final class GameState extends PublicGameState {
                 PlayerId.ALL.get(rng.nextInt(PlayerId.COUNT)),
                 playerStates,
                 null // The last player is null at the initial state
-        );
+                );
     }
 
     /**
