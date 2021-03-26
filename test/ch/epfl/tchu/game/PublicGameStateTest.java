@@ -103,8 +103,7 @@ public class PublicGameStateTest {
         assertTrue(publicGameState.canDrawTickets());
         cardState = new PublicCardState(faceUpCards, 0, 2);
         publicGameState =
-                new PublicGameState(
-                        0, cardState, currentPlayerId, playerState, lastPlayer);
+                new PublicGameState(0, cardState, currentPlayerId, playerState, lastPlayer);
         assertFalse(publicGameState.canDrawTickets());
     }
 
