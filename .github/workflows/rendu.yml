@@ -1,10 +1,10 @@
 # THis will automatically format every push on main branch. 
 
-name: Format
+name: Rendu Hebdomadaire 
 
 on:
-  pull_request:
-    branches:
+  push:
+    branches:    
       - main
       
 jobs:
