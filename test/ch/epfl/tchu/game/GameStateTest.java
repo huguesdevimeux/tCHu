@@ -1,16 +1,14 @@
 package ch.epfl.tchu.game;
 
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import ch.epfl.tchu.SortedBag;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameStateTest {
     PlayerId currentPlayerId;
@@ -40,7 +38,7 @@ public class GameStateTest {
         rng = new Random(0);
         tickets = SortedBag.of(ChMap.tickets().subList(0, 5));
         deck = Deck.of(tickets, rng);
-        cards = SortedBag.of(Card.GREEN);
+        cards = SortedBag.of(2, Card.GREEN, 2, Card.LOCOMOTIVE);
         r1 = ChMap.routes().get(0);
         r2 = ChMap.routes().get(1);
         playerState1 = new PlayerState(tickets, cards, List.of(r1));
@@ -52,19 +50,6 @@ public class GameStateTest {
         playerStates.put(currentPlayerId, playerState1);
         playerStates.put(lastPlayer, playerState2);
         gameState = GameState.initial(tickets, rng);
-    }
-
-    @Test
-    void returnsTheCompletePlayerStateDependingOnId() {
-        // test fails
-        assertEquals(playerState1, gameState.playerState(PLAYER_1));
-        assertEquals(playerState2, gameState.playerState(PLAYER_2));
-    }
-
-    @Test
-    void returnsCompleteCurrentPlayerState() {
-        // this player state can't be linked to the one in game state so test fails
-        assertEquals(playerState1, gameState.currentPlayerState());
     }
 
     @Test
