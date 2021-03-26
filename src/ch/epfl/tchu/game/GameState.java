@@ -49,13 +49,14 @@ public final class GameState extends PublicGameState {
                     player, PlayerState.initial(deckCards.topCards(Constants.INITIAL_CARDS_COUNT)));
             deckCards = deckCards.withoutTopCards(Constants.INITIAL_CARDS_COUNT);
         }
-        int choice = (int) Math.round(rng.nextDouble());
+
         return new GameState(
                 Deck.of(tickets, rng),
                 CardState.of(deckCards),
-                PlayerId.ALL.get(choice),
+                PlayerId.ALL.get(rng.nextInt(PlayerId.COUNT)),
                 playerStates,
-                PlayerId.ALL.get(1 - choice));
+                null // The last player is null at the initial state
+        );
     }
 
     /**
