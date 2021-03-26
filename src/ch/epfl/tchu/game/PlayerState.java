@@ -16,7 +16,7 @@ public final class PlayerState extends PublicPlayerState {
     private final List<Route> routes;
 
     /**
-     * Construcs the state of a player having tickets, cards and routes.
+     * Constructs the state of a player having tickets, cards and routes.
      *
      * @param tickets The tickets of the player.
      * @param cards The cards of the player.

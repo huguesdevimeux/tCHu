@@ -91,9 +91,6 @@ public class PublicGameStateTest {
                 () ->
                         new PublicGameState(
                                 ticketsCount, cardState, currentPlayerId, null, lastPlayer));
-        assertThrows(
-                NullPointerException.class,
-                () -> new PublicGameState(0, cardState, currentPlayerId, playerState, lastPlayer));
     }
 
     @Test
