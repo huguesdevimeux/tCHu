@@ -14,4 +14,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: rendu-hebdomadaire
-          path: src/
+          path: ./src/
