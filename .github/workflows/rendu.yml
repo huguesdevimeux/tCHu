@@ -1,0 +1,17 @@
+# THis will automatically format every push on main branch. 
+
+name: Format
+
+on:
+  pull_request:
+    branches:
+      - main
+      
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/upload-artifact@v2
+        with:
+          name: rendu-hebdomadaire
+          path: src/
