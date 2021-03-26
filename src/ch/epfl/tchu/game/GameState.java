@@ -274,7 +274,8 @@ public final class GameState extends PublicGameState {
         tempPlayerState.computeIfPresent(
                 this.currentPlayerId(),
                 (id, playerState) -> playerState.withClaimedRoute(route, cards));
-        return GameStateWithSamePlayers(this.deckTickets, this.cardState, tempPlayerState);
+        return GameStateWithSamePlayers(
+                this.deckTickets, this.cardState.withMoreDiscardedCards(cards), tempPlayerState);
     }
 
     // endregion
