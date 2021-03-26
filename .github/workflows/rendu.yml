@@ -1,6 +1,6 @@
 # THis will automatically format every push on main branch. 
 
-name: Rendu Hebdomadaire 
+name: Format
 
 on:
   push:
@@ -8,10 +8,13 @@ on:
       - main
       
 jobs:
-  formatting:
+  rendu:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2 # v2 minimum required
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/upload-artifact@v2
         with:
-          name: rendu-hebdomadaire
-          path: ./src/
+          name: rendu
+          path: src/
