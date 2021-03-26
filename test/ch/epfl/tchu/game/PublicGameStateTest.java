@@ -104,7 +104,7 @@ public class PublicGameStateTest {
         cardState = new PublicCardState(faceUpCards, 0, 2);
         publicGameState =
                 new PublicGameState(
-                        ticketsCount, cardState, currentPlayerId, playerState, lastPlayer);
+                        0, cardState, currentPlayerId, playerState, lastPlayer);
         assertFalse(publicGameState.canDrawTickets());
     }
 
