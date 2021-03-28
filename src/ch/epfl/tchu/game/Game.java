@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /** Represents a game of tCHu (aka les Aventuriers du Rail but shhh). */
 public final class Game {
@@ -112,9 +113,9 @@ public final class Game {
 
                     case CLAIM_ROUTE:
                         Route claimedRoute = p.claimedRoute();
-
                         SortedBag<Card> initialClaimCards = p.initialClaimCards();
                         List<Card> drawnCards = new ArrayList<>();
+                        gameState.currentPlayerState().canClaimRoute(claimedRoute);
                         // player must choose which additional cards he wants to play when he
                         // attempts to claim tunnel and drawn cards contains one of the initial
                         // claim cards
@@ -129,6 +130,7 @@ public final class Game {
                                     initialClaimCards,
                                     "claimed route");
                             // adding the claimed route to the current player's claimed routes
+                            gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                             gameState.currentPlayerState().routes().add(claimedRoute);
                         } else {
                             receiveNewInfo(
@@ -175,8 +177,17 @@ public final class Game {
                                                                                 initialClaimCards,
                                                                                 SortedBag.of(
                                                                                         drawnCards)))));
+
                                 // adding the claimed route to the current player's list of routes
-                                gameState.currentPlayerState().routes().add(claimedRoute);
+                                // however we have to take into account the fact the player played
+                                // the initialClaimCards and had to play additional cards.
+                                // We thus have to sum up all the cards played
+                                SortedBag<Card> totalCardsPlayedForTunnelClaim =
+                                        SortedBag.of(
+                                                initialClaimCards.stream()
+                                                        .filter(additionalCardsToPlay.toList()::add)
+                                                        .collect(Collectors.toList()));
+                                gameState.withClaimedRoute(claimedRoute, totalCardsPlayedForTunnelClaim);
                             }
                         }
                         nextRound(gameState, players, currentPlayer, nextPlayer);
