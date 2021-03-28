@@ -189,15 +189,9 @@ public final class Game {
                 Trail.longest(gameState.playerState(firstPlayer.next()).routes());
 
         if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
-            players.forEach(
-                    (playerId, player) ->
-                            player.receiveInfo(
-                                    currentPlayer.getsLongestTrailBonus(longestForCurrentPlayer)));
+            longestTrailBonus(players, currentPlayer, longestForCurrentPlayer);
         } else if (longestForCurrentPlayer.length() < longestForNextPlayer.length()) {
-            players.forEach(
-                    (playerId, player) ->
-                            player.receiveInfo(
-                                    nextPlayer.getsLongestTrailBonus(longestForNextPlayer)));
+            longestTrailBonus(players, nextPlayer, longestForNextPlayer);
         }
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
 
@@ -303,5 +297,12 @@ public final class Game {
     private static void updatePlayerStates(
             Map<PlayerId, Player> players, PublicGameState gameState, PlayerState playerState) {
         players.forEach((playerId, player) -> player.updateState(gameState, playerState));
+    }
+
+    private static void longestTrailBonus(
+            Map<PlayerId, Player> players, Info playerIdentity, Trail longest) {
+        players.forEach(
+                (playerId, player) ->
+                        player.receiveInfo(playerIdentity.getsLongestTrailBonus(longest)));
     }
 }
