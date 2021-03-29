@@ -40,6 +40,7 @@ public class PublicGameState {
             PlayerId lastPlayer) {
         Preconditions.checkArgument(cardState.deckSize() >= 0);
         Preconditions.checkArgument(playerState.keySet().size() == 2);
+        Preconditions.checkArgument(ticketsCount >= 0);
 
         this.ticketsCount = ticketsCount;
         this.cardState = Objects.requireNonNull(cardState);
