@@ -5,13 +5,13 @@ import ch.epfl.tchu.SortedBag;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents all the actions a player can take in the game.
+ *
+ * @author Luca Mouchel (324748)
+ * @author Hugues Devimeux (327282)
+ */
 public interface Player {
-    /**
-     * Represents all the actions a player can take in the game.
-     *
-     * @author Luca Mouchel (324748)
-     * @author Hugues Devimeux (327282)
-     */
     enum TurnKind {
         /** Enumeration of all the actions a player can take. */
         DRAW_TICKETS,
@@ -66,7 +66,7 @@ public interface Player {
     /**
      * Called at the beginning of each round, to know what action the player decides to take.
      *
-     * @return the players' action at the beginning of the round
+     * @return the player's chosen course of action at the beginning of the round
      */
     TurnKind nextTurn();
 
@@ -80,10 +80,9 @@ public interface Player {
     SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options);
 
     /**
-     * - Kinda confusing - @link https://cs108.epfl.ch/p/05_game-state.html Called when the player
-     * has decided to draw cards (can be locomotives) as to know where he wants to to draw them It
-     * can be a faceup card - to which the method returns int in [0,4]. It can be a deck card - to
-     * which the method returns <code>Constants.DECK_SLOT</code> aka -1.
+     * Called when the player has decided to draw cards (can be locomotives) to know where he wants
+     * to to draw them from. It can be a faceUp card - to which the method returns int in [0,4]. It
+     * can be a deck card - to which the method returns <code>Constants.DECK_SLOT</code> aka -1.
      *
      * @return an int that depends on what type of card is drawn
      */
@@ -99,21 +98,21 @@ public interface Player {
 
     /**
      * Called when the player has decided to (or attempted to) take over a route - to know which
-     * card(s) he want to use initially to do so.
+     * card(s) they want to use initially to do so.
      *
      * @return the initial cards the player wants to use to take over a route
      */
     SortedBag<Card> initialClaimCards();
 
     /**
-     * Called when the player has decided to attempt to take a tunnel - aka an UNDERGROUND route and
-     * that additional cards have to be used - to ultimately know which cards the player wants to
-     * use. The available cards he can use is the parameter - aka <code>options</code>. If the
-     * returned SortedBag is empty, it means the player doesn't want (or can't) pick any options
+     * Called when the player has decided to attempt to take a tunnel (UNDERGROUND route) and that
+     * additional cards have to be used - to ultimately know which cards the player wants to use.
+     * The available cards he can use is the parameter options. If the returned SortedBag is empty,
+     * it means the player doesn't want (or can't) pick any options.
      *
-     * @param options list of cards from which the player can choose to take over a tunnel
+     * @param options list of cards with which the player can choose to take over a tunnel
      * @return the additional cards the player wants to use to take over a tunnel, or an empty
-     *     sortedBag if he can't
+     *     sortedBag if he can't or does not want to
      */
     SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options);
 }

@@ -64,7 +64,7 @@ public class PublicGameState {
      * @return true if it is possible to draw tickets, i.e. if the deck is not empty.
      */
     public boolean canDrawTickets() {
-        return !this.cardState.isDeckEmpty();
+        return this.ticketsCount > 0;
     }
 
     /**

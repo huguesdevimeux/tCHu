@@ -4,9 +4,10 @@ import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.TreeSet;
+import java.util.stream.IntStream;
 
 /**
  * Representation of a route that links two nearby stations.
@@ -126,11 +127,7 @@ public final class Route {
      */
     public Station stationOpposite(Station station) {
         Preconditions.checkArgument((station.equals(station1) || station.equals(station2)));
-        if (station.equals(station1)) {
-            return station2;
-        } else {
-            return station1;
-        }
+        return station.equals(station1) ? station2 : station1;
     }
 
     /**
@@ -139,76 +136,57 @@ public final class Route {
      * @return possible claim cards (playable cards)
      */
     public List<SortedBag<Card>> possibleClaimCards() {
-        SortedBag.Builder<Card> cardBuilder = new SortedBag.Builder<>();
-        List<SortedBag<Card>> cardList = new ArrayList<>();
+        List<Card> cardList = new ArrayList<>();
+        List<SortedBag<Card>> cardBag = new ArrayList<>();
 
         if (level.equals(Level.OVERGROUND)) {
             // when route is overground locomotive cards cannot be used
             if (color == null) {
                 for (Card card : Card.CARS) {
-                    for (int i = 0; i < this.length; i++) {
-                        cardBuilder.add(card);
-                    }
-                    /// adding all the cars added to cardBuilder into cardList
-                    cardList.add(cardBuilder.build());
-                    // resetting cardBuilder to prevent from having subArrays of cardList to have
-                    // more
-                    // than lengths' elements
-                    cardBuilder = new SortedBag.Builder<>();
+                    IntStream.range(0, length).forEach(y -> cardList.add(card));
+                    /// adding all the cars added to cardBuilder into cardBag
+                    cardBag.add(SortedBag.of(cardList));
+                    // resetting cardBuilder to prevent from having subArrays of cardBag to have
+                    // more than lengths' elements
+                    cardList.clear();
                 }
             } else {
-                for (int j = 0; j < this.length; j++) {
-                    // if color is assigned, we just add the number of length of the route with the
-                    // given colors
-                    cardBuilder.add(Card.of(this.color));
-                }
-                cardList.add(cardBuilder.build());
+                IntStream.range(0, length).forEach(y -> cardList.add(Card.of(this.color)));
+                cardBag.add(SortedBag.of(cardList));
             }
 
         } else {
-            // if <\code> level </\code> is <\code> UNDERGROUND </\code>, Locomotive cards come into
-            // play
+            // if level is UNDERGROUND, Locomotive cards come into play.
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
                     for (Card card : Card.CARS) {
                         // same instructions as before
-                        for (int j = 0; j < i; j++) {
-                            cardBuilder.add(card);
-                        }
+                        IntStream.range(0, i).forEach(y -> cardList.add(card));
                         // adding locomotive cards to complete all the possible claim cards
                         // when route is a tunnel
-                        while (cardBuilder.size() < length) {
-                            cardBuilder.add(Card.LOCOMOTIVE);
-                        }
-                        cardList.add(cardBuilder.build());
-                        cardBuilder = new SortedBag.Builder<>();
+                        while (cardList.size() < length) cardList.add(Card.LOCOMOTIVE);
+                        cardBag.add(SortedBag.of(cardList));
+                        cardList.clear();
                     }
                 }
 
             } else {
                 for (int i = this.length; i > 0; i--) {
-                    for (int j = 0; j < i; j++) {
-                        // same instructions but the color here does not matter
-                        // we just assign the given color
-                        cardBuilder.add(Card.of(this.color));
-                    }
-                    while (cardBuilder.size() < length) {
-                        cardBuilder.add(Card.LOCOMOTIVE);
-                    }
-                    cardList.add(cardBuilder.build());
-                    cardBuilder = new SortedBag.Builder<>();
+                    // same instructions but the color here does not matter
+                    // we just assign the given color
+                    IntStream.range(0, i).forEach(y -> cardList.add(Card.of(this.color)));
+                    while (cardList.size() < length) cardList.add(Card.LOCOMOTIVE);
+                    cardBag.add(SortedBag.of(cardList));
+                    cardList.clear();
                 }
             }
             // this single for loop allows to add the final subArray in the list with ONLY
             // locomotive cards
-            for (int i = 0; i < this.length; i++) {
-                cardBuilder.add(Card.LOCOMOTIVE);
-            }
-            cardList.add(cardBuilder.build());
+            IntStream.range(0, length).forEach(y -> cardList.add(Card.LOCOMOTIVE));
+            cardBag.add(SortedBag.of(cardList));
         }
-        return cardList;
+        return cardBag;
     }
-
     /**
      * Returns the additional amount of cards one must play to take over a route knowing that the
      * player has played with <code> claimCards </code> and the three cards taken from the stack of
@@ -224,21 +202,16 @@ public final class Route {
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
-        // creating a TreeSet from claimCards so that each element in ClaimCards only appears once
-        TreeSet<Card> claimCardsCopy = new TreeSet<>(claimCards.toList());
+        // creating a Hashset from claimCards so that each element in ClaimCards only appears once
+        HashSet<Card> claimCardsCopy = new HashSet<>(claimCards.toList());
         int additionalClaimCards = 0;
-        for (Card drawn : drawnCards) {
-            // automatically incrementing additionalClaimCards if LOCOMOTIVE is one of the drawn
-            // cards
-            if (drawn.equals(Card.LOCOMOTIVE)) {
-                additionalClaimCards++;
-            }
-            for (Card claim : claimCardsCopy) {
-                if ((drawn.equals(claim) && !drawn.equals(Card.LOCOMOTIVE))) {
-                    additionalClaimCards++;
-                }
-            }
-        }
+        // adding the number  of locomotive cards in the drawn cards
+        additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
+        for (Card drawn : drawnCards)
+            additionalClaimCards +=
+                    claimCardsCopy.stream()
+                            .filter(x -> !x.equals(Card.LOCOMOTIVE) && x.equals(drawn))
+                            .count();
         return additionalClaimCards;
     }
 

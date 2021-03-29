@@ -45,16 +45,18 @@ public final class GameState extends PublicGameState {
         Deck<Card> deckCards = Deck.of(Constants.ALL_CARDS, rng);
         Map<PlayerId, PlayerState> playerStates = new EnumMap<>(PlayerId.class);
         for (PlayerId player : PlayerId.ALL) {
-            playerStates.put(player, PlayerState.initial(deckCards.topCards(4)));
-            deckCards = deckCards.withoutTopCards(4);
+            playerStates.put(
+                    player, PlayerState.initial(deckCards.topCards(Constants.INITIAL_CARDS_COUNT)));
+            deckCards = deckCards.withoutTopCards(Constants.INITIAL_CARDS_COUNT);
         }
-        int choice = (int) Math.round(rng.nextDouble());
+
         return new GameState(
                 Deck.of(tickets, rng),
                 CardState.of(deckCards),
-                PlayerId.ALL.get(choice),
+                PlayerId.ALL.get(rng.nextInt(PlayerId.COUNT)),
                 playerStates,
-                PlayerId.ALL.get(1 - choice));
+                null // The last player is null at the initial state
+                );
     }
 
     /**
@@ -212,7 +214,7 @@ public final class GameState extends PublicGameState {
         tempPlayerState.computeIfPresent(
                 this.currentPlayerId(), (id, state) -> state.withAddedTickets(chosenTickets));
         return GameStateWithSamePlayers(
-                this.deckTickets.withoutTopCards(drawnTickets.size()),
+                this.deckTickets.withoutTopCards(chosenTickets.size()),
                 this.cardState,
                 tempPlayerState);
     }
@@ -272,7 +274,8 @@ public final class GameState extends PublicGameState {
         tempPlayerState.computeIfPresent(
                 this.currentPlayerId(),
                 (id, playerState) -> playerState.withClaimedRoute(route, cards));
-        return GameStateWithSamePlayers(this.deckTickets, this.cardState, tempPlayerState);
+        return GameStateWithSamePlayers(
+                this.deckTickets, this.cardState.withMoreDiscardedCards(cards), tempPlayerState);
     }
 
     // endregion
@@ -287,7 +290,7 @@ public final class GameState extends PublicGameState {
      * @return Whether the last turn begins.
      */
     public boolean lastTurnBegins() {
-        return this.lastPlayer() == null && this.currentPlayerState().carCount() <= 2;
+        return this.currentPlayerState().carCount() <= 2;
     }
 
     /**
