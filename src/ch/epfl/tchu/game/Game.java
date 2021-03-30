@@ -133,7 +133,9 @@ public final class Game {
                                 updatePlayerStates(
                                         players, gameState, gameState.currentPlayerState());
                             }
-                        } else continue;
+                            // if canDrawCards is false, it means deck is too small - so we just
+                            // re-shuffle the bigboi
+                        } else gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                         nextRound(gameState, players, currentPlayer, nextPlayer);
                         break;
 
