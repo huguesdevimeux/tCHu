@@ -175,16 +175,11 @@ public final class Game {
                                             gameState.withMoreDiscardedCards(
                                                     SortedBag.of(drawnCards));
                                 } else {
-                                    players.forEach(
-                                            (playerId, allPlayers) ->
-                                                    allPlayers.receiveInfo(
-                                                            currentPlayer.drewAdditionalCards(
-                                                                    SortedBag.of(drawnCards),
-                                                                    claimedRoute
-                                                                            .additionalClaimCardsCount(
-                                                                                    initialClaimCards,
-                                                                                    SortedBag.of(
-                                                                                            drawnCards)))));
+                                    int cardsToPlay =
+                                            claimedRoute.additionalClaimCardsCount(
+                                                    initialClaimCards, SortedBag.of(drawnCards));
+                                    AdditionalCardsWereDrawnInfo(
+                                            players, currentPlayer, drawnCards, cardsToPlay);
 
                                     // adding the claimed route to the current player's list of
                                     // routes however we have to take into account the fact the
@@ -219,24 +214,25 @@ public final class Game {
         }
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
 
-        int winnerTotalPoints;
-        int loserTotalPoints;
+        int winnerPoints;
+        int loserPoints;
         // when the last turn begins the last player is said to be the currentPlayer so we can use
         // currentPlayer's finalPoints
         if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
-            winnerTotalPoints =
+            winnerPoints =
                     gameState.currentPlayerState().finalPoints()
                             + Constants.LONGEST_TRAIL_BONUS_POINTS;
-            loserTotalPoints = gameState.playerState(firstPlayer.next()).finalPoints();
+            loserPoints = gameState.playerState(firstPlayer.next()).finalPoints();
         } else {
-            winnerTotalPoints = gameState.currentPlayerState().finalPoints();
-            loserTotalPoints =
+            winnerPoints = gameState.currentPlayerState().finalPoints();
+            loserPoints =
                     gameState.playerState(firstPlayer.next()).finalPoints()
                             + Constants.LONGEST_TRAIL_BONUS_POINTS;
         }
-        players.forEach(
-                (playerId, player) ->
-                        player.receiveInfo(currentPlayer.won(winnerTotalPoints, loserTotalPoints)));
+        if (winnerPoints > loserPoints)
+            currentPlayerWonInfo(players, currentPlayer, winnerPoints, loserPoints);
+        else if (winnerPoints == loserPoints)
+            playersHaveDrawnInfo(players, new ArrayList<>(playerNames.values()), winnerPoints);
     }
     // private methods created to compress code in main method of this class
     // using strings instead of ints as a selection in the switch statements to provide a minimum
@@ -308,6 +304,26 @@ public final class Game {
                                 player.receiveInfo(currentPlayer.didNotClaimRoute(claimedRoute)));
                 break;
         }
+    }
+
+    private static void AdditionalCardsWereDrawnInfo(
+            Map<PlayerId, Player> p, Info cPlayer, List<Card> dCards, int aCards) {
+        p.forEach(
+                (playerId, player) ->
+                        player.receiveInfo(
+                                cPlayer.drewAdditionalCards(SortedBag.of(dCards), aCards)));
+    }
+
+    private static void currentPlayerWonInfo(
+            Map<PlayerId, Player> players, Info currentPlayer, int winnerPoints, int loserPoints) {
+        players.forEach(
+                (playerId, player) ->
+                        player.receiveInfo(currentPlayer.won(winnerPoints, loserPoints)));
+    }
+
+    private static void playersHaveDrawnInfo(
+            Map<PlayerId, Player> players, List<String> playerNames, int points) {
+        players.forEach((playerId, player) -> player.receiveInfo(Info.draw(playerNames, points)));
     }
 
     private static void nextRound(
