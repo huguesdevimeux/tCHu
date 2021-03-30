@@ -51,9 +51,18 @@ public final class Game {
                 (playerId, player) ->
                         player.setInitialTicketChoice(
                                 gameStateCopy.topTickets(Constants.INITIAL_TICKETS_COUNT)));
-        // we then have to remove the top tickets from the deck of tickets - ie remove the top 2*5
-        // tickets from the deck as each player is handed 5 tickets
-        gameState = gameState.withoutTopTickets(2 * Constants.INITIAL_TICKETS_COUNT);
+        // first player gets delivered the top 5 tickets
+        gameState =
+                gameState.withInitiallyChosenTickets(
+                        firstPlayer, gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
+        // we have to remove the top tickets from the deck of tickets
+        gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+        // do this for second player too
+        gameState =
+                gameState.withInitiallyChosenTickets(
+                        firstPlayer.next(), gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
+        gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
         players.forEach((playerId, player) -> player.chooseInitialTickets());
@@ -75,19 +84,27 @@ public final class Game {
                 // at each turn of the game
                 switch (p.nextTurn()) {
                     case DRAW_TICKETS:
-                        receiveNewInfo(players, currentPlayer, "drew tickets");
+                        SortedBag<Ticket> topTicketsInGame =
+                                gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
 
-                        // take the three first of the tickets pile
-                        SortedBag<Ticket> retainedTickets =
-                                p.chooseTickets(
-                                        gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT));
+                        if (gameState.canDrawTickets()) {
+                            receiveNewInfo(players, currentPlayer, "drew tickets");
 
-                        // removing the 3 top tickets from the tickets deck
-                        gameState = gameState.withoutTopTickets(Constants.IN_GAME_TICKETS_COUNT);
-                        players.forEach(
-                                (playerId, both) ->
-                                        both.receiveInfo(
-                                                currentPlayer.keptTickets(retainedTickets.size())));
+                            // take the three first of the tickets pile
+                            SortedBag<Ticket> retainedTickets = p.chooseTickets(topTicketsInGame);
+                            gameState =
+                                    gameStateCopy.withChosenAdditionalTickets(
+                                            topTicketsInGame, retainedTickets);
+
+                            // removing the 3 top tickets from the tickets deck
+                            gameState =
+                                    gameState.withoutTopTickets(Constants.IN_GAME_TICKETS_COUNT);
+                            players.forEach(
+                                    (playerId, both) ->
+                                            both.receiveInfo(
+                                                    currentPlayer.keptTickets(
+                                                            retainedTickets.size())));
+                        } else continue;
                         // next round can begin
                         nextRound(gameState, players, currentPlayer, nextPlayer);
                         break;
@@ -96,22 +113,27 @@ public final class Game {
                         // the player only draws two cards
                         int totalNumberOfPossibleCardsToDraw = 2;
                         int indexOfChosenCard = p.drawSlot();
-                        for (int i = 0; i < totalNumberOfPossibleCardsToDraw; i++) {
-                            // method drawSlot returns -1 if the player picks a card from the deck
-                            // of cards or a number between 0 and 4 if one of the faceUp cards
-                            if (indexOfChosenCard == -1) {
-                                receiveNewInfo(players, currentPlayer, "drew blind card");
-                                gameState = gameState.withBlindlyDrawnCard();
-                                // if we pick a blind card - we have to remove a card from the deck
-                                gameState = gameState.withoutTopCard();
-                            } else {
-                                receiveNewInfo(players, currentPlayer, "drew visible card");
-                                gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
+                        if (gameState.canDrawCards()) {
+                            for (int i = 0; i < totalNumberOfPossibleCardsToDraw; i++) {
+                                // method drawSlot returns -1 if the player picks a card from the
+                                // deck
+                                // of cards or a number between 0 and 4 if one of the faceUp cards
+                                if (indexOfChosenCard == -1) {
+                                    receiveNewInfo(players, currentPlayer, "drew blind card");
+                                    gameState = gameState.withBlindlyDrawnCard();
+                                    // if we pick a blind card - we have to remove a card from the
+                                    // deck
+                                    gameState = gameState.withoutTopCard();
+                                } else {
+                                    receiveNewInfo(players, currentPlayer, "drew visible card");
+                                    gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
+                                }
+                                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+                                // we update the playerStates after the first card is drawn
+                                updatePlayerStates(
+                                        players, gameState, gameState.currentPlayerState());
                             }
-                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                            // we update the playerStates after the first card is drawn
-                            updatePlayerStates(players, gameState, gameState.currentPlayerState());
-                        }
+                        } else continue;
                         nextRound(gameState, players, currentPlayer, nextPlayer);
                         break;
 
