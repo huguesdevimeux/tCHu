@@ -161,11 +161,12 @@ public final class Game {
                             // adding the claimed route to the current player's claimed routes
                             gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                         } else {
-                            // player must choose which additional cards he wants to play when
-                            // he attempts to claim tunnel and drawn cards
-                            // contains one of the initial claim cards
-                            SortedBag<Card> additionalCardsToPlay =
-                                    playerChoice.chooseAdditionalCards(List.of(initialClaimCards));
+                            receiveNewInfo(
+                                    players,
+                                    currentPlayer,
+                                    claimedRoute,
+                                    SortedBag.of(initialClaimCards),
+                                    "attempt to claim tunnel");
                             // in case we need the drawn cards for an attempt to claim a tunnel
                             // we add the THREE top deck cards to the drawn cards because when
                             // attempting to claim a tunnel, only three cards are drawn
@@ -174,15 +175,11 @@ public final class Game {
                                 drawnCards.add(gameState.topCard());
                                 gameState = gameState.withoutTopCard();
                             }
-                            // the available cards the player can pick from to choose additional
-                            // cards are the claimCards
-                            playerChoice.chooseAdditionalCards(List.of(initialClaimCards));
-                            receiveNewInfo(
-                                    players,
-                                    currentPlayer,
-                                    claimedRoute,
-                                    SortedBag.of(initialClaimCards),
-                                    "attempt to claim tunnel");
+                            // player must choose which additional cards he wants to play when
+                            // he attempts to claim tunnel and drawnCards
+                            // contains one of the initial claim cards
+                            SortedBag<Card> additionalCardsToPlay =
+                                    playerChoice.chooseAdditionalCards(List.of(initialClaimCards));
                             // if additional cards to play is empty - it means the player
                             // doesn't want to take the tunnel - or he simply can't
                             if (additionalCardsToPlay.isEmpty()) {
@@ -192,9 +189,6 @@ public final class Game {
                                         claimedRoute,
                                         SortedBag.of(),
                                         "did not claim route");
-                                // we add the drawn cards to the discards
-                                gameState =
-                                        gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                             } else {
                                 int cardsToPlay =
                                         claimedRoute.additionalClaimCardsCount(
@@ -215,9 +209,10 @@ public final class Game {
                                         gameState.withClaimedRoute(
                                                 claimedRoute, cardsPlayedForTunnelClaim);
                                 // we only have to add the drawn cards to the discards
-                                gameState =
-                                        gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                             }
+                            // we add the drawn cards to the discards
+                            gameState =
+                                    gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                         }
                     }
                     nextRound(gameState, players, currentPlayer, nextPlayer);
