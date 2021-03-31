@@ -71,160 +71,158 @@ public final class Game {
         // finally, the game can start, the players receive the info that the currentPlayer can play
         players.forEach((playerId, both) -> both.receiveInfo(currentPlayer.canPlay()));
 
+        // the following part represents the "mid-game" (ie each turn until the last round
+        // begins)
         while (!gameState.lastTurnBegins()) {
-            // the following part represents the "mid-game" (ie each turn until the last round
-            // begins)
-            for (Map.Entry<PlayerId, Player> player : players.entrySet()) {
-                // representing the player as the key of Map player to be able to call the necessary
-                // methods
-                Player p = player.getValue();
-                updatePlayerStates(players, gameState, gameState.currentPlayerState());
+            // representing the player as the key of Map player to be able to call the necessary
+            // methods
+            Player playerChoice = players.get(gameState.currentPlayerId());
+            updatePlayerStates(players, gameState, gameState.currentPlayerState());
 
-                // following switch statement describes the possible actions
-                // at each turn of the game
-                switch (p.nextTurn()) {
-                    case DRAW_TICKETS:
+            // following switch statement describes the possible actions
+            // at each turn of the game
+            switch (playerChoice.nextTurn()) {
+                case DRAW_TICKETS:
+                    if (gameState.canDrawTickets()) {
+                        receiveNewInfo(players, currentPlayer, "drew tickets");
                         SortedBag<Ticket> topTicketsInGame =
                                 gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
 
-                        if (gameState.canDrawTickets()) {
-                            receiveNewInfo(players, currentPlayer, "drew tickets");
+                        // take the three first of the tickets pile
+                        SortedBag<Ticket> retainedTickets =
+                                playerChoice.chooseTickets(topTicketsInGame);
+                        gameState =
+                                gameStateCopy.withChosenAdditionalTickets(
+                                        topTicketsInGame, retainedTickets);
 
-                            // take the three first of the tickets pile
-                            SortedBag<Ticket> retainedTickets = p.chooseTickets(topTicketsInGame);
-                            gameState =
-                                    gameStateCopy.withChosenAdditionalTickets(
-                                            topTicketsInGame, retainedTickets);
+                        // removing the 3 top tickets from the tickets deck
+                        gameState = gameState.withoutTopTickets(Constants.IN_GAME_TICKETS_COUNT);
+                        players.forEach(
+                                (playerId, both) ->
+                                        both.receiveInfo(
+                                                currentPlayer.keptTickets(retainedTickets.size())));
+                        // TODO - not quite sure what to do if he can't draw tickets - does the
+                        // current players turn restart??
+                    } else continue;
+                    // next round can begin
+                    nextRound(gameState, players, currentPlayer, nextPlayer);
+                    break;
 
-                            // removing the 3 top tickets from the tickets deck
-                            gameState =
-                                    gameState.withoutTopTickets(Constants.IN_GAME_TICKETS_COUNT);
-                            players.forEach(
-                                    (playerId, both) ->
-                                            both.receiveInfo(
-                                                    currentPlayer.keptTickets(
-                                                            retainedTickets.size())));
-                        } else continue;
-                        // next round can begin
-                        nextRound(gameState, players, currentPlayer, nextPlayer);
-                        break;
+                case DRAW_CARDS:
+                    // the player only draws two cards
+                    int totalNumberOfPossibleCardsToDraw = 2;
 
-                    case DRAW_CARDS:
-                        // the player only draws two cards
-                        int totalNumberOfPossibleCardsToDraw = 2;
-                        int indexOfChosenCard = p.drawSlot();
+                    for (int i = 0; i < totalNumberOfPossibleCardsToDraw; i++) {
+                        // if there aren't enough cards to begin with, we shuffle the bigboi
+                        gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+
                         if (gameState.canDrawCards()) {
-                            for (int i = 0; i < totalNumberOfPossibleCardsToDraw; i++) {
-                                // method drawSlot returns -1 if the player picks a card from the
+                            int indexOfChosenCard = playerChoice.drawSlot();
+                            // method drawSlot returns -1 if the player picks a card from the
+                            // deck of cards or a number between 0 and 4 if one of the faceUp cards
+                            if (indexOfChosenCard == Constants.DECK_SLOT) {
+                                receiveNewInfo(players, currentPlayer, "drew blind card");
+                                gameState = gameState.withBlindlyDrawnCard();
+                                // if we pick a blind card - we have to remove a card from the
                                 // deck
-                                // of cards or a number between 0 and 4 if one of the faceUp cards
-                                if (indexOfChosenCard == -1) {
-                                    receiveNewInfo(players, currentPlayer, "drew blind card");
-                                    gameState = gameState.withBlindlyDrawnCard();
-                                    // if we pick a blind card - we have to remove a card from the
-                                    // deck
-                                    gameState = gameState.withoutTopCard();
-                                } else {
-                                    receiveNewInfo(players, currentPlayer, "drew visible card");
-                                    gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
-                                }
-                                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                                // we update the playerStates after the first card is drawn
-                                updatePlayerStates(
-                                        players, gameState, gameState.currentPlayerState());
-                            }
-                            // if canDrawCards is false, it means deck is too small - so we just
-                            // re-shuffle the bigboi
-                        } else gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                        nextRound(gameState, players, currentPlayer, nextPlayer);
-                        break;
-
-                    case CLAIM_ROUTE:
-                        Route claimedRoute = p.claimedRoute();
-                        SortedBag<Card> initialClaimCards = p.initialClaimCards();
-                        List<Card> drawnCards = new ArrayList<>();
-                        boolean canClaimRoute =
-                                gameState.currentPlayerState().canClaimRoute(claimedRoute);
-
-                        // in either case: if the claimed route is overground or underground - both
-                        // players receive the info that the current played has claimed route
-                        receiveNewInfo(
-                                players,
-                                currentPlayer,
-                                claimedRoute,
-                                initialClaimCards,
-                                "claimed route");
-                        if (canClaimRoute) {
-                            if (claimedRoute.level().equals(Route.Level.OVERGROUND)) {
-                                // adding the claimed route to the current player's claimed routes
-                                gameState =
-                                        gameState.withClaimedRoute(claimedRoute, initialClaimCards);
-                                gameState.currentPlayerState().routes().add(claimedRoute);
-                                // add the cards the player took the route with to the discards pile
-                                gameState = gameState.withMoreDiscardedCards(initialClaimCards);
+                                gameState = gameState.withoutTopCard();
                             } else {
-                                // player must choose which additional cards he wants to play when
-                                // he attempts to claim tunnel and drawn cards
-                                // contains one of the initial claim cards
-                                SortedBag<Card> additionalCardsToPlay =
-                                        p.chooseAdditionalCards(List.of(initialClaimCards));
-                                // in case we need the drawn cards for an attempt to claim a tunnel
-                                // we add the THREE top deck cards to the drawn cards because when
-                                // attempting to claim a tunnel, only three cards are drawn
-                                for (int i = 0; i < Constants.ADDITIONAL_TUNNEL_CARDS; i++) {
-                                    drawnCards.add(gameState.topCard());
-                                    gameState = gameState.withoutTopCard();
-                                    gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                                }
-                                // the available cards the player can pick from to choose additional
-                                // cards are the claimCards
-                                p.chooseAdditionalCards(List.of(initialClaimCards));
+                                receiveNewInfo(players, currentPlayer, "drew visible card");
+                                gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
+                            }
+                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+                            // we update the playerStates after the first card is drawn
+                            updatePlayerStates(players, gameState, gameState.currentPlayerState());
+                        }
+                        // if canDrawCards is false, it means deck is too small - so we just
+                        // re-shuffle the bigboi
+                    }
+                    nextRound(gameState, players, currentPlayer, nextPlayer);
+                    break;
+
+                case CLAIM_ROUTE:
+                    Route claimedRoute = playerChoice.claimedRoute();
+                    SortedBag<Card> initialClaimCards = playerChoice.initialClaimCards();
+                    List<Card> drawnCards = new ArrayList<>();
+                    boolean canClaimRoute =
+                            gameState.currentPlayerState().canClaimRoute(claimedRoute);
+
+                    // in either case: if the claimed route is overground or underground - both
+                    // players receive the info that the current played has claimed route
+                    receiveNewInfo(
+                            players,
+                            currentPlayer,
+                            claimedRoute,
+                            initialClaimCards,
+                            "claimed route");
+                    if (canClaimRoute) {
+                        if (claimedRoute.level().equals(Route.Level.OVERGROUND)) {
+                            // adding the claimed route to the current player's claimed routes
+                            gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
+                            gameState.currentPlayerState().routes().add(claimedRoute);
+                            // add the cards the player took the route with to the discards pile
+                            gameState = gameState.withMoreDiscardedCards(initialClaimCards);
+                        } else {
+                            // player must choose which additional cards he wants to play when
+                            // he attempts to claim tunnel and drawn cards
+                            // contains one of the initial claim cards
+                            SortedBag<Card> additionalCardsToPlay =
+                                    playerChoice.chooseAdditionalCards(List.of(initialClaimCards));
+                            // in case we need the drawn cards for an attempt to claim a tunnel
+                            // we add the THREE top deck cards to the drawn cards because when
+                            // attempting to claim a tunnel, only three cards are drawn
+                            for (int i = 0; i < Constants.ADDITIONAL_TUNNEL_CARDS; i++) {
+                                drawnCards.add(gameState.topCard());
+                                gameState = gameState.withoutTopCard();
+                                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+                            }
+                            // the available cards the player can pick from to choose additional
+                            // cards are the claimCards
+                            playerChoice.chooseAdditionalCards(List.of(initialClaimCards));
+                            receiveNewInfo(
+                                    players,
+                                    currentPlayer,
+                                    claimedRoute,
+                                    SortedBag.of(initialClaimCards),
+                                    "attempt to claim tunnel");
+                            // if additional cards to play is empty - it means the player
+                            // doesn't want to take the tunnel - or he simply can't
+                            if (additionalCardsToPlay.isEmpty()) {
                                 receiveNewInfo(
                                         players,
                                         currentPlayer,
                                         claimedRoute,
-                                        SortedBag.of(initialClaimCards),
-                                        "attempt to claim tunnel");
-                                // if additional cards to play is empty - it means the player
-                                // doesn't want to take the tunnel - or he simply can't
-                                if (additionalCardsToPlay.isEmpty()) {
-                                    receiveNewInfo(
-                                            players,
-                                            currentPlayer,
-                                            claimedRoute,
-                                            SortedBag.of(),
-                                            "did not claim route");
-                                    // we add the drawn cards to the discards
-                                    gameState =
-                                            gameState.withMoreDiscardedCards(
-                                                    SortedBag.of(drawnCards));
-                                } else {
-                                    int cardsToPlay =
-                                            claimedRoute.additionalClaimCardsCount(
-                                                    initialClaimCards, SortedBag.of(drawnCards));
-                                    AdditionalCardsWereDrawnInfo(
-                                            players, currentPlayer, drawnCards, cardsToPlay);
+                                        SortedBag.of(),
+                                        "did not claim route");
+                                // we add the drawn cards to the discards
+                                gameState =
+                                        gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
+                            } else {
+                                int cardsToPlay =
+                                        claimedRoute.additionalClaimCardsCount(
+                                                initialClaimCards, SortedBag.of(drawnCards));
+                                AdditionalCardsWereDrawnInfo(
+                                        players, currentPlayer, drawnCards, cardsToPlay);
 
-                                    // adding the claimed route to the current player's list of
-                                    // routes however we have to take into account the fact the
-                                    // player played the initialClaimCards and had to play
-                                    // additional cards. Moreover, the drawn cards must not be
-                                    // forgotten. We have to sum up all the cards played
-                                    SortedBag<Card> cardsPlayedForTunnelClaim =
-                                            initialClaimCards.union(additionalCardsToPlay);
-                                    gameState =
-                                            gameState.withClaimedRoute(
-                                                    claimedRoute, cardsPlayedForTunnelClaim);
-                                    gameState =
-                                            gameState.withMoreDiscardedCards(
-                                                    cardsPlayedForTunnelClaim.union(
-                                                            SortedBag.of(drawnCards)));
-                                }
+                                // adding the claimed route to the current player's list of
+                                // routes however we have to take into account the fact the
+                                // player played the initialClaimCards and had to play
+                                // additional cards. Moreover, the drawn cards must not be
+                                // forgotten. We have to sum up all the cards played
+                                SortedBag<Card> cardsPlayedForTunnelClaim =
+                                        initialClaimCards.union(additionalCardsToPlay);
+                                gameState =
+                                        gameState.withClaimedRoute(
+                                                claimedRoute, cardsPlayedForTunnelClaim);
+                                gameState =
+                                        gameState.withMoreDiscardedCards(
+                                                cardsPlayedForTunnelClaim.union(
+                                                        SortedBag.of(drawnCards)));
                             }
                         }
-                        nextRound(gameState, players, currentPlayer, nextPlayer);
-                        break;
-                }
+                    }
+                    nextRound(gameState, players, currentPlayer, nextPlayer);
+                    break;
             }
         }
         Trail longestForCurrentPlayer = Trail.longest(gameState.playerState(firstPlayer).routes());
