@@ -236,15 +236,15 @@ public final class Game {
         int loserPoints = 0;
         if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
             longestTrailBonus(players, currentPlayer, longestForCurrentPlayer);
-             winnerPoints = gameState.currentPlayerState().finalPoints()
-                    + Constants.LONGEST_TRAIL_BONUS_POINTS;
+            winnerPoints =
+                    gameState.currentPlayerState().finalPoints()
+                            + Constants.LONGEST_TRAIL_BONUS_POINTS;
         } else if (longestForCurrentPlayer.length() < longestForNextPlayer.length()) {
             longestTrailBonus(players, nextPlayer, longestForNextPlayer);
-             loserPoints =
+            loserPoints =
                     gameState.playerState(firstPlayer.next()).finalPoints()
                             + Constants.LONGEST_TRAIL_BONUS_POINTS;
         }
-
 
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
 
