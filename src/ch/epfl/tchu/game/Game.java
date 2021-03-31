@@ -55,17 +55,12 @@ public final class Game {
         gameState =
                 gameState.withInitiallyChosenTickets(
                         firstPlayer, gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
-        // we have to verify that the player has chosen 3 tickets or more
-        // not sure how to verify that 3 tickets or more have been chosen
-        Preconditions.checkArgument(gameState.playerState(firstPlayer).tickets().size() >= 3);
         // we have to remove the top tickets from the deck of tickets
         gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
         // do this for second player too
         gameState =
                 gameState.withInitiallyChosenTickets(
                         firstPlayer.next(), gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
-        Preconditions.checkArgument(
-                gameState.playerState(firstPlayer.next()).tickets().size() >= 3);
         gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
 
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
@@ -95,8 +90,6 @@ public final class Game {
                         // take the three first of the tickets pile
                         SortedBag<Ticket> retainedTickets =
                                 playerChoice.chooseTickets(topTicketsInGame);
-                        // player has to keep at least one ticket
-                        Preconditions.checkArgument(retainedTickets.size() >= 1);
                         gameState =
                                 gameState.withChosenAdditionalTickets(
                                         topTicketsInGame, retainedTickets);
@@ -107,9 +100,9 @@ public final class Game {
                                 (playerId, both) ->
                                         both.receiveInfo(
                                                 currentPlayer.keptTickets(retainedTickets.size())));
-                        // TODO - not quite sure what to do if he can't draw tickets - does the
-                        // current players turn restarts??
-                    } else continue;
+                    } // else nothing
+                    // https://discord.com/channels/807922527716114432/807922528310788110/826799128306384926
+
                     // next round can begin
                     gameState = nextTurn(gameState, players, nextPlayer);
                     break;
@@ -192,34 +185,42 @@ public final class Game {
                                                     amountOfCardsToPlay,
                                                     initialClaimCards,
                                                     SortedBag.of(drawnCards));
-                            chosenCards = playerChoice.chooseAdditionalCards(additionalCardsToPlay);
 
-                            // if additional cards to play is empty - it means the player
-                            // doesn't want to take the tunnel - or he simply can't
-                            if (chosenCards.isEmpty()) {
-                                receiveNewInfo(
-                                        players,
-                                        currentPlayer,
-                                        claimedRoute,
-                                        SortedBag.of(),
-                                        "did not claim route");
-                            } else {
-                                AdditionalCardsWereDrawnInfo(
-                                        players, currentPlayer, drawnCards, amountOfCardsToPlay);
-                                // adding the claimed route to the current player's list of
-                                // routes however we have to take into account the fact the
-                                // player played the initialClaimCards and had to play
-                                // additional cards. Moreover, the drawn cards must not be
-                                // forgotten. We have to sum up all the cards played
-                                cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
-                                // method withClaimedRoute already takes into account to add the
-                                // cards to the discards
+                            if (additionalCardsToPlay.isEmpty()) {
+                                // no additional cards to play-> player claims the tunnel directly
                                 gameState =
-                                        gameState.withClaimedRoute(
-                                                claimedRoute, cardsPlayedForTunnelClaim);
+                                        gameState.withClaimedRoute(claimedRoute, initialClaimCards);
+                                AdditionalCardsWereDrawnInfo(players, currentPlayer, drawnCards, 0);
+                            } else {
+                                chosenCards =
+                                        playerChoice.chooseAdditionalCards(additionalCardsToPlay);
+                                // if additional cards to play is empty - it means the player
+                                // doesn't want to take the tunnel - or he simply can't
+                                if (chosenCards.isEmpty()) {
+                                    receiveNewInfo(
+                                            players,
+                                            currentPlayer,
+                                            claimedRoute,
+                                            SortedBag.of(),
+                                            "did not claim route");
+                                } else {
+                                    AdditionalCardsWereDrawnInfo(
+                                            players,
+                                            currentPlayer,
+                                            drawnCards,
+                                            amountOfCardsToPlay);
+                                    // we have to sum up all the cards played to claim tunnel
+                                    cardsPlayedForTunnelClaim =
+                                            initialClaimCards.union(chosenCards);
+                                    // withClaimedRoute automatically adds cards to discards
+                                    gameState =
+                                            gameState.withClaimedRoute(
+                                                    claimedRoute, cardsPlayedForTunnelClaim);
+                                }
+                                // we add the drawn cards to the discards
+                                gameState =
+                                        gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                             }
-                            // we add the drawn cards to the discards
-                            gameState = gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                         }
                     }
                     gameState = nextTurn(gameState, players, nextPlayer);
