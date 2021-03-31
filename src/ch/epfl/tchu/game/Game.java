@@ -170,9 +170,9 @@ public final class Game {
                             // we add the THREE top deck cards to the drawn cards because when
                             // attempting to claim a tunnel, only three cards are drawn
                             for (int i = 0; i < Constants.ADDITIONAL_TUNNEL_CARDS; i++) {
+                                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                                 drawnCards.add(gameState.topCard());
                                 gameState = gameState.withoutTopCard();
-                                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             }
                             // the available cards the player can pick from to choose additional
                             // cards are the claimCards
