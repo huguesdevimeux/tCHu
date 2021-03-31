@@ -78,7 +78,6 @@ public final class Game {
             // methods
             Player playerChoice = players.get(gameState.currentPlayerId());
             updatePlayerStates(players, gameState, gameState.currentPlayerState());
-
             // following switch statement describes the possible actions
             // at each turn of the game
             switch (playerChoice.nextTurn()) {
@@ -143,8 +142,12 @@ public final class Game {
                 case CLAIM_ROUTE:
                     Route claimedRoute = playerChoice.claimedRoute();
                     SortedBag<Card> initialClaimCards = playerChoice.initialClaimCards();
-                    // drawnCards comes only into play when taking over a tunnel
+                    int amountOfCardsToPlay;
                     List<Card> drawnCards = new ArrayList<>();
+                    List<SortedBag<Card>> additionalCardsToPlay;
+                    SortedBag<Card> chosenCards;
+                    SortedBag<Card> cardsPlayedForTunnelClaim;
+
                     boolean canClaimRoute =
                             gameState.currentPlayerState().canClaimRoute(claimedRoute);
 
@@ -175,14 +178,24 @@ public final class Game {
                                 drawnCards.add(gameState.topCard());
                                 gameState = gameState.withoutTopCard();
                             }
+
+                            amountOfCardsToPlay =
+                                    claimedRoute.additionalClaimCardsCount(
+                                            initialClaimCards, SortedBag.of(drawnCards));
                             // player must choose which additional cards he wants to play when
-                            // he attempts to claim tunnel and drawnCards
-                            // contains one of the initial claim cards
-                            SortedBag<Card> additionalCardsToPlay =
-                                    playerChoice.chooseAdditionalCards(List.of(initialClaimCards));
+                            // he attempts to claim tunnel
+                            additionalCardsToPlay =
+                                    gameState
+                                            .currentPlayerState()
+                                            .possibleAdditionalCards(
+                                                    amountOfCardsToPlay,
+                                                    initialClaimCards,
+                                                    SortedBag.of(drawnCards));
+                            chosenCards = playerChoice.chooseAdditionalCards(additionalCardsToPlay);
+
                             // if additional cards to play is empty - it means the player
                             // doesn't want to take the tunnel - or he simply can't
-                            if (additionalCardsToPlay.isEmpty()) {
+                            if (chosenCards.isEmpty()) {
                                 receiveNewInfo(
                                         players,
                                         currentPlayer,
@@ -190,19 +203,14 @@ public final class Game {
                                         SortedBag.of(),
                                         "did not claim route");
                             } else {
-                                int cardsToPlay =
-                                        claimedRoute.additionalClaimCardsCount(
-                                                initialClaimCards, SortedBag.of(drawnCards));
                                 AdditionalCardsWereDrawnInfo(
-                                        players, currentPlayer, drawnCards, cardsToPlay);
-
+                                        players, currentPlayer, drawnCards, amountOfCardsToPlay);
                                 // adding the claimed route to the current player's list of
                                 // routes however we have to take into account the fact the
                                 // player played the initialClaimCards and had to play
                                 // additional cards. Moreover, the drawn cards must not be
                                 // forgotten. We have to sum up all the cards played
-                                SortedBag<Card> cardsPlayedForTunnelClaim =
-                                        initialClaimCards.union(additionalCardsToPlay);
+                                cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
                                 // method withClaimedRoute already takes into account to add the
                                 // cards to the discards
                                 gameState =
@@ -217,33 +225,29 @@ public final class Game {
                     nextRound(gameState, players, currentPlayer, nextPlayer);
                     break;
             }
+            // TODO - the 2 final rounds before the end of the game
         }
+
         Trail longestForCurrentPlayer = Trail.longest(gameState.playerState(firstPlayer).routes());
         Trail longestForNextPlayer =
                 Trail.longest(gameState.playerState(firstPlayer.next()).routes());
 
+        int winnerPoints = 0;
+        int loserPoints = 0;
         if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
             longestTrailBonus(players, currentPlayer, longestForCurrentPlayer);
+             winnerPoints = gameState.currentPlayerState().finalPoints()
+                    + Constants.LONGEST_TRAIL_BONUS_POINTS;
         } else if (longestForCurrentPlayer.length() < longestForNextPlayer.length()) {
             longestTrailBonus(players, nextPlayer, longestForNextPlayer);
-        }
-        updatePlayerStates(players, gameState, gameState.currentPlayerState());
-
-        int winnerPoints;
-        int loserPoints;
-        // when the last turn begins the last player is said to be the currentPlayer so we can use
-        // currentPlayer's finalPoints
-        if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
-            winnerPoints =
-                    gameState.currentPlayerState().finalPoints()
-                            + Constants.LONGEST_TRAIL_BONUS_POINTS;
-            loserPoints = gameState.playerState(firstPlayer.next()).finalPoints();
-        } else {
-            winnerPoints = gameState.currentPlayerState().finalPoints();
-            loserPoints =
+             loserPoints =
                     gameState.playerState(firstPlayer.next()).finalPoints()
                             + Constants.LONGEST_TRAIL_BONUS_POINTS;
         }
+
+
+        updatePlayerStates(players, gameState, gameState.currentPlayerState());
+
         if (winnerPoints > loserPoints)
             currentPlayerWonInfo(players, currentPlayer, winnerPoints, loserPoints);
         else if (winnerPoints == loserPoints)
