@@ -143,25 +143,23 @@ public final class Game {
                 case CLAIM_ROUTE:
                     Route claimedRoute = playerChoice.claimedRoute();
                     SortedBag<Card> initialClaimCards = playerChoice.initialClaimCards();
+                    // drawnCards comes only into play when taking over a tunnel
                     List<Card> drawnCards = new ArrayList<>();
                     boolean canClaimRoute =
                             gameState.currentPlayerState().canClaimRoute(claimedRoute);
 
-                    // in either case: if the claimed route is overground or underground - both
-                    // players receive the info that the current played has claimed route
-                    receiveNewInfo(
-                            players,
-                            currentPlayer,
-                            claimedRoute,
-                            initialClaimCards,
-                            "claimed route");
                     if (canClaimRoute) {
+                        // in either case: if the claimed route is overground or underground - both
+                        // players receive the info that the current played has claimed route
+                        receiveNewInfo(
+                                players,
+                                currentPlayer,
+                                claimedRoute,
+                                initialClaimCards,
+                                "claimed route");
                         if (claimedRoute.level().equals(Route.Level.OVERGROUND)) {
                             // adding the claimed route to the current player's claimed routes
                             gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
-                            gameState.currentPlayerState().routes().add(claimedRoute);
-                            // add the cards the player took the route with to the discards pile
-                            gameState = gameState.withMoreDiscardedCards(initialClaimCards);
                         } else {
                             // player must choose which additional cards he wants to play when
                             // he attempts to claim tunnel and drawn cards
@@ -211,13 +209,14 @@ public final class Game {
                                 // forgotten. We have to sum up all the cards played
                                 SortedBag<Card> cardsPlayedForTunnelClaim =
                                         initialClaimCards.union(additionalCardsToPlay);
+                                // method withClaimedRoute already takes into account to add the
+                                // cards to the discards
                                 gameState =
                                         gameState.withClaimedRoute(
                                                 claimedRoute, cardsPlayedForTunnelClaim);
+                                // we only have to add the drawn cards to the discards
                                 gameState =
-                                        gameState.withMoreDiscardedCards(
-                                                cardsPlayedForTunnelClaim.union(
-                                                        SortedBag.of(drawnCards)));
+                                        gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                             }
                         }
                     }
