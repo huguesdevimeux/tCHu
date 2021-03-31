@@ -211,8 +211,7 @@ public final class Game {
                                 // we only have to add the drawn cards to the discards
                             }
                             // we add the drawn cards to the discards
-                            gameState =
-                                    gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
+                            gameState = gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                         }
                     }
                     nextRound(gameState, players, currentPlayer, nextPlayer);
