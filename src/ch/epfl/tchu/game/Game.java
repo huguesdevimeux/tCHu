@@ -42,26 +42,10 @@ public final class Game {
 
         // initialising both players
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
-
         receiveNewInfo(players, currentPlayer, "will play first");
-        // at the beginning of the game, each player is given a set of initial tickets -
-        // from which they have to choose their initial tickets -
-        // hence the fact we call these methods for each player
-        players.forEach(
-                (playerId, player) ->
-                        player.setInitialTicketChoice(
-                                gameState.topTickets(Constants.INITIAL_TICKETS_COUNT)));
-        // first player gets delivered the top 5 tickets
-        gameState =
-                gameState.withInitiallyChosenTickets(
-                        firstPlayer, gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
-        // we have to remove the top tickets from the deck of tickets
-        gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
-        // do this for second player too
-        gameState =
-                gameState.withInitiallyChosenTickets(
-                        firstPlayer.next(), gameState.topTickets(Constants.INITIAL_TICKETS_COUNT));
-        gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+
+       setInitialTicketsChoices(players, firstPlayer);
+       setInitialTicketsChoices(players, firstPlayer.next());
 
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
@@ -358,6 +342,17 @@ public final class Game {
                                         gameState.currentPlayerState().carCount())));
     }
 
+    private static void setInitialTicketsChoices (Map<PlayerId, Player> players, PlayerId playerId){
+        // player gets delivered the top 5 tickets
+        SortedBag<Ticket> playerTickets =
+                gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
+        // the player then chooses the tickets they want to keep
+        gameState = gameState.withInitiallyChosenTickets(playerId, playerTickets);
+        // get the key of the map matching the current playerId and set initial ticket choice
+        players.get(playerId).setInitialTicketChoice(playerTickets);
+        // we have to remove the top tickets from the deck of tickets
+        gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+    }
     private static GameState nextTurn(
             GameState gameState, Map<PlayerId, Player> players, Info nextPlayer) {
         gameState = gameState.forNextTurn();
