@@ -44,8 +44,8 @@ public final class Game {
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
         receiveNewInfo(players, currentPlayer, "will play first");
 
-       setInitialTicketsChoices(players, firstPlayer);
-       setInitialTicketsChoices(players, firstPlayer.next());
+        setInitialTicketsChoices(players, firstPlayer);
+        setInitialTicketsChoices(players, firstPlayer.next());
 
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
@@ -342,10 +342,9 @@ public final class Game {
                                         gameState.currentPlayerState().carCount())));
     }
 
-    private static void setInitialTicketsChoices (Map<PlayerId, Player> players, PlayerId playerId){
+    private static void setInitialTicketsChoices(Map<PlayerId, Player> players, PlayerId playerId) {
         // player gets delivered the top 5 tickets
-        SortedBag<Ticket> playerTickets =
-                gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
+        SortedBag<Ticket> playerTickets = gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
         // the player then chooses the tickets they want to keep
         gameState = gameState.withInitiallyChosenTickets(playerId, playerTickets);
         // get the key of the map matching the current playerId and set initial ticket choice
@@ -353,6 +352,7 @@ public final class Game {
         // we have to remove the top tickets from the deck of tickets
         gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
     }
+
     private static GameState nextTurn(
             GameState gameState, Map<PlayerId, Player> players, Info nextPlayer) {
         gameState = gameState.forNextTurn();
