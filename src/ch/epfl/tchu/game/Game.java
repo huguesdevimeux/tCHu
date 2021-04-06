@@ -42,7 +42,7 @@ public final class Game {
 
         // initialising both players
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
-        receiveNewInfo(players, currentPlayer, "will play first");
+        receiveInfoRelatedToPlayer(players, currentPlayer, InfoToDisplay.WILL_PLAY_FIRST);
 
         setInitialTicketsChoices(players, firstPlayer);
         setInitialTicketsChoices(players, firstPlayer.next());
@@ -50,7 +50,7 @@ public final class Game {
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
         players.forEach((playerId, player) -> player.chooseInitialTickets());
-        receiveNewInfo(players, currentPlayer, "choose initial tickets");
+        receiveInfoRelatedToPlayer(players, currentPlayer, InfoToDisplay.CHOOSE_INITIAL_TICKETS);
 
         // finally, the game can start, the players receive the info that the currentPlayer can play
         players.forEach((playerId, both) -> both.receiveInfo(currentPlayer.canPlay()));
@@ -67,7 +67,8 @@ public final class Game {
             switch (playerChoice.nextTurn()) {
                 case DRAW_TICKETS:
                     if (gameState.canDrawTickets()) {
-                        receiveNewInfo(players, currentPlayer, "drew tickets");
+                        receiveInfoRelatedToPlayer(
+                                players, currentPlayer, InfoToDisplay.DREW_TICKETS);
                         SortedBag<Ticket> topTicketsInGame =
                                 gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
 
@@ -104,12 +105,14 @@ public final class Game {
                             // method drawSlot returns -1 if the player picks a card from the
                             // deck of cards or a number between 0 and 4 if one of the faceUp cards
                             if (indexOfChosenCard == Constants.DECK_SLOT) {
-                                receiveNewInfo(players, currentPlayer, "drew blind card");
+                                receiveInfoRelatedToPlayer(
+                                        players, currentPlayer, InfoToDisplay.DREW_BLIND_CARD);
                                 gameState = gameState.withBlindlyDrawnCard();
                                 // if we pick a blind card - we have to remove the top card
                                 gameState = gameState.withoutTopCard();
                             } else {
-                                receiveNewInfo(players, currentPlayer, "drew visible card");
+                                receiveInfoRelatedToPlayer(
+                                        players, currentPlayer, InfoToDisplay.DREW_VISIBLE_CARD);
                                 gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
                             }
                             // we update the playerStates after the first card is drawn
@@ -133,21 +136,21 @@ public final class Game {
                     if (canClaimRoute) {
                         if (claimedRoute.level().equals(Route.Level.OVERGROUND)) {
                             // players receive the info that the current played has claimed route
-                            receiveNewInfo(
+                            receiveInfoRelatedToRoute(
                                     players,
                                     currentPlayer,
                                     claimedRoute,
                                     initialClaimCards,
-                                    "claimed route");
+                                    InfoToDisplay.CLAIMED_ROUTE);
                             // adding the claimed route to the current player's claimed routes
                             gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                         } else {
-                            receiveNewInfo(
+                            receiveInfoRelatedToRoute(
                                     players,
                                     currentPlayer,
                                     claimedRoute,
                                     SortedBag.of(initialClaimCards),
-                                    "attempt to claim tunnel");
+                                    InfoToDisplay.ATTEMPTED_TUNNEL_CLAIM);
                             // in case we need the drawn cards for an attempt to claim a tunnel
                             // we add the THREE top deck cards to the drawn cards because when
                             // attempting to claim a tunnel, only three cards are drawn
@@ -181,12 +184,12 @@ public final class Game {
                                 // if additional cards to play is empty - it means the player
                                 // doesn't want to take the tunnel - or he simply can't
                                 if (chosenCards.isEmpty()) {
-                                    receiveNewInfo(
+                                    receiveInfoRelatedToRoute(
                                             players,
                                             currentPlayer,
                                             claimedRoute,
                                             SortedBag.of(),
-                                            "did not claim route");
+                                            InfoToDisplay.DID_NOT_CLAIM_ROUTE);
                                 } else {
                                     AdditionalCardsWereDrawnInfo(
                                             players,
@@ -245,14 +248,27 @@ public final class Game {
     // private methods created to compress code in main method of this class
     // using strings instead of ints as a selection in the switch statements to provide a minimum
     // of description
-    private static void receiveNewInfo(
-            Map<PlayerId, Player> players, Info currentPlayer, String s) {
-        switch (s) {
-            case "will play first":
+    private enum InfoToDisplay {
+        // enum to be able to select the information we want the players to receive
+        WILL_PLAY_FIRST,
+        CHOOSE_INITIAL_TICKETS,
+        DREW_TICKETS,
+        DREW_BLIND_CARD,
+        DREW_VISIBLE_CARD,
+        CLAIMED_ROUTE,
+        ATTEMPTED_TUNNEL_CLAIM,
+        DID_NOT_CLAIM_ROUTE;
+    }
+
+    private static void receiveInfoRelatedToPlayer(
+            Map<PlayerId, Player> players, Info currentPlayer, InfoToDisplay info) {
+
+        switch (info) {
+            case WILL_PLAY_FIRST:
                 players.forEach(
                         (playerId, player) -> player.receiveInfo(currentPlayer.willPlayFirst()));
                 break;
-            case "choose initial tickets":
+            case CHOOSE_INITIAL_TICKETS:
                 players.forEach(
                         (playerId, player) ->
                                 player.receiveInfo(
@@ -262,7 +278,7 @@ public final class Game {
                                                         - player.chooseInitialTickets().size())));
                 break;
 
-            case "drew tickets":
+            case DREW_TICKETS:
                 players.forEach(
                         (playerId, both) ->
                                 both.receiveInfo(
@@ -270,13 +286,13 @@ public final class Game {
                                                 Constants.IN_GAME_TICKETS_COUNT)));
 
                 break;
-            case "drew blind card":
+            case DREW_BLIND_CARD:
                 players.forEach(
                         (playerId, allPlayers) ->
                                 allPlayers.receiveInfo(currentPlayer.drewBlindCard()));
                 break;
 
-            case "drew visible card":
+            case DREW_VISIBLE_CARD:
                 players.forEach(
                         (playerId, allPlayers) ->
                                 allPlayers.receiveInfo(
@@ -285,27 +301,27 @@ public final class Game {
         }
     }
 
-    private static void receiveNewInfo(
+    private static void receiveInfoRelatedToRoute(
             Map<PlayerId, Player> players,
             Info currentPlayer,
             Route claimedRoute,
             SortedBag<Card> cards,
-            String s) {
-        switch (s) {
-            case "claimed route":
+            InfoToDisplay info) {
+        switch (info) {
+            case CLAIMED_ROUTE:
                 players.forEach(
                         (playerId, allPlayers) ->
                                 allPlayers.receiveInfo(
                                         currentPlayer.claimedRoute(claimedRoute, cards)));
                 break;
-            case "attempt to claim tunnel":
+            case ATTEMPTED_TUNNEL_CLAIM:
                 players.forEach(
                         (playerId, allPlayers) ->
                                 allPlayers.receiveInfo(
                                         currentPlayer.attemptsTunnelClaim(
                                                 claimedRoute, SortedBag.of(cards))));
                 break;
-            case "did not claim route":
+            case DID_NOT_CLAIM_ROUTE:
                 players.forEach(
                         (playerId, player) ->
                                 player.receiveInfo(currentPlayer.didNotClaimRoute(claimedRoute)));
