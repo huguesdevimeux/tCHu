@@ -4,7 +4,6 @@ import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -202,15 +201,14 @@ public final class Route {
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
-        // creating a Hashset from claimCards so that each element in ClaimCards only appears once
-        HashSet<Card> claimCardsCopy = new HashSet<>(claimCards.toList());
         int additionalClaimCards = 0;
         // adding the number  of locomotive cards in the drawn cards
         additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
         for (Card drawn : drawnCards)
             additionalClaimCards +=
-                    claimCardsCopy.stream()
-                            .filter(x -> !x.equals(Card.LOCOMOTIVE) && x.equals(drawn))
+                    claimCards.stream()
+                            .distinct()
+                            .filter(claim -> !claim.equals(Card.LOCOMOTIVE) && claim.equals(drawn))
                             .count();
         return additionalClaimCards;
     }

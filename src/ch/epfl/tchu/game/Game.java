@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 /**
  * Represents a game of tCHu (aka les Aventuriers du Rail but shhh).
@@ -37,8 +36,8 @@ public final class Game {
         gameState = GameState.initial(tickets, rng);
         // selecting the first player at random and representing him as the current player
         PlayerId firstPlayer = gameState.currentPlayerId();
-        Info currentPlayerInfo = new Info(firstPlayer.name());
-        Info nextPlayerInfo = new Info(firstPlayer.next().name());
+        Info currentPlayerInfo = new Info(playerNames.get(firstPlayer));
+        Info nextPlayerInfo = new Info(playerNames.get(firstPlayer.next()));
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
 
         // initialising both players
@@ -55,12 +54,12 @@ public final class Game {
                 players, currentPlayerInfo, InfoToDisplay.CHOOSE_INITIAL_TICKETS);
 
         // finally, the game can start, the players receive the info that the currentPlayer can play
-        players.forEach((playerId, both) -> both.receiveInfo(currentPlayerInfo.canPlay()));
+        players.forEach((playerId, player) -> player.receiveInfo(currentPlayerInfo.canPlay()));
 
         // the following part represents the "mid-game" (ie each turn until the last round
         // begins)
         boolean endGame = false;
-        while (!endGame) {
+        while (!gameState.lastTurnBegins()) {
             // representing the player as the key of Map player to be able to call the necessary
             // methods
             Player playerChoice = players.get(gameState.currentPlayerId());
@@ -84,8 +83,8 @@ public final class Game {
                                 gameState.withChosenAdditionalTickets(
                                         topTicketsInGame, retainedTickets);
                         players.forEach(
-                                (playerId, both) ->
-                                        both.receiveInfo(
+                                (playerId, player) ->
+                                        player.receiveInfo(
                                                 currentPlayerInfo.keptTickets(
                                                         retainedTickets.size())));
                     } // else nothing
@@ -219,12 +218,6 @@ public final class Game {
                     gameState = nextTurn(gameState, players, nextPlayerInfo);
                     break;
             }
-            if (gameState.lastTurnBegins()) {
-                // this is wrong but you get the idea - do you think it's the way to go?
-                IntStream.range(0, players.size())
-                        .forEach(x -> gameState = gameState.forNextTurn());
-                endGame = true;
-            }
             // TODO - the 2 final rounds before the end of the game
         }
         lastTurnBeginsInfo(gameState, players, currentPlayerInfo);
@@ -292,8 +285,8 @@ public final class Game {
 
             case DREW_TICKETS:
                 players.forEach(
-                        (playerId, both) ->
-                                both.receiveInfo(
+                        (playerId, player) ->
+                                player.receiveInfo(
                                         currentPlayer.drewTickets(
                                                 Constants.IN_GAME_TICKETS_COUNT)));
 
@@ -364,8 +357,8 @@ public final class Game {
     private static void lastTurnBeginsInfo(
             GameState gameState, Map<PlayerId, Player> players, Info currentPlayer) {
         players.forEach(
-                (playerId, both) ->
-                        both.receiveInfo(
+                (playerId, player) ->
+                        player.receiveInfo(
                                 currentPlayer.lastTurnBegins(
                                         gameState.currentPlayerState().carCount())));
     }
