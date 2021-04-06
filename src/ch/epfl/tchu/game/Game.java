@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * Represents a game of tCHu (aka les Aventuriers du Rail but shhh).
@@ -58,7 +59,8 @@ public final class Game {
 
         // the following part represents the "mid-game" (ie each turn until the last round
         // begins)
-        while (!gameState.lastTurnBegins()) {
+        boolean endGame = false;
+        while (!endGame) {
             // representing the player as the key of Map player to be able to call the necessary
             // methods
             Player playerChoice = players.get(gameState.currentPlayerId());
@@ -216,6 +218,11 @@ public final class Game {
                     }
                     gameState = nextTurn(gameState, players, nextPlayerInfo);
                     break;
+            }
+            if (gameState.lastTurnBegins()) {
+                // this is wrong but you get the idea - do you think it's the way to go?
+                IntStream.range(0, players.size()).forEach(x -> gameState = gameState.forNextTurn());
+                endGame = true;
             }
             // TODO - the 2 final rounds before the end of the game
         }
