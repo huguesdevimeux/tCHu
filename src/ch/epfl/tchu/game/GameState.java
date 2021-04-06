@@ -214,7 +214,7 @@ public final class GameState extends PublicGameState {
         tempPlayerState.computeIfPresent(
                 this.currentPlayerId(), (id, state) -> state.withAddedTickets(chosenTickets));
         return GameStateWithSamePlayers(
-                this.deckTickets.withoutTopCards(chosenTickets.size()),
+                this.deckTickets.withoutTopCards(drawnTickets.size()),
                 this.cardState,
                 tempPlayerState);
     }
@@ -290,7 +290,7 @@ public final class GameState extends PublicGameState {
      * @return Whether the last turn begins.
      */
     public boolean lastTurnBegins() {
-        return this.currentPlayerState().carCount() <= 2;
+        return this.currentPlayerState().carCount() <= 2 && lastPlayer() == null;
     }
 
     /**
@@ -301,8 +301,10 @@ public final class GameState extends PublicGameState {
      * @return The new sate of the next turn.
      */
     public GameState forNextTurn() {
-        PlayerId lastPlayer = null;
-        if (lastTurnBegins()) lastPlayer = this.currentPlayerId();
+        PlayerId lastPlayer = this.lastPlayer();
+        if (lastTurnBegins()) {
+            lastPlayer = this.currentPlayerId();
+        }
         return new GameState(
                 this.deckTickets,
                 this.cardState,
