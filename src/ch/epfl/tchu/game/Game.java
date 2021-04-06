@@ -287,9 +287,7 @@ public final class Game {
         }
     }
 
-    /**
-     * Handles the different turns logic.
-     */
+    /** Handles the different turns logic. */
     private static class TurnHandler {
         public static void drawTickets(
                 Map<PlayerId, Player> players, Player currentPlayer, Info currentPlayerInfo) {
@@ -313,7 +311,10 @@ public final class Game {
         }
 
         public static void drawCards(
-                Map<PlayerId, Player> players, Player currentPlayer, Info currentPlayerInfo, Random rng) {
+                Map<PlayerId, Player> players,
+                Player currentPlayer,
+                Info currentPlayerInfo,
+                Random rng) {
             // the player only draws two cards
             int totalNumberOfPossibleCardsToDraw = 2;
 
@@ -340,7 +341,10 @@ public final class Game {
         }
 
         public static void claimRoute(
-                Map<PlayerId, Player> players, Player currentPlayer, Info currentPlayerInfo, Random rng) {
+                Map<PlayerId, Player> players,
+                Player currentPlayer,
+                Info currentPlayerInfo,
+                Random rng) {
             Route claimedRoute = currentPlayer.claimedRoute();
             SortedBag<Card> initialClaimCards = currentPlayer.initialClaimCards();
             int amountOfCardsToPlay;
