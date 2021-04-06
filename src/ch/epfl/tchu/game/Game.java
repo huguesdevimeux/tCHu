@@ -221,7 +221,8 @@ public final class Game {
             }
             if (gameState.lastTurnBegins()) {
                 // this is wrong but you get the idea - do you think it's the way to go?
-                IntStream.range(0, players.size()).forEach(x -> gameState = gameState.forNextTurn());
+                IntStream.range(0, players.size())
+                        .forEach(x -> gameState = gameState.forNextTurn());
                 endGame = true;
             }
             // TODO - the 2 final rounds before the end of the game
