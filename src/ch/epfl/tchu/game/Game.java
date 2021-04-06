@@ -36,13 +36,13 @@ public final class Game {
         gameState = GameState.initial(tickets, rng);
         // selecting the first player at random and representing him as the current player
         PlayerId firstPlayer = gameState.currentPlayerId();
-        Info currentPlayer = new Info(firstPlayer.name());
-        Info nextPlayer = new Info(firstPlayer.next().name());
+        Info currentPlayerInfo = new Info(firstPlayer.name());
+        Info nextPlayerInfo = new Info(firstPlayer.next().name());
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
 
         // initialising both players
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
-        receiveInfoRelatedToPlayer(players, currentPlayer, InfoToDisplay.WILL_PLAY_FIRST);
+        receiveInfoRelatedToPlayer(players, currentPlayerInfo, InfoToDisplay.WILL_PLAY_FIRST);
 
         setInitialTicketsChoices(players, firstPlayer);
         setInitialTicketsChoices(players, firstPlayer.next());
@@ -50,10 +50,10 @@ public final class Game {
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
         players.forEach((playerId, player) -> player.chooseInitialTickets());
-        receiveInfoRelatedToPlayer(players, currentPlayer, InfoToDisplay.CHOOSE_INITIAL_TICKETS);
+        receiveInfoRelatedToPlayer(players, currentPlayerInfo, InfoToDisplay.CHOOSE_INITIAL_TICKETS);
 
         // finally, the game can start, the players receive the info that the currentPlayer can play
-        players.forEach((playerId, both) -> both.receiveInfo(currentPlayer.canPlay()));
+        players.forEach((playerId, both) -> both.receiveInfo(currentPlayerInfo.canPlay()));
 
         // the following part represents the "mid-game" (ie each turn until the last round
         // begins)
@@ -68,28 +68,27 @@ public final class Game {
                 case DRAW_TICKETS:
                     if (gameState.canDrawTickets()) {
                         receiveInfoRelatedToPlayer(
-                                players, currentPlayer, InfoToDisplay.DREW_TICKETS);
+                                players, currentPlayerInfo, InfoToDisplay.DREW_TICKETS);
                         SortedBag<Ticket> topTicketsInGame =
                                 gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
 
                         // take the three first of the tickets pile
                         SortedBag<Ticket> retainedTickets =
                                 playerChoice.chooseTickets(topTicketsInGame);
+                        // the following method already removes top tickets so we don't
+                        //have to take care of it
                         gameState =
                                 gameState.withChosenAdditionalTickets(
                                         topTicketsInGame, retainedTickets);
-
-                        // removing the 3 top tickets from the tickets deck
-                        gameState = gameState.withoutTopTickets(Constants.IN_GAME_TICKETS_COUNT);
                         players.forEach(
                                 (playerId, both) ->
                                         both.receiveInfo(
-                                                currentPlayer.keptTickets(retainedTickets.size())));
+                                                currentPlayerInfo.keptTickets(retainedTickets.size())));
                     } // else nothing
                     // https://discord.com/channels/807922527716114432/807922528310788110/826799128306384926
 
                     // next round can begin
-                    gameState = nextTurn(gameState, players, nextPlayer);
+                    gameState = nextTurn(gameState, players, nextPlayerInfo);
                     break;
 
                 case DRAW_CARDS:
@@ -106,20 +105,19 @@ public final class Game {
                             // deck of cards or a number between 0 and 4 if one of the faceUp cards
                             if (indexOfChosenCard == Constants.DECK_SLOT) {
                                 receiveInfoRelatedToPlayer(
-                                        players, currentPlayer, InfoToDisplay.DREW_BLIND_CARD);
+                                        players, currentPlayerInfo, InfoToDisplay.DREW_BLIND_CARD);
                                 gameState = gameState.withBlindlyDrawnCard();
-                                // if we pick a blind card - we have to remove the top card
-                                gameState = gameState.withoutTopCard();
                             } else {
                                 receiveInfoRelatedToPlayer(
-                                        players, currentPlayer, InfoToDisplay.DREW_VISIBLE_CARD);
+                                        players, currentPlayerInfo, InfoToDisplay.DREW_VISIBLE_CARD);
                                 gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
                             }
+                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                             // we update the playerStates after the first card is drawn
                             updatePlayerStates(players, gameState, gameState.currentPlayerState());
                         }
                     }
-                    gameState = nextTurn(gameState, players, nextPlayer);
+                    gameState = nextTurn(gameState, players, nextPlayerInfo);
                     break;
 
                 case CLAIM_ROUTE:
@@ -138,7 +136,7 @@ public final class Game {
                             // players receive the info that the current played has claimed route
                             receiveInfoRelatedToRoute(
                                     players,
-                                    currentPlayer,
+                                    currentPlayerInfo,
                                     claimedRoute,
                                     initialClaimCards,
                                     InfoToDisplay.CLAIMED_ROUTE);
@@ -147,7 +145,7 @@ public final class Game {
                         } else {
                             receiveInfoRelatedToRoute(
                                     players,
-                                    currentPlayer,
+                                    currentPlayerInfo,
                                     claimedRoute,
                                     SortedBag.of(initialClaimCards),
                                     InfoToDisplay.ATTEMPTED_TUNNEL_CLAIM);
@@ -159,6 +157,7 @@ public final class Game {
                                 drawnCards.add(gameState.topCard());
                                 gameState = gameState.withoutTopCard();
                             }
+                            gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
 
                             amountOfCardsToPlay =
                                     claimedRoute.additionalClaimCardsCount(
@@ -177,25 +176,25 @@ public final class Game {
                                 // no additional cards to play-> player claims the tunnel directly
                                 gameState =
                                         gameState.withClaimedRoute(claimedRoute, initialClaimCards);
-                                AdditionalCardsWereDrawnInfo(players, currentPlayer, drawnCards, 0);
+                                AdditionalCardsWereDrawnInfo(players, currentPlayerInfo, drawnCards, 0);
                             } else {
                                 chosenCards =
                                         playerChoice.chooseAdditionalCards(additionalCardsToPlay);
+                                AdditionalCardsWereDrawnInfo(
+                                        players,
+                                        currentPlayerInfo,
+                                        drawnCards,
+                                        amountOfCardsToPlay);
                                 // if additional cards to play is empty - it means the player
                                 // doesn't want to take the tunnel - or he simply can't
                                 if (chosenCards.isEmpty()) {
                                     receiveInfoRelatedToRoute(
                                             players,
-                                            currentPlayer,
+                                            currentPlayerInfo,
                                             claimedRoute,
                                             SortedBag.of(),
                                             InfoToDisplay.DID_NOT_CLAIM_ROUTE);
                                 } else {
-                                    AdditionalCardsWereDrawnInfo(
-                                            players,
-                                            currentPlayer,
-                                            drawnCards,
-                                            amountOfCardsToPlay);
                                     // we have to sum up all the cards played to claim tunnel
                                     cardsPlayedForTunnelClaim =
                                             initialClaimCards.union(chosenCards);
@@ -210,12 +209,12 @@ public final class Game {
                             }
                         }
                     }
-                    gameState = nextTurn(gameState, players, nextPlayer);
+                    gameState = nextTurn(gameState, players, nextPlayerInfo);
                     break;
             }
             // TODO - the 2 final rounds before the end of the game
         }
-        lastTurnBeginsInfo(gameState, players, currentPlayer);
+        lastTurnBeginsInfo(gameState, players, currentPlayerInfo);
 
         Trail longestForCurrentPlayer = Trail.longest(gameState.playerState(firstPlayer).routes());
         Trail longestForNextPlayer =
@@ -224,13 +223,13 @@ public final class Game {
         int winnerPoints = 0;
         int loserPoints = 0;
         if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
-            longestTrailBonus(players, currentPlayer, longestForCurrentPlayer);
+            longestTrailBonus(players, currentPlayerInfo, longestForCurrentPlayer);
             winnerPoints =
                     gameState.currentPlayerState().finalPoints()
                             + Constants.LONGEST_TRAIL_BONUS_POINTS;
             loserPoints = gameState.currentPlayerState().finalPoints();
         } else if (longestForCurrentPlayer.length() < longestForNextPlayer.length()) {
-            longestTrailBonus(players, nextPlayer, longestForNextPlayer);
+            longestTrailBonus(players, nextPlayerInfo, longestForNextPlayer);
             winnerPoints = gameState.currentPlayerState().finalPoints();
             loserPoints =
                     gameState.playerState(firstPlayer.next()).finalPoints()
@@ -240,13 +239,13 @@ public final class Game {
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
 
         if (winnerPoints > loserPoints)
-            currentPlayerWonInfo(players, currentPlayer, winnerPoints, loserPoints);
+            currentPlayerWonInfo(players, currentPlayerInfo, winnerPoints, loserPoints);
         else if (winnerPoints == loserPoints)
             playersHaveDrawnInfo(players, new ArrayList<>(playerNames.values()), winnerPoints);
     }
 
     // private methods created to compress code in main method of this class
-    // using strings instead of ints as a selection in the switch statements to provide a minimum
+    // using an enum as a selection in the switch statements to provide a minimum
     // of description
     private enum InfoToDisplay {
         // enum to be able to select the information we want the players to receive
