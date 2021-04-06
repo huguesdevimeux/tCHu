@@ -265,6 +265,7 @@ public final class Game {
         DID_NOT_CLAIM_ROUTE;
     }
 
+    // simple method to receive different infos - check cases to know which ones
     private static void receiveInfoRelatedToPlayer(
             Map<PlayerId, Player> players, Info currentPlayer, InfoToDisplay info) {
 
@@ -305,7 +306,7 @@ public final class Game {
                 break;
         }
     }
-
+    // same as previous method but this one focuses on routes and tunnels
     private static void receiveInfoRelatedToRoute(
             Map<PlayerId, Player> players,
             Info currentPlayer,
@@ -333,7 +334,7 @@ public final class Game {
                 break;
         }
     }
-
+    // info the players receive to know additional cards were drawn
     private static void AdditionalCardsWereDrawnInfo(
             Map<PlayerId, Player> p, Info cPlayer, List<Card> dCards, int aCards) {
         p.forEach(
@@ -342,6 +343,7 @@ public final class Game {
                                 cPlayer.drewAdditionalCards(SortedBag.of(dCards), aCards)));
     }
 
+    // info the players receive to know that a player won
     private static void currentPlayerWonInfo(
             Map<PlayerId, Player> players, Info currentPlayer, int winnerPoints, int loserPoints) {
         players.forEach(
@@ -349,11 +351,13 @@ public final class Game {
                         player.receiveInfo(currentPlayer.won(winnerPoints, loserPoints)));
     }
 
+    // info the players receive to know both players have drawn
     private static void playersHaveDrawnInfo(
             Map<PlayerId, Player> players, List<String> playerNames, int points) {
         players.forEach((playerId, player) -> player.receiveInfo(Info.draw(playerNames, points)));
     }
 
+    // info the players receive to know that the last turn begins
     private static void lastTurnBeginsInfo(
             GameState gameState, Map<PlayerId, Player> players, Info currentPlayer) {
         players.forEach(
@@ -363,6 +367,13 @@ public final class Game {
                                         gameState.currentPlayerState().carCount())));
     }
 
+    /**
+     * Deals with the ticket management at the beginning. The player receives a set of initial cards
+     * (5 top tickets) and must pick at least three.
+     *
+     * @param players use it to <code>setInitialTicketChoice</code> to the player in question
+     * @param playerId the player in question
+     */
     private static void setInitialTicketsChoices(Map<PlayerId, Player> players, PlayerId playerId) {
         // player gets delivered the top 5 tickets
         SortedBag<Ticket> playerTickets = gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
@@ -374,6 +385,15 @@ public final class Game {
         gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
     }
 
+    /**
+     * Deals with the next turn. Calls <code>forNextTurn</code> in gameState and both players
+     * receive info that the next player can play.
+     *
+     * @param gameState gamestate to end - go to the next round
+     * @param players the players in the game
+     * @param nextPlayer the player
+     * @return a new gameState with the next player that will play
+     */
     private static GameState nextTurn(
             GameState gameState, Map<PlayerId, Player> players, Info nextPlayer) {
         gameState = gameState.forNextTurn();
@@ -381,11 +401,13 @@ public final class Game {
         return gameState;
     }
 
+    // used to update the player of the states
     private static void updatePlayerStates(
             Map<PlayerId, Player> players, PublicGameState gameState, PlayerState playerState) {
         players.forEach((playerId, player) -> player.updateState(gameState, playerState));
     }
 
+    // info where both players receive the info that a player has received the longest trail bonus
     private static void longestTrailBonus(
             Map<PlayerId, Player> players, Info playerIdentity, Trail longest) {
         players.forEach(
