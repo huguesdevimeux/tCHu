@@ -50,7 +50,8 @@ public final class Game {
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
         players.forEach((playerId, player) -> player.chooseInitialTickets());
-        receiveInfoRelatedToPlayer(players, currentPlayerInfo, InfoToDisplay.CHOOSE_INITIAL_TICKETS);
+        receiveInfoRelatedToPlayer(
+                players, currentPlayerInfo, InfoToDisplay.CHOOSE_INITIAL_TICKETS);
 
         // finally, the game can start, the players receive the info that the currentPlayer can play
         players.forEach((playerId, both) -> both.receiveInfo(currentPlayerInfo.canPlay()));
@@ -76,14 +77,15 @@ public final class Game {
                         SortedBag<Ticket> retainedTickets =
                                 playerChoice.chooseTickets(topTicketsInGame);
                         // the following method already removes top tickets so we don't
-                        //have to take care of it
+                        // have to take care of it
                         gameState =
                                 gameState.withChosenAdditionalTickets(
                                         topTicketsInGame, retainedTickets);
                         players.forEach(
                                 (playerId, both) ->
                                         both.receiveInfo(
-                                                currentPlayerInfo.keptTickets(retainedTickets.size())));
+                                                currentPlayerInfo.keptTickets(
+                                                        retainedTickets.size())));
                     } // else nothing
                     // https://discord.com/channels/807922527716114432/807922528310788110/826799128306384926
 
@@ -109,7 +111,9 @@ public final class Game {
                                 gameState = gameState.withBlindlyDrawnCard();
                             } else {
                                 receiveInfoRelatedToPlayer(
-                                        players, currentPlayerInfo, InfoToDisplay.DREW_VISIBLE_CARD);
+                                        players,
+                                        currentPlayerInfo,
+                                        InfoToDisplay.DREW_VISIBLE_CARD);
                                 gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
                             }
                             gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
@@ -176,7 +180,8 @@ public final class Game {
                                 // no additional cards to play-> player claims the tunnel directly
                                 gameState =
                                         gameState.withClaimedRoute(claimedRoute, initialClaimCards);
-                                AdditionalCardsWereDrawnInfo(players, currentPlayerInfo, drawnCards, 0);
+                                AdditionalCardsWereDrawnInfo(
+                                        players, currentPlayerInfo, drawnCards, 0);
                             } else {
                                 chosenCards =
                                         playerChoice.chooseAdditionalCards(additionalCardsToPlay);
