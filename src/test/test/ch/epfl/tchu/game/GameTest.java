@@ -102,7 +102,11 @@ class GameTest {
 
             doAnswer(o -> this.nextRouteToClaim).when(this).claimedRoute();
             doAnswer(o -> this.nextInitialCardsUsedToClaimRoute).when(this).initialClaimCards();
-            doAnswer(invocationOnMock -> invocationOnMock.<List<SortedBag<Card>>>getArgument(0).get(0)).when(this).chooseAdditionalCards(any(List.class));
+            doAnswer(invocationOnMock -> {
+                List<SortedBag<Card>> additionalCardsThatCanbePlayed = invocationOnMock.getArgument(0);
+                if (additionalCardsThatCanbePlayed.size() > 0) return additionalCardsThatCanbePlayed.get(0);
+                else return SortedBag.of();
+            }).when(this).chooseAdditionalCards(any(List.class));
             return this;
         }
 
