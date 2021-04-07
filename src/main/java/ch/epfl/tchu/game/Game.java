@@ -15,13 +15,14 @@ import java.util.*;
 public final class Game {
     private static GameState gameState;
     private static List<Info> playerInfos;
-    private static final int indexOfCurrentPlayer = 0;
-    private static final int indexOfNextPlayer = 1;
+    private static final int CURRENT_PLAYER_INDEX = 0;
+    private static final int NEXT_PLAYER_INDEX = 1;
 
     /**
      * Not instantiable.
      */
-    private Game() {}
+    private Game() {
+    }
 
     /**
      * Method that makes the two <code>players</code> play the game.
@@ -37,14 +38,15 @@ public final class Game {
             SortedBag<Ticket> tickets,
             Random rng) {
         gameState = GameState.initial(tickets, rng);
-        // selecting the first player at random and representing him as the current player
-        PlayerId currentPlayer = gameState.currentPlayerId();
         //current player will always be at index 0 thus the next player will always be at index 1
-        playerInfos = List.of(new Info(playerNames.get(currentPlayer)), new Info(playerNames.get(currentPlayer.next())));
+        playerInfos = new ArrayList<>();
+        Collections.addAll(playerInfos, new Info(playerNames.get(gameState.currentPlayerId())),
+                new Info(playerNames.get(gameState.currentPlayerId().next())));
+
         //   Info nextPlayerInfo = new Info(playerNames.get(currentPlayer.next()));
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
 
-        beginGame(players, playerNames, playerInfos.get(0), currentPlayer);
+        beginGame(players, playerNames, playerInfos.get(0));
 
         // the following part represents the "mid-game" (ie each turn until the last round
         // begins)
@@ -58,37 +60,36 @@ public final class Game {
             // next round can begin
             switch (currentPlayerTurn.nextTurn()) {
                 case DRAW_TICKETS:
-                    TurnHandler.drawTickets(players, currentPlayerTurn, playerInfos.get(indexOfCurrentPlayer));
-                    gameState = nextTurn(gameState, players, playerInfos.get(indexOfNextPlayer));
+                    TurnHandler.drawTickets(players, currentPlayerTurn, playerInfos.get(CURRENT_PLAYER_INDEX));
+                    gameState = nextTurn(gameState, players);
                     break;
                 case DRAW_CARDS:
-                    TurnHandler.drawCards(players, currentPlayerTurn, playerInfos.get(indexOfCurrentPlayer), rng);
-                    gameState = nextTurn(gameState, players, playerInfos.get(indexOfNextPlayer));
+                    TurnHandler.drawCards(players, currentPlayerTurn, playerInfos.get(CURRENT_PLAYER_INDEX), rng);
+                    gameState = nextTurn(gameState, players);
                     break;
                 case CLAIM_ROUTE:
-                    TurnHandler.claimRoute(players, currentPlayerTurn, playerInfos.get(indexOfCurrentPlayer), rng);
-                    gameState = nextTurn(gameState, players, playerInfos.get(indexOfNextPlayer));
+                    TurnHandler.claimRoute(players, currentPlayerTurn, playerInfos.get(CURRENT_PLAYER_INDEX), rng);
+                    gameState = nextTurn(gameState, players);
                     break;
             }
             // TODO - the 2 final rounds before the end of the game
         }
-        ReceiveInfoHandler.lastTurnBegins(gameState, players, playerInfos.get(indexOfCurrentPlayer));
+        ReceiveInfoHandler.lastTurnBegins(gameState, players, playerInfos.get(CURRENT_PLAYER_INDEX));
 
-        endGame(players, playerNames, playerInfos.get(indexOfCurrentPlayer), playerInfos.get(indexOfNextPlayer), currentPlayer);
+        endGame(players, playerNames, playerInfos.get(CURRENT_PLAYER_INDEX), playerInfos.get(NEXT_PLAYER_INDEX));
     }
 
     private static void beginGame(
             Map<PlayerId, Player> players,
             Map<PlayerId, String> playerNames,
-            Info currentPlayerInfo,
-            PlayerId firstPlayer) {
+            Info currentPlayerInfo) {
 
         // initialising both players
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
         ReceiveInfoHandler.willPlayerFirst(players, currentPlayerInfo);
 
-        setInitialTicketsChoices(players, firstPlayer);
-        setInitialTicketsChoices(players, firstPlayer.next());
+        setInitialTicketsChoices(players, gameState.currentPlayerId());
+        setInitialTicketsChoices(players, gameState.currentPlayerId().next());
 
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
@@ -98,6 +99,7 @@ public final class Game {
         // finally, the game can start, the players receive the info that the currentPlayer can play
         players.forEach((playerId, player) -> player.receiveInfo(currentPlayerInfo.canPlay()));
     }
+
     /**
      * Deals with the ticket management at the beginning. The player receives a set of initial cards
      * (5 top tickets) and must pick at least three.
@@ -119,16 +121,18 @@ public final class Game {
      * Deals with the next turn. Calls <code>forNextTurn</code> in gameState and both players
      * receive info that the next player can play.
      *
-     * @param gameState  game state to end - go to the next round
-     * @param players    the players in the game
-     * @param nextPlayer the player
+     * @param gameState game state to end - go to the next round
+     * @param players   the players in the game
      * @return a new gameState with the next player that will play
      */
     private static GameState nextTurn(
-            GameState gameState, Map<PlayerId, Player> players, Info nextPlayer) {
-        Collections.swap(playerInfos, indexOfCurrentPlayer, indexOfNextPlayer);
+            GameState gameState, Map<PlayerId, Player> players) {
+        //the next player will become the current player in relation to the informations received
+        Collections.swap(playerInfos, CURRENT_PLAYER_INDEX, NEXT_PLAYER_INDEX);
+        //the next player will become the current player in relation to the gamestates
         gameState = gameState.forNextTurn();
-        players.forEach((playerId, player) -> player.receiveInfo(nextPlayer.canPlay()));
+        //now the next player becomes the current player so both players receive the info that the current player can play
+        players.forEach((playerId, player) -> player.receiveInfo(playerInfos.get(CURRENT_PLAYER_INDEX).canPlay()));
         return gameState;
     }
 
@@ -142,11 +146,10 @@ public final class Game {
             Map<PlayerId, Player> players,
             Map<PlayerId, String> playerNames,
             Info currentPlayerInfo,
-            Info nextPlayerInfo,
-            PlayerId firstPlayer) {
-        Trail longestForCurrentPlayer = Trail.longest(gameState.playerState(firstPlayer).routes());
+            Info nextPlayerInfo) {
+        Trail longestForCurrentPlayer = Trail.longest(gameState.playerState(gameState.currentPlayerId()).routes());
         Trail longestForNextPlayer =
-                Trail.longest(gameState.playerState(firstPlayer.next()).routes());
+                Trail.longest(gameState.playerState(gameState.currentPlayerId().next()).routes());
 
         int winnerPoints = 0;
         int loserPoints = 0;
