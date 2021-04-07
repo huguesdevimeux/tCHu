@@ -9,6 +9,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -43,7 +44,7 @@ class GameTest {
                         player1,
                         PlayerId.PLAYER_2,
                         mockedPlayer2.whoIsADummyPlayer());
-        Game.play(players, playersNames, SortedBag.of(ChMap.tickets()), TestRandomizer.newRandom());
+        Game.play(players, playersNames, SortedBag.of(ChMap.tickets()), TestRandomizer.newRandom()); //TestRandomizer.newRandom());
 
         // NOTE : This fails because when player_1 is saying he wants to take a route, player2 is
         // asked to get which route.
@@ -72,6 +73,8 @@ class GameTest {
         private PublicGameState gameState;
         private PlayerState playerState;
 
+        private final Random rng = TestRandomizer.newRandom();
+
         private Route nextRouteToClaim;
         private SortedBag<Card> nextInitialCardsUsedToClaimRoute;
 
@@ -90,11 +93,11 @@ class GameTest {
                         if (claimableRoutes.size() == 0) {
                             return TurnKind.DRAW_CARDS;
                         }
-                        this.nextRouteToClaim = claimableRoutes.get(0);
+                        this.nextRouteToClaim = claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
+                        List<SortedBag<Card>> tempPossibleClaimCards = this.playerState
+                                .possibleClaimCards(nextRouteToClaim);
                         this.nextInitialCardsUsedToClaimRoute =
-                                this.playerState
-                                        .possibleClaimCards(nextRouteToClaim)
-                                        .get(0);
+                                tempPossibleClaimCards.get(rng.nextInt(tempPossibleClaimCards.size()));
                         return TurnKind.CLAIM_ROUTE;
                     })
                     .when(this)

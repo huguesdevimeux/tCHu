@@ -290,7 +290,9 @@ public final class GameState extends PublicGameState {
      * @return Whether the last turn begins.
      */
     public boolean lastTurnBegins() {
-        return this.currentPlayerState().carCount() <= 2 && lastPlayer() == null;
+        boolean temp = this.currentPlayerState().carCount() <= 2 && lastPlayer() == null;
+        System.out.printf("Last turn begins ? %s%n", temp);
+        return temp;
     }
 
     /**

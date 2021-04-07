@@ -50,7 +50,8 @@ public final class Game {
 
         // the following part represents the "mid-game" (ie each turn until the last round
         // begins)
-        while (!gameState.lastTurnBegins()) {
+        boolean isGameFinished = false;
+        while (!isGameFinished) {
             // representing the player as the key of Map player to be able to call the necessary
             // methods
             Player currentPlayerTurn = players.get(gameState.currentPlayerId());
@@ -58,23 +59,31 @@ public final class Game {
             // following switch statement describes the possible actions
             // at each turn of the game
             // next round can begin
-            switch (currentPlayerTurn.nextTurn()) {
+            Player.TurnKind turnKind = currentPlayerTurn.nextTurn();
+            System.out.println("New turn is about to begin ..");
+            System.out.printf("%s has %s%n car(s) left.%n", playerNames.get(gameState.currentPlayerId()), gameState.currentPlayerState().carCount());
+            System.out.printf("%s chooses to do %s%%n", playerNames.get(gameState.currentPlayerId()), turnKind);
+            switch (turnKind) {
                 case DRAW_TICKETS:
                     TurnHandler.drawTickets(players, currentPlayerTurn, playerInfos.get(CURRENT_PLAYER_INDEX));
+                    isGameFinished = gameState.lastTurnBegins();
                     gameState = nextTurn(gameState, players);
                     break;
                 case DRAW_CARDS:
                     TurnHandler.drawCards(players, currentPlayerTurn, playerInfos.get(CURRENT_PLAYER_INDEX), rng);
+                    isGameFinished = gameState.lastTurnBegins();
                     gameState = nextTurn(gameState, players);
                     break;
                 case CLAIM_ROUTE:
                     TurnHandler.claimRoute(players, currentPlayerTurn, playerInfos.get(CURRENT_PLAYER_INDEX), rng);
+                    isGameFinished = gameState.lastTurnBegins();
                     gameState = nextTurn(gameState, players);
                     break;
             }
             // TODO - the 2 final rounds before the end of the game
+            System.out.println("Turn finished.");
+            System.out.printf("isGameFinished ? %s%n", isGameFinished);
         }
-        ReceiveInfoHandler.lastTurnBegins(gameState, players, playerInfos.get(CURRENT_PLAYER_INDEX));
 
         endGame(players, playerNames, playerInfos.get(CURRENT_PLAYER_INDEX), playerInfos.get(NEXT_PLAYER_INDEX));
     }
@@ -128,6 +137,10 @@ public final class Game {
     private static GameState nextTurn(
             GameState gameState, Map<PlayerId, Player> players) {
         //the next player will become the current player in relation to the informations received
+        if (gameState.lastTurnBegins()) {
+            // TODO REMOVE THIS SHIT
+            ReceiveInfoHandler.lastTurnBegins(gameState, players, playerInfos.get(CURRENT_PLAYER_INDEX));
+        }
         Collections.swap(playerInfos, CURRENT_PLAYER_INDEX, NEXT_PLAYER_INDEX);
         //the next player will become the current player in relation to the gamestates
         gameState = gameState.forNextTurn();
@@ -212,8 +225,8 @@ public final class Game {
             for (int i = 0; i < totalNumberOfPossibleCardsToDraw; i++) {
                 // if there aren't enough cards to begin with, we shuffle the bigboi
                 gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-
                 if (gameState.canDrawCards()) {
+                    System.out.println("The player can draw cards !");
                     int indexOfChosenCard = currentPlayer.drawSlot();
                     // method drawSlot returns -1 if the player picks a card from the
                     // deck of cards or a number between 0 and 4 if one of the faceUp cards
@@ -227,6 +240,8 @@ public final class Game {
                     gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                     // we update the playerStates after the first card is drawn
                     updatePlayerStates(players, gameState, gameState.currentPlayerState());
+                } else {
+                    System.out.println("The player can't draw cards.");
                 }
             }
         }
@@ -272,6 +287,11 @@ public final class Game {
                                 players, currentPlayerInfo, drawnCards, 0);
                         // no additional cards to play-> player claims the tunnel directly
                         gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
+                        ReceiveInfoHandler.claimedRoute(
+                                players,
+                                currentPlayerInfo,
+                                claimedRoute,
+                                initialClaimCards);
                     } else {
                         ReceiveInfoHandler.additionalCardsWereDrawnInfo(
                                 players, currentPlayerInfo, drawnCards, amountOfCardsToPlay);
@@ -284,7 +304,6 @@ public final class Game {
                                                 amountOfCardsToPlay,
                                                 initialClaimCards,
                                                 SortedBag.of(drawnCards));
-
                         chosenCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCardsToPlay);
                         // possibleAdditionalCardsToPlay is empty -> he can't take the route
                         //chosenCards is empty -> does not want to take the route
