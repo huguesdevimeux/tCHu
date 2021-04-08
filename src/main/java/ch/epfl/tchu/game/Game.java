@@ -5,6 +5,7 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents a game of tCHu (aka les Aventuriers du Rail but shhh).
@@ -13,8 +14,8 @@ import java.util.*;
  * @author Hugues Devimeux (327282)
  */
 public final class Game {
+    private static final Map<PlayerId, Info> playersInfo = new HashMap<>();
     private static GameState gameState;
-    private static final Map<PlayerId, Info> playerInfo = new HashMap<>();
 
     /**
      * Not instantiable.
@@ -37,51 +38,66 @@ public final class Game {
             Random rng) {
         gameState = GameState.initial(tickets, rng);
         Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
-        //putting all of the elements of playerNames in a map where values are of class Info
-        // for receiving infos purposes
-        playerNames.forEach((playerId, name) -> playerInfo.put(playerId, new Info(playerNames.get(playerId))));
+        final PlayerId playerStartingATurn = gameState.currentPlayerId();
 
-        beginGame(players, playerNames, playerInfo.get(gameState.currentPlayerId()));
+        // putting all of the elements of playerNames in a map where values are of class Info
+        // for receiving infos purposes
+        playerNames.forEach(
+                (playerId, name) -> playersInfo.put(playerId, new Info(playerNames.get(playerId))));
+
+        beginGame(players, playerNames, playersInfo.get(gameState.currentPlayerId()));
 
         System.out.println(gameState.currentPlayerState().carCount());
         // the following part represents the "mid-game" (ie each turn until the last round
         // begins)
-        boolean isGameFinished = false;
-        while (!isGameFinished) {
-            // representing the player as the key of Map player to be able to call the necessary
-            // methods
-            Player currentPlayerTurn = players.get(gameState.currentPlayerId());
-            updatePlayerStates(players, gameState, gameState.currentPlayerState());
-            // following switch statement describes the possible actions
-            // at each turn of the game
-            // next round can begin
-            Player.TurnKind turnKind = currentPlayerTurn.nextTurn();
-            System.out.println("New turn is about to begin ..");
-            System.out.printf("%s has %s%n car(s) left.%n", playerNames.get(gameState.currentPlayerId()), gameState.currentPlayerState().carCount());
-            System.out.printf("%s chooses to do %s%%n", playerNames.get(gameState.currentPlayerId()), turnKind);
-            switch (turnKind) {
+
+        while ((gameState.lastPlayer() != gameState.currentPlayerId())) {
+            gameState = nextTurn(players);
+            Player currentPlayer = players.get(gameState.currentPlayerId());
+            System.out.printf("%s is playing%n", playerNames.get(gameState.currentPlayerId()));
+            updatePlayerStates(players, gameState, null);
+
+            Player.TurnKind turnKindChosenByCurrentPlayer = currentPlayer.nextTurn();
+            System.out.printf(
+                    "%s has %s car(s) left.%n",
+                    playerNames.get(gameState.currentPlayerId()),
+                    gameState.currentPlayerState().carCount());
+            System.out.printf(
+                    "%s chooses to do %s%n",
+                    playerNames.get(gameState.currentPlayerId()),
+                    turnKindChosenByCurrentPlayer);
+
+            switch (turnKindChosenByCurrentPlayer) {
                 case DRAW_TICKETS:
-                    TurnHandler.drawTickets(players, currentPlayerTurn, playerInfo.get(gameState.currentPlayerId()));
-                    isGameFinished = gameState.lastTurnBegins();
-                    gameState = nextTurn(players);
+                    TurnHandler.drawTickets(
+                            players,
+                            currentPlayer,
+                            playersInfo.get(gameState.currentPlayerId()));
                     break;
                 case DRAW_CARDS:
-                    TurnHandler.drawCards(players, currentPlayerTurn, playerInfo.get(gameState.currentPlayerId()), rng);
-                    isGameFinished = gameState.lastTurnBegins();
-                    gameState = nextTurn(players);
+                    TurnHandler.drawCards(
+                            players,
+                            currentPlayer,
+                            playersInfo.get(gameState.currentPlayerId()),
+                            rng);
                     break;
                 case CLAIM_ROUTE:
-                    TurnHandler.claimRoute(players, currentPlayerTurn, playerInfo.get(gameState.currentPlayerId()), rng);
-                    isGameFinished = gameState.lastTurnBegins();
-                    gameState = nextTurn(players);
+                    TurnHandler.claimRoute(
+                            players,
+                            currentPlayer,
+                            playersInfo.get(gameState.currentPlayerId()),
+                            rng);
                     break;
             }
-            // TODO - the 2 final rounds before the end of the game
-            System.out.println("Turn finished.");
-            System.out.printf("isGameFinished ? %s%n", isGameFinished);
+            System.out.println("Done playing.\n");
+            System.out.println("Turn over.");
         }
 
-        endGame(players, playerNames, playerInfo.get(gameState.currentPlayerId()), playerInfo.get(gameState.currentPlayerId().next()));
+        endGame(
+                players,
+                playerNames,
+                playersInfo.get(gameState.currentPlayerId()),
+                playersInfo.get(gameState.currentPlayerId().next()));
     }
 
     private static void beginGame(
@@ -99,9 +115,11 @@ public final class Game {
         updatePlayerStates(players, gameState, gameState.currentPlayerState());
         // from these 5 tickets, each player chooses their initial tickets
         players.forEach((ignored, player) -> player.chooseInitialTickets());
-        playerInfo.forEach((ignored, playerInfo) ->
-                ReceiveInfoHandler.chooseInitialTickets(players, playerInfo));
-        // finally, the game can start, the players receive the info that the current player can play
+        playersInfo.forEach(
+                (ignored, playerInfo) ->
+                        ReceiveInfoHandler.chooseInitialTickets(players, playerInfo));
+        // finally, the game can start, the players receive the info that the current player can
+        // play
         players.forEach((ignored, player) -> player.receiveInfo(currentPlayerInfo.canPlay()));
     }
 
@@ -129,24 +147,26 @@ public final class Game {
      * @param players the players in the game
      * @return a new gameState with the next player that will play
      */
-    private static GameState nextTurn(
-            Map<PlayerId, Player> players) {
-        //the next player will become the current player in relation to the informations received
+    private static GameState nextTurn(Map<PlayerId, Player> players) {
+        // the next player will become the current player in relation to the informations received
         if (gameState.lastTurnBegins()) {
-            // TODO REMOVE THIS SHIT
-            ReceiveInfoHandler.lastTurnBegins(gameState, players, playerInfo.get(gameState.currentPlayerId()));
+            ReceiveInfoHandler.lastTurnBegins(gameState, players, playersInfo.get(gameState.currentPlayerId()));
         }
         gameState = gameState.forNextTurn();
         // now the next player becomes the current player so both players receive the info that the
         // current player can play
-        players.forEach((playerId, player) -> player.receiveInfo((playerInfo.get(gameState.currentPlayerId())).canPlay()));
+        players.forEach(
+                (playerId, player) ->
+                        player.receiveInfo(
+                                (playersInfo.get(gameState.currentPlayerId())).canPlay()));
         return gameState;
     }
 
     // used to update the player of the states
     private static void updatePlayerStates(
-            Map<PlayerId, Player> players, PublicGameState gameState, PlayerState playerState) {
-        players.forEach((playerId, player) -> player.updateState(gameState, playerState));
+            Map<PlayerId, Player> players, GameState gameState, PlayerState playerState) {
+        // TODO remove the last parameter playerStates
+        players.forEach((playerId, player) -> player.updateState(gameState, gameState.playerState(playerId)));
     }
 
     private static void endGame(
@@ -154,38 +174,83 @@ public final class Game {
             Map<PlayerId, String> playerNames,
             Info currentPlayerInfo,
             Info nextPlayerInfo) {
-        Trail longestForCurrentPlayer = Trail.longest(gameState.playerState(gameState.currentPlayerId()).routes());
-        Trail longestForNextPlayer =
-                Trail.longest(gameState.playerState(gameState.currentPlayerId().next()).routes());
 
-        int winnerPoints = 0;
-        int loserPoints = 0;
-        if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
-            ReceiveInfoHandler.longestTrail(players, currentPlayerInfo, longestForCurrentPlayer);
-            winnerPoints =
-                    gameState.currentPlayerState().finalPoints()
-                            + Constants.LONGEST_TRAIL_BONUS_POINTS;
-            loserPoints = gameState.playerState(gameState.currentPlayerId().next()).finalPoints();
-        } else if (longestForCurrentPlayer.length() < longestForNextPlayer.length()) {
-            ReceiveInfoHandler.longestTrail(players, nextPlayerInfo, longestForNextPlayer);
-            winnerPoints = gameState.currentPlayerState().finalPoints();
-            loserPoints =
-                    gameState.playerState(gameState.currentPlayerId().next()).finalPoints()
-                            + Constants.LONGEST_TRAIL_BONUS_POINTS;
-        }
-        updatePlayerStates(players, gameState, gameState.currentPlayerState());
+        Map.Entry<PlayerId, Trail> longestTrail =
+                players.keySet().stream()
+                        .map(
+                                player ->
+                                        Map.entry(
+                                                player,
+                                                Trail.longest(
+                                                        gameState.playerState(player).routes())))
+                        .max(Comparator.comparingInt(o -> o.getValue().length()))
+                        .get();
 
-        if (winnerPoints > loserPoints)
-            ReceiveInfoHandler.currentPlayerWonInfo(
-                    players, currentPlayerInfo, winnerPoints, loserPoints);
-        else if (winnerPoints == loserPoints)
-            ReceiveInfoHandler.playersHaveDrawn(
-                    players, new ArrayList<>(playerNames.values()), winnerPoints);
+        // NavigableMap is a sortedMap that supports accessing the last element. (with lastEntry()).
+        NavigableMap<PlayerId, Integer> pointsOfEachPlayerSorted =
+                players.keySet().stream()
+                        .map(
+                                playerId -> {
+                                    int amountOfPoints =
+                                            gameState.playerState(playerId).finalPoints();
+                                    if (playerId.equals(longestTrail.getKey())) {
+                                        amountOfPoints += Constants.LONGEST_TRAIL_BONUS_POINTS;
+                                    }
+                                    return Map.entry(playerId, amountOfPoints);
+                                })
+                        .sorted(Comparator.comparingInt(Map.Entry::getValue))
+                        .collect(
+                                Collectors.toMap(
+                                        Map.Entry::getKey,
+                                        Map.Entry::getValue,
+                                        (x, y) -> y,
+                                        // TODO remove the sorted before ? TreeMAp can do it by its own.
+                                        TreeMap::new));
+
+        ReceiveInfoHandler.longestTrail(players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
+
+        int winnerPoints = pointsOfEachPlayerSorted.lastEntry().getValue();
+        PlayerId winnerId = pointsOfEachPlayerSorted.lastEntry().getKey();
+        int loserPoints = pointsOfEachPlayerSorted.firstEntry().getValue();
+        if (winnerPoints != loserPoints)
+            ReceiveInfoHandler.playerWon(players, playersInfo.get(winnerId), winnerPoints, loserPoints);
+        else ReceiveInfoHandler.playersHaveDrawn(players, new LinkedList<>(playerNames.values()), winnerPoints);
+
+
+//
+//        Trail longestForCurrentPlayer =
+//                Trail.longest(gameState.playerState(gameState.currentPlayerId()).routes());
+//        Trail longestForNextPlayer =
+//                Trail.longest(gameState.playerState(gameState.currentPlayerId().next()).routes());
+//
+//        // Sort longestTrailsOfEachPlayer by trail length.
+//
+//        int winnerPoints = 0;
+//        int loserPoints = 0;
+//        if (longestForCurrentPlayer.length() > longestForNextPlayer.length()) {
+//            ReceiveInfoHandler.longestTrail(players, currentPlayerInfo, longestForCurrentPlayer);
+//            winnerPoints =
+//                    gameState.currentPlayerState().finalPoints()
+//                            + Constants.LONGEST_TRAIL_BONUS_POINTS;
+//            loserPoints = gameState.playerState(gameState.currentPlayerId().next()).finalPoints();
+//        } else if (longestForCurrentPlayer.length() < longestForNextPlayer.length()) {
+//            ReceiveInfoHandler.longestTrail(players, nextPlayerInfo, longestForNextPlayer);
+//            winnerPoints = gameState.currentPlayerState().finalPoints();
+//            loserPoints =
+//                    gameState.playerState(gameState.currentPlayerId().next()).finalPoints()
+//                            + Constants.LONGEST_TRAIL_BONUS_POINTS;
+//        }
+//        updatePlayerStates(players, gameState, gameState.currentPlayerState());
+//
+//        if (winnerPoints > loserPoints)
+//            ReceiveInfoHandler.currentPlayerWonInfo(
+//                    players, currentPlayerInfo, winnerPoints, loserPoints);
+//        else if (winnerPoints == loserPoints)
+//            ReceiveInfoHandler.playersHaveDrawn(
+//                    players, new ArrayList<>(playerNames.values()), winnerPoints);
     }
 
-    /**
-     * Handles the different turns logic.
-     */
+    /** Handles the different turns logic. */
     private static class TurnHandler {
         public static void drawTickets(
                 Map<PlayerId, Player> players, Player currentPlayer, Info currentPlayerInfo) {
@@ -283,10 +348,7 @@ public final class Game {
                         // no additional cards to play-> player claims the tunnel directly
                         gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                         ReceiveInfoHandler.claimedRoute(
-                                players,
-                                currentPlayerInfo,
-                                claimedRoute,
-                                initialClaimCards);
+                                players, currentPlayerInfo, claimedRoute, initialClaimCards);
                     } else {
                         ReceiveInfoHandler.additionalCardsWereDrawnInfo(
                                 players, currentPlayerInfo, drawnCards, amountOfCardsToPlay);
@@ -300,7 +362,8 @@ public final class Game {
                                                 amountOfCardsToPlay,
                                                 initialClaimCards,
                                                 SortedBag.of(drawnCards));
-                        chosenCards = currentPlayer.chooseAdditionalCards(possibleAdditionalCardsToPlay);
+                        chosenCards =
+                                currentPlayer.chooseAdditionalCards(possibleAdditionalCardsToPlay);
                         System.out.println(gameState.currentPlayerState().cards());
 
                         // possibleAdditionalCardsToPlay is empty -> he can't take the route
@@ -325,6 +388,8 @@ public final class Game {
                         gameState = gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                     }
                 }
+            } else {
+                System.out.println("Can't take the route !");
             }
         }
     }
@@ -413,26 +478,27 @@ public final class Game {
         }
 
         public static void longestTrail(
-                Map<PlayerId, Player> players, Info playerIdentity, Trail longest) {
+                Map<PlayerId, Player> players, Info playerLongestTrail, Trail longest) {
             players.forEach(
                     (playerId, player) ->
-                            player.receiveInfo(playerIdentity.getsLongestTrailBonus(longest)));
+                            player.receiveInfo(playerLongestTrail.getsLongestTrailBonus(longest)));
         }
 
         public static void playersHaveDrawn(
                 Map<PlayerId, Player> players, List<String> playerNames, int points) {
+
             players.forEach(
                     (playerId, player) -> player.receiveInfo(Info.draw(playerNames, points)));
         }
 
-        public static void currentPlayerWonInfo(
+        public static void playerWon(
                 Map<PlayerId, Player> players,
-                Info currentPlayer,
+                Info winnerInfo,
                 int winnerPoints,
                 int loserPoints) {
             players.forEach(
                     (playerId, player) ->
-                            player.receiveInfo(currentPlayer.won(winnerPoints, loserPoints)));
+                            player.receiveInfo(winnerInfo.won(winnerPoints, loserPoints)));
         }
     }
 }
