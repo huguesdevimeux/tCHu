@@ -1,10 +1,12 @@
 package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.SortedBag;
+import ch.epfl.tchu.gui.Info;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
+import org.mockito.exceptions.verification.MoreThanAllowedActualInvocations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -24,14 +27,67 @@ class GameTest {
     @Spy
     private StandardTestedPlayer mockedPlayer1;
     private Map<PlayerId, String> playersNames;
+    private Map<PlayerId, Info> playersInfos;
 
     @BeforeEach
     void setUp() {
         mockedPlayer1 = spy(new StandardTestedPlayer(PlayerId.PLAYER_1, "Alice"));
         mockedPlayer2 = spy(new StandardTestedPlayer(PlayerId.PLAYER_2, "Bob"));
         playersNames = Map.of(PlayerId.PLAYER_1, "Alice", PlayerId.PLAYER_2, "Bob");
+        playersInfos =
+                playersNames.entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> new Info(e.getValue())));
     }
 
+    @Test
+    void whenTwoPlayersAlwaysDrawCards() {
+        Map<PlayerId, Player> players =
+                Map.of(
+                        PlayerId.PLAYER_1,
+                        mockedPlayer1.whoIsADummyPlayer(),
+                        PlayerId.PLAYER_2,
+                        mockedPlayer2.whoIsADummyPlayer());
+        assertThrows(
+                MoreThanAllowedActualInvocations.class,
+                () ->
+                        Game.play(
+                                players,
+                                playersNames,
+                                SortedBag.of(ChMap.tickets()),
+                                TestRandomizer.newRandom()));
+        players.forEach((playerId, player) -> verify(player, atLeastOnce()).drawSlot());
+        players.forEach((playerId, player) -> verify(player, never()).claimedRoute());
+        players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
+        players.forEach(
+                (playerId, player) -> verify(player).setInitialTicketChoice(any(SortedBag.class)));
+    }
+
+    @Test
+    void whenTwoPlayersAlwaysDrawTickets() {
+        Map<PlayerId, Player> players =
+                Map.of(
+                        PlayerId.PLAYER_1,
+                        mockedPlayer1.whoIsADummyPlayer().whoAlwaysTriesToDrawTicket(),
+                        PlayerId.PLAYER_2,
+                        mockedPlayer2.whoIsADummyPlayer().whoAlwaysTriesToDrawTicket());
+
+        assertThrows(
+                MoreThanAllowedActualInvocations.class,
+                () ->
+                        Game.play(
+                                players,
+                                playersNames,
+                                SortedBag.of(ChMap.tickets()),
+                                TestRandomizer.newRandom()));
+        players.forEach(
+                (playerId, player) -> {
+                    verify(player, atLeastOnce())
+                            .receiveInfo(eq(playersInfos.get(playerId).canPlay()));
+                    // Check that the player has recieved that he has drawn 1 ticket.
+                    verify(player, atLeastOnce()).receiveInfo(eq(playersInfos.get(playerId).drewTickets(3)));
+                    verify(player, atLeastOnce()).receiveInfo(eq(playersInfos.get(playerId).keptTickets(1)));
+                });
+    }
 
     @Test
     void whenPlayer1OnlyTriesToTakeRoutes() {
@@ -44,10 +100,13 @@ class GameTest {
                         player1,
                         PlayerId.PLAYER_2,
                         mockedPlayer2.whoIsADummyPlayer());
-        Game.play(players, playersNames, SortedBag.of(ChMap.tickets()), TestRandomizer.newRandom()); //TestRandomizer.newRandom());
 
-        // NOTE : This fails because when player_1 is saying he wants to take a route, player2 is
-        // asked to get which route.
+        // Player 2 will take all the cards and won't play any, so the game can't be finished.
+        assertThrows(MoreThanAllowedActualInvocations.class, () -> Game.play(
+                players,
+                playersNames,
+                SortedBag.of(ChMap.tickets()),
+                TestRandomizer.newRandom()));
     }
 
     @Test
@@ -62,19 +121,17 @@ class GameTest {
         Game.play(players, playersNames, SortedBag.of(ChMap.tickets()), TestRandomizer.newRandom());
     }
 
-
     // Players utils for tests.
 
     private static class StandardTestedPlayer implements Player {
 
         public final String name;
         private final PlayerId ownId;
+        private final Random rng = TestRandomizer.newRandom();
+        private final int MAX_NUMBER_OF_TURNS = 100;
         private SortedBag<Ticket> initialTickets;
         private PublicGameState gameState;
         private PlayerState playerState;
-
-        private final Random rng = TestRandomizer.newRandom();
-
         private Route nextRouteToClaim;
         private SortedBag<Card> nextInitialCardsUsedToClaimRoute;
 
@@ -83,21 +140,45 @@ class GameTest {
             this.name = name;
         }
 
+        public StandardTestedPlayer whoAlwaysTriesToDrawTicket() {
+            doAnswer(
+                    invocationOnMock -> {
+                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
+                        return TurnKind.DRAW_TICKETS;
+                    })
+                    .when(this)
+                    .nextTurn();
+            // Always takes the first ticket.
+            doAnswer(invocationOnMock -> {
+                SortedBag<Ticket> ticketSortedBag = invocationOnMock.getArgument(0);
+                return SortedBag.of(ticketSortedBag.get(0));
+            })
+                    .when(this)
+                    .chooseTickets(any(SortedBag.class));
+            return this;
+        }
+
         public StandardTestedPlayer whoAlwaysTriesToTakeARouteWhenPossible() {
             doAnswer(
                     invocationOnMock -> {
+                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
                         List<Route> claimableRoutes =
                                 ChMap.routes().stream()
                                         .filter(this.playerState::canClaimRoute)
                                         .collect(Collectors.toList());
                         if (claimableRoutes.size() == 0) {
+                            System.out.printf(
+                                    "%s can't take a any route, so chose to draw cards instead.%n",
+                                    this.name);
                             return TurnKind.DRAW_CARDS;
                         }
-                        this.nextRouteToClaim = claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
-                        List<SortedBag<Card>> tempPossibleClaimCards = this.playerState
-                                .possibleClaimCards(nextRouteToClaim);
+                        this.nextRouteToClaim =
+                                claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
+                        List<SortedBag<Card>> tempPossibleClaimCards =
+                                this.playerState.possibleClaimCards(nextRouteToClaim);
                         this.nextInitialCardsUsedToClaimRoute =
-                                tempPossibleClaimCards.get(rng.nextInt(tempPossibleClaimCards.size()));
+                                tempPossibleClaimCards.get(
+                                        rng.nextInt(tempPossibleClaimCards.size()));
                         return TurnKind.CLAIM_ROUTE;
                     })
                     .when(this)
@@ -105,11 +186,16 @@ class GameTest {
 
             doAnswer(o -> this.nextRouteToClaim).when(this).claimedRoute();
             doAnswer(o -> this.nextInitialCardsUsedToClaimRoute).when(this).initialClaimCards();
-            doAnswer(invocationOnMock -> {
-                List<SortedBag<Card>> additionalCardsThatCanbePlayed = invocationOnMock.getArgument(0);
-                if (additionalCardsThatCanbePlayed.size() > 0) return additionalCardsThatCanbePlayed.get(0);
-                else return SortedBag.of();
-            }).when(this).chooseAdditionalCards(any(List.class));
+            doAnswer(
+                    invocationOnMock -> {
+                        List<SortedBag<Card>> additionalCardsThatCanbePlayed =
+                                invocationOnMock.getArgument(0);
+                        if (additionalCardsThatCanbePlayed.size() > 0)
+                            return additionalCardsThatCanbePlayed.get(0);
+                        else return SortedBag.of();
+                    })
+                    .when(this)
+                    .chooseAdditionalCards(any(List.class));
             return this;
         }
 
@@ -128,7 +214,14 @@ class GameTest {
                     .when(this)
                     .chooseTickets(any(SortedBag.class));
             // Always select to draw a new card
-            doAnswer(o -> TurnKind.DRAW_CARDS).when(this).nextTurn();
+            doAnswer(
+                    o -> {
+                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
+                        return TurnKind.DRAW_CARDS;
+                    })
+                    .when(this)
+                    .nextTurn();
+
             // Always draw blindly.
             doReturn(-1).when(this).drawSlot();
             return this;
