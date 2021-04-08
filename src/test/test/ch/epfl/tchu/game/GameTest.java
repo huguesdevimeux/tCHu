@@ -31,8 +31,8 @@ class GameTest {
 
     @BeforeEach
     void setUp() {
-        mockedPlayer1 = spy(new StandardTestedPlayer(PlayerId.PLAYER_1, "Alice"));
-        mockedPlayer2 = spy(new StandardTestedPlayer(PlayerId.PLAYER_2, "Bob"));
+        mockedPlayer1 = spy(new StandardTestedPlayer("Alice"));
+        mockedPlayer2 = spy(new StandardTestedPlayer("Bob"));
         playersNames = Map.of(PlayerId.PLAYER_1, "Alice", PlayerId.PLAYER_2, "Bob");
         playersInfos =
                 playersNames.entrySet().stream()
@@ -127,6 +127,7 @@ class GameTest {
 
 
         Game.play(players, playersNames, SortedBag.of(ChMap.tickets()), TestRandomizer.newRandom());
+
     }
 
     // Players utils for tests.
@@ -134,17 +135,14 @@ class GameTest {
     private static class StandardTestedPlayer implements Player {
 
         public final String name;
-        private final PlayerId ownId;
         private final Random rng = TestRandomizer.newRandom();
         private final int MAX_NUMBER_OF_TURNS = 300;
         private SortedBag<Ticket> initialTickets;
-        private PublicGameState gameState;
         private PlayerState playerState;
         private Route nextRouteToClaim;
         private SortedBag<Card> nextInitialCardsUsedToClaimRoute;
 
-        public StandardTestedPlayer(PlayerId ownId, String name) {
-            this.ownId = ownId;
+        public StandardTestedPlayer(String name) {
             this.name = name;
         }
 
@@ -247,7 +245,6 @@ class GameTest {
         @Override
         public void updateState(PublicGameState newState, PlayerState ownState) {
             this.playerState = ownState;
-            this.gameState = newState;
         }
 
         @Override
