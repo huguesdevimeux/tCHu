@@ -5,8 +5,6 @@ import ch.epfl.tchu.gui.Info;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.exceptions.verification.MoreThanAllowedActualInvocations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -130,16 +127,6 @@ class GameTest {
 
 
         Game.play(players, playersNames, SortedBag.of(ChMap.tickets()), TestRandomizer.newRandom());
-
-        // Checks that after the players gets the info saying the last turn begins, there is a last turn played.
-        players.forEach(
-                (playerId, player) -> {
-                    InOrder afterLastTurnBegins = Mockito.inOrder(player);
-                    List<String> possibleStringsForLastTurnBegins = IntStream.range(0, 3).mapToObj(i -> playersInfos.get(playerId).lastTurnBegins(i)).collect(Collectors.toList());
-                    afterLastTurnBegins.verify(player).receiveInfo(argThat(possibleStringsForLastTurnBegins::contains));
-                    afterLastTurnBegins.verify(player).receiveInfo(playersInfos.get(playerId).canPlay());
-                });
-
     }
 
     // Players utils for tests.
@@ -149,7 +136,7 @@ class GameTest {
         public final String name;
         private final PlayerId ownId;
         private final Random rng = TestRandomizer.newRandom();
-        private final int MAX_NUMBER_OF_TURNS = 100;
+        private final int MAX_NUMBER_OF_TURNS = 300;
         private SortedBag<Ticket> initialTickets;
         private PublicGameState gameState;
         private PlayerState playerState;
