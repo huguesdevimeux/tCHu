@@ -283,7 +283,11 @@ class GameTest {
             doAnswer(
                     invocationOnMock -> {
                         verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
-                        if (TestRandomizer.newRandom().nextFloat() < 0.3) return TurnKind.DRAW_TICKETS;
+                        // A new random is instanciated everytime, if I use TestRandomizer.newRandom() the same value is returned every time ..
+                        double decision = new Random().nextDouble();
+                        if (decision < 0.3) {
+                            return TurnKind.DRAW_TICKETS;
+                        }
                         List<Route> claimableRoutes =
                                 ChMap.routes().stream()
                                         .filter(this.playerState::canClaimRoute)
