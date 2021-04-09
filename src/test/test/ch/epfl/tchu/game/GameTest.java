@@ -225,7 +225,7 @@ class GameTest {
                                 if (claimableRoutes.size() == 0) {
                                     System.out.printf(
                                             "%s can't take a any route, so chose to draw cards"
-                                                + " instead.%n",
+                                                    + " instead.%n",
                                             this.name);
                                     return TurnKind.DRAW_CARDS;
                                 }
@@ -309,7 +309,7 @@ class GameTest {
                                 if (claimableRoutes.size() == 0) {
                                     System.out.printf(
                                             "%s can't take a any route, so chose to draw cards"
-                                                + " instead.%n",
+                                                    + " instead.%n",
                                             this.name);
                                     return TurnKind.DRAW_CARDS;
                                 }
