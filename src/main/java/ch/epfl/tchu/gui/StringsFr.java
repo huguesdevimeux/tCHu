@@ -28,7 +28,7 @@ public final class StringsFr {
     // Informations concernant le déroulement de la partie
     public static final String WILL_PLAY_FIRST = "%s jouera en premier.\n\n";
     public static final String KEPT_N_TICKETS = "%s a gardé %s billet%s.\n";
-    public static final String CAN_PLAY = "C'est à %s de jouer.\n";
+    public static final String CAN_PLAY = "\nC'est à %s de jouer.\n";
     public static final String DREW_TICKETS = "%s a tiré %s billet%s...\n";
     public static final String DREW_BLIND_CARD = "%s a tiré une carte de la pioche.\n";
     public static final String DREW_VISIBLE_CARD = "%s a tiré une carte %s visible.\n";
