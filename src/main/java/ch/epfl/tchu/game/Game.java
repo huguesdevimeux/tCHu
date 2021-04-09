@@ -5,7 +5,6 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Represents a game of tCHu (aka les Aventuriers du Rail but shhh).
@@ -177,34 +176,25 @@ public final class Game {
                         .max(Comparator.comparingInt(o -> o.getValue().length()))
                         .orElse(null);
 
-        // NavigableMap is a sortedMap that supports accessing the last element. (with lastEntry()).
-        NavigableMap<PlayerId, Integer> pointsOfEachPlayerSorted =
-                players.keySet().stream()
-                        .map(
-                                playerId -> {
-                                    int amountOfPoints =
-                                            gameState.playerState(playerId).finalPoints();
-                                    if (playerId.equals(longestTrail.getKey())) {
-                                        amountOfPoints += Constants.LONGEST_TRAIL_BONUS_POINTS;
-                                    }
-                                    return Map.entry(playerId, amountOfPoints);
-                                })
-                        .sorted(Comparator.comparingInt(Map.Entry::getValue))
-                        .collect(
-                                Collectors.toMap(
-                                        Map.Entry::getKey,
-                                        Map.Entry::getValue,
-                                        (x, y) -> y,
-                                        TreeMap::new));
+        List<Map.Entry<PlayerId, Integer>> sortedPoints = new ArrayList<>();
+        for (PlayerId player : players.keySet()) {
+            int amountOfPoints =
+                    gameState.playerState(player).finalPoints();
+            if (player.equals(longestTrail.getKey())) {
+                amountOfPoints += Constants.LONGEST_TRAIL_BONUS_POINTS;
+            }
+            sortedPoints.add(Map.entry(player, amountOfPoints));
+        }
+        sortedPoints.sort(Map.Entry.comparingByValue());
 
         // just to tell Intellij to STFU
         assert longestTrail != null;
         ReceiveInfoHandler.longestTrail(
                 players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
-        updatePlayerStates(players, gameState);
-        int winnerPoints = pointsOfEachPlayerSorted.lastEntry().getValue();
-        PlayerId winnerId = pointsOfEachPlayerSorted.lastEntry().getKey();
-        int loserPoints = pointsOfEachPlayerSorted.firstEntry().getValue();
+updatePlayerStates(players, gameState);
+        int winnerPoints = sortedPoints.get(sortedPoints.size() - 1).getValue();//pointsOfEachPlayerSorted.lastEntry().getValue();
+        PlayerId winnerId = sortedPoints.get(sortedPoints.size() - 1).getKey();
+        int loserPoints = sortedPoints.get(0).getValue();
         if (winnerPoints != loserPoints)
             ReceiveInfoHandler.playerWon(
                     players, playersInfo.get(winnerId), winnerPoints, loserPoints);
