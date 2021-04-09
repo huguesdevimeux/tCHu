@@ -55,7 +55,6 @@ public final class Game {
             Player currentPlayer = players.get(gameState.currentPlayerId());
             System.out.printf("%s is playing%n", playerNames.get(gameState.currentPlayerId()));
             updatePlayerStates(players, gameState);
-
             Player.TurnKind turnKindChosenByCurrentPlayer = currentPlayer.nextTurn();
             System.out.printf(
                     "%s has %s car(s) left.%n",
@@ -101,15 +100,16 @@ public final class Game {
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
         ReceiveInfoHandler.willPlayerFirst(players, currentPlayerInfo);
 
-        setInitialTicketsChoices(players, gameState.currentPlayerId());
-        setInitialTicketsChoices(players, gameState.currentPlayerId().next());
+        players.forEach((playerId, player) -> {
+            setInitialTicketsChoices(players, playerId);
+            updatePlayerStates(players, gameState);
+            player.chooseInitialTickets();
+        });
 
-        updatePlayerStates(players, gameState);
         // from these 5 tickets, each player chooses their initial tickets
-        players.forEach((ignored, player) -> player.chooseInitialTickets());
         playersInfo.forEach(
                 (ignored, playerInfo) ->
-                        ReceiveInfoHandler.chooseInitialTickets(players, playerInfo));
+                        ReceiveInfoHandler.chooseInitialTicketsInfo(players, playerInfo));
         // finally, the game can start, the players receive the info that the current player can
         // play
         players.forEach((ignored, player) -> player.receiveInfo(currentPlayerInfo.canPlay()));
@@ -119,7 +119,7 @@ public final class Game {
      * Deals with the ticket management at the beginning. The player receives a set of initial cards
      * (5 top tickets) and must pick at least three.
      *
-     * @param players use it to <code>setInitialTicketChoice</code> to the player in question
+     * @param players  use it to <code>setInitialTicketChoice</code> to the player in question
      * @param playerId the player in question
      */
     private static void setInitialTicketsChoices(Map<PlayerId, Player> players, PlayerId playerId) {
@@ -201,7 +201,7 @@ public final class Game {
         assert longestTrail != null;
         ReceiveInfoHandler.longestTrail(
                 players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
-
+        updatePlayerStates(players, gameState);
         int winnerPoints = pointsOfEachPlayerSorted.lastEntry().getValue();
         PlayerId winnerId = pointsOfEachPlayerSorted.lastEntry().getKey();
         int loserPoints = pointsOfEachPlayerSorted.firstEntry().getValue();
@@ -363,14 +363,12 @@ public final class Game {
                     (playerId, player) -> player.receiveInfo(currentPlayer.willPlayFirst()));
         }
 
-        public static void chooseInitialTickets(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void chooseInitialTicketsInfo(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(
                                     currentPlayer.keptTickets(
-                                            // tickets.size()? or:
-                                            Constants.INITIAL_TICKETS_COUNT
-                                                    - player.chooseInitialTickets().size())));
+                                            player.chooseInitialTickets().size())));
         }
 
         public static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
