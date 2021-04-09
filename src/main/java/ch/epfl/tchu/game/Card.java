@@ -20,19 +20,13 @@ public enum Card {
     WHITE(Color.WHITE),
     LOCOMOTIVE(null);
 
-    /**
-     * same function as ALL attribute in Color.java, stocks every element of the enum in a List
-     */
+    /** same function as ALL attribute in Color.java, stocks every element of the enum in a List */
     public static final List<Card> ALL = List.of(Card.values());
 
-    /**
-     * attribute that counts the total amount of elements in ALL
-     */
+    /** attribute that counts the total amount of elements in ALL */
     public static final int COUNT = ALL.size();
 
-    /**
-     * List of all the possible cars (all the elements of the enum apart from the locomotive)
-     */
+    /** List of all the possible cars (all the elements of the enum apart from the locomotive) */
     public static final List<Card> CARS =
             List.of(
                     Card.BLACK,

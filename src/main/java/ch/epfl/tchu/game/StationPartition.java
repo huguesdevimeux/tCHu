@@ -40,9 +40,7 @@ public final class StationPartition implements StationConnectivity {
         return flatPartition[s1.id()] == flatPartition[s2.id()];
     }
 
-    /**
-     * Represents the deep partition.
-     */
+    /** Represents the deep partition. */
     public static final class Builder {
         private final int stationCount;
         private final int[] partition;
@@ -52,7 +50,7 @@ public final class StationPartition implements StationConnectivity {
          *
          * @param stationCount the number of stations.
          * @throws IndexOutOfBoundsException if id isn't between 0 and stationCount(excluded).
-         * @throws IllegalArgumentException  if stationCount is negative.
+         * @throws IllegalArgumentException if stationCount is negative.
          */
         public Builder(int stationCount) {
             Preconditions.checkArgument(stationCount >= 0);

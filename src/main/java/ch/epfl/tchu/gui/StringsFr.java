@@ -56,8 +56,7 @@ public final class StringsFr {
     public static final String AND_SEPARATOR = " et ";
     public static final String EN_DASH_SEPARATOR = " – ";
 
-    private StringsFr() {
-    }
+    private StringsFr() {}
 
     /**
      * Retourne une chaîne marquant le pluriel, ou la chaîne vide.

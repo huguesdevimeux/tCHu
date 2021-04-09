@@ -15,7 +15,7 @@ public final class Station {
     /**
      * Default Station constructor.
      *
-     * @param id   id of the Station. Warning : Must be unique to each station!
+     * @param id id of the Station. Warning : Must be unique to each station!
      * @param name Name of the station.
      */
     public Station(int id, String name) {

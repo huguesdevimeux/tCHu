@@ -16,7 +16,7 @@ public interface Player {
      * Called upon when starting the game to communicate the ID of the players as well as the name
      * of all the players, including his or hers (in <code>playernames</code>).
      *
-     * @param ownId       the players' id
+     * @param ownId the players' id
      * @param playerNames all the names of all the players
      */
     void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames);
@@ -101,14 +101,12 @@ public interface Player {
      *
      * @param options list of cards with which the player can choose to take over a tunnel
      * @return the additional cards the player wants to use to take over a tunnel, or an empty
-     * sortedBag if he can't or does not want to
+     *     sortedBag if he can't or does not want to
      */
     SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options);
 
     enum TurnKind {
-        /**
-         * Enumeration of all the actions a player can take.
-         */
+        /** Enumeration of all the actions a player can take. */
         DRAW_TICKETS,
         DRAW_CARDS,
         CLAIM_ROUTE;

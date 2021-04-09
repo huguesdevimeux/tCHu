@@ -16,19 +16,16 @@ public final class Game {
     private static final Map<PlayerId, Info> playersInfo = new HashMap<>();
     private static GameState gameState;
 
-    /**
-     * Not instantiable.
-     */
-    private Game() {
-    }
+    /** Not instantiable. */
+    private Game() {}
 
     /**
      * Method that makes the two <code>players</code> play the game.
      *
-     * @param players     the two players in the game
+     * @param players the two players in the game
      * @param playerNames name of the two players
-     * @param tickets     bag of tickets
-     * @param rng         random element
+     * @param tickets bag of tickets
+     * @param rng random element
      */
     public static void play(
             Map<PlayerId, Player> players,
@@ -99,11 +96,12 @@ public final class Game {
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
         ReceiveInfoHandler.willPlayerFirst(players, currentPlayerInfo);
 
-        players.forEach((playerId, player) -> {
-            setInitialTicketsChoices(players, playerId);
-            updatePlayerStates(players, gameState);
-            player.chooseInitialTickets();
-        });
+        players.forEach(
+                (playerId, player) -> {
+                    setInitialTicketsChoices(players, playerId);
+                    updatePlayerStates(players, gameState);
+                    player.chooseInitialTickets();
+                });
 
         // from these 5 tickets, each player chooses their initial tickets
         playersInfo.forEach(
@@ -118,7 +116,7 @@ public final class Game {
      * Deals with the ticket management at the beginning. The player receives a set of initial cards
      * (5 top tickets) and must pick at least three.
      *
-     * @param players  use it to <code>setInitialTicketChoice</code> to the player in question
+     * @param players use it to <code>setInitialTicketChoice</code> to the player in question
      * @param playerId the player in question
      */
     private static void setInitialTicketsChoices(Map<PlayerId, Player> players, PlayerId playerId) {
@@ -155,8 +153,7 @@ public final class Game {
     }
 
     // used to update the player of the states
-    private static void updatePlayerStates(
-            Map<PlayerId, Player> players, GameState gameState) {
+    private static void updatePlayerStates(Map<PlayerId, Player> players, GameState gameState) {
         // TODO remove the last parameter playerStates
         players.forEach(
                 (playerId, player) ->
@@ -178,8 +175,7 @@ public final class Game {
 
         List<Map.Entry<PlayerId, Integer>> sortedPoints = new ArrayList<>();
         for (PlayerId player : players.keySet()) {
-            int amountOfPoints =
-                    gameState.playerState(player).finalPoints();
+            int amountOfPoints = gameState.playerState(player).finalPoints();
             if (player.equals(longestTrail.getKey())) {
                 amountOfPoints += Constants.LONGEST_TRAIL_BONUS_POINTS;
             }
@@ -191,8 +187,11 @@ public final class Game {
         assert longestTrail != null;
         ReceiveInfoHandler.longestTrail(
                 players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
-updatePlayerStates(players, gameState);
-        int winnerPoints = sortedPoints.get(sortedPoints.size() - 1).getValue();//pointsOfEachPlayerSorted.lastEntry().getValue();
+        updatePlayerStates(players, gameState);
+        int winnerPoints =
+                sortedPoints
+                        .get(sortedPoints.size() - 1)
+                        .getValue(); // pointsOfEachPlayerSorted.lastEntry().getValue();
         PlayerId winnerId = sortedPoints.get(sortedPoints.size() - 1).getKey();
         int loserPoints = sortedPoints.get(0).getValue();
         if (winnerPoints != loserPoints)
@@ -353,7 +352,8 @@ updatePlayerStates(players, gameState);
                     (playerId, player) -> player.receiveInfo(currentPlayer.willPlayFirst()));
         }
 
-        public static void chooseInitialTicketsInfo(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void chooseInitialTicketsInfo(
+                Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(

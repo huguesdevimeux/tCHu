@@ -34,7 +34,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
     /**
      * Crée un multiensemble contenant un seul élément.
      *
-     * @param e1  l'unique élément du multiensemble
+     * @param e1 l'unique élément du multiensemble
      * @param <E> le type de l'élément du multiensemble
      * @return un multiensemble ne contenant que l'élément <code>e1</code>
      */
@@ -45,8 +45,8 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
     /**
      * Crée un multiensemble contenant un élément avec une multiplicité donnée.
      *
-     * @param n   la multiplicité de l'élément <code>e</code> (>= 0)
-     * @param e   l'élément du multiensemble
+     * @param n la multiplicité de l'élément <code>e</code> (>= 0)
+     * @param e l'élément du multiensemble
      * @param <E> le type de l'élément du multiensemble
      * @return un multiensemble contenant <code>n</code> occurrences de <code>e</code>
      * @throws IllegalArgumentException si <code>n</code> est négatif
@@ -59,10 +59,10 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
     /**
      * Crée un multiensemble contenant deux éléments, chacun avec une multiplicité donnée.
      *
-     * @param n1  la multiplicité de l'élément <code>e1</code> (>= 0)
-     * @param e1  le premier élément du multiensemble
-     * @param n2  la multiplicité de l'élément <code>e2</code> (>= 0)
-     * @param e2  le second élément du multiensemble
+     * @param n1 la multiplicité de l'élément <code>e1</code> (>= 0)
+     * @param e1 le premier élément du multiensemble
+     * @param n2 la multiplicité de l'élément <code>e2</code> (>= 0)
+     * @param e2 le second élément du multiensemble
      * @param <E> le type des éléments du multiensemble
      * @return un multiensemble contenant <code>n1</code> occurrences de <code>e1</code>, et <code>
      * n2</code> de <code>e2</code>
@@ -80,7 +80,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
      * Crée un multiensemble contenant les éléments d'un itérable (p.ex. une liste)
      *
      * @param iterable l'itérable fournissant les éléments du multiensemble
-     * @param <E>      le type des éléments du multiensemble
+     * @param <E> le type des éléments du multiensemble
      * @return un multiensemble contenant exactement les mêmes éléments que <code>iterable</code>
      */
     public static <E extends Comparable<E>> SortedBag<E> of(Iterable<E> iterable) {
@@ -185,7 +185,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
      * @param size la taille des sous-ensembles à retourner
      * @return l'ensemble des sous-ensembles de <code>this</code> de taille <code>size</code>
      * @throws IllegalArgumentException si <code>size</code> n'est pas comprise entre 0 et la taille
-     *                                  du multiensemble
+     *     du multiensemble
      */
     public Set<SortedBag<E>> subsetsOfSize(int size) {
         Preconditions.checkArgument(0 <= size && size <= size());
@@ -297,7 +297,7 @@ public final class SortedBag<E extends Comparable<E>> implements Iterable<E> {
         /**
          * Ajoute un nombre donné d'occurrences d'un élément au bâtisseur.
          *
-         * @param count   le nombre d'occurrences de l'élément à ajouter
+         * @param count le nombre d'occurrences de l'élément à ajouter
          * @param element l'élément à ajouter
          * @return le bâtisseur (<code>this</code>)
          * @throws IllegalArgumentException si <code>count</code> est négatif

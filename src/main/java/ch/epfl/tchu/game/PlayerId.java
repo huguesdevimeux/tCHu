@@ -19,9 +19,7 @@ public enum PlayerId {
      */
     public static final List<PlayerId> ALL = List.of(PlayerId.values());
 
-    /**
-     * Attribute that counts the total amount of elements in ALL.
-     */
+    /** Attribute that counts the total amount of elements in ALL. */
     public static final int COUNT = ALL.size();
 
     /**

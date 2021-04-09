@@ -25,8 +25,8 @@ public final class Deck<C extends Comparable<C>> {
      * Returns a {@link Deck} with the same cards in <code>cards</code> parameter, but shuffled.
      *
      * @param cards cards to insert in the Deck.
-     * @param rng   Random Generator.
-     * @param <C>   type of the cards. Generic.
+     * @param rng Random Generator.
+     * @param <C> type of the cards. Generic.
      * @return the Deck created.
      */
     public static <C extends Comparable<C>> Deck<C> of(SortedBag<C> cards, Random rng) {
@@ -92,7 +92,7 @@ public final class Deck<C extends Comparable<C>> {
      *
      * @param count Number of cards to substract from the Deck.
      * @return the Deck substracted from count cards. @ŧhrows IllegalArgumentException count is not
-     * within 0 and the size of the Deck.
+     *     within 0 and the size of the Deck.
      * @throws IllegalArgumentException if count is not within the size of the Deck.
      */
     public Deck<C> withoutTopCards(int count) {

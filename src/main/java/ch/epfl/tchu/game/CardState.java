@@ -21,8 +21,8 @@ public final class CardState extends PublicCardState {
     /**
      * Private constructor. Builds public cards, seen by both players.
      *
-     * @param faceUpCards  5 cards visible by both players
-     * @param deckSize     number of cards composing the deck
+     * @param faceUpCards 5 cards visible by both players
+     * @param deckSize number of cards composing the deck
      * @param discardsSize number of discarded cards
      * @param deck
      * @param discardCards

@@ -220,8 +220,7 @@ public final class ChMap {
                     frToNeighbors,
                     frToNeighbors);
 
-    private ChMap() {
-    }
+    private ChMap() {}
 
     public static List<Station> stations() {
         return ALL_STATIONS;

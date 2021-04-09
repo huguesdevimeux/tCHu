@@ -23,8 +23,8 @@ public class PublicPlayerState {
      * has seized the given routes
      *
      * @param ticketCount Amount of tickets the player has.
-     * @param cardCount   Amount of Cards the player has.
-     * @param routes      Routes the player has.
+     * @param cardCount Amount of Cards the player has.
+     * @param routes Routes the player has.
      * @throws IllegalArgumentException If ticketCount or cardCount is negative?
      */
     public PublicPlayerState(int ticketCount, int cardCount, List<Route> routes) {

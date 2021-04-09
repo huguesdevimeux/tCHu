@@ -42,8 +42,8 @@ public final class Ticket implements Comparable<Ticket> {
     /**
      * Create a ticket from a stations to another, counting a given number of points.
      *
-     * @param from   starting station.
-     * @param to     ending station.
+     * @param from starting station.
+     * @param to ending station.
      * @param points value of the ticket.
      */
     public Ticket(Station from, Station to, int points) {
@@ -106,7 +106,7 @@ public final class Ticket implements Comparable<Ticket> {
      *
      * @param that To compare.
      * @return 0 if equal, negative if given ticket is AFTER, positive if given ticket is BEFORE.
-     * (in the alphabet).
+     *     (in the alphabet).
      */
     @Override
     public int compareTo(Ticket that) {

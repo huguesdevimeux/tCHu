@@ -1,8 +1,6 @@
 package ch.epfl.tchu.game;
 
-/**
- * Interface representing connectivity between two stations.
- */
+/** Interface representing connectivity between two stations. */
 public interface StationConnectivity {
     /**
      * Check the connectivity between two stations, s1 and s2.
