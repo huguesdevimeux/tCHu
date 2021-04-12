@@ -16,19 +16,16 @@ public final class Game {
     private static final Map<PlayerId, Info> playersInfo = new HashMap<>();
     private static GameState gameState;
 
-    /**
-     * Not instantiable.
-     */
-    private Game() {
-    }
+    /** Not instantiable. */
+    private Game() {}
 
     /**
      * Method that makes the two <code>players</code> play the game.
      *
-     * @param players     the two players in the game
+     * @param players the two players in the game
      * @param playerNames name of the two players
-     * @param tickets     bag of tickets
-     * @param rng         random element
+     * @param tickets bag of tickets
+     * @param rng random element
      */
     public static void play(
             Map<PlayerId, Player> players,
@@ -119,7 +116,7 @@ public final class Game {
      * Deals with the ticket management at the beginning. The player receives a set of initial cards
      * (5 top tickets) and must pick at least three.
      *
-     * @param players  use it to <code>setInitialTicketChoice</code> to the player in question
+     * @param players use it to <code>setInitialTicketChoice</code> to the player in question
      * @param playerId the player in question
      */
     private static void setInitialTicketsChoices(Map<PlayerId, Player> players, PlayerId playerId) {
@@ -205,9 +202,7 @@ public final class Game {
                     players, new LinkedList<>(playerNames.values()), winnerPoints);
     }
 
-    /**
-     * Handles the different turns logic.
-     */
+    /** Handles the different turns logic. */
     private static class TurnHandler {
         public static void drawTickets(
                 Map<PlayerId, Player> players, Player currentPlayer, Info currentPlayerInfo) {
@@ -332,7 +327,8 @@ public final class Game {
                                     currentPlayer.chooseAdditionalCards(
                                             possibleAdditionalCardsToPlay);
                             if (chosenCards.isEmpty()) {
-                                ReceiveInfoHandler.didNotClaimRoute(players, currentPlayerInfo, claimedRoute);
+                                ReceiveInfoHandler.didNotClaimRoute(
+                                        players, currentPlayerInfo, claimedRoute);
                             } else {
                                 cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
                                 ReceiveInfoHandler.claimedRoute(
