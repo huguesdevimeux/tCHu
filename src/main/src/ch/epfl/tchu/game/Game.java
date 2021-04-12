@@ -325,7 +325,8 @@ public final class Game {
                                     players, currentPlayerInfo, claimedRoute);
                         } else {
                             chosenCards =
-                                    currentPlayer.chooseAdditionalCards(possibleAdditionalCardsToPlay);
+                                    currentPlayer.chooseAdditionalCards(
+                                            possibleAdditionalCardsToPlay);
                             cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
                             ReceiveInfoHandler.claimedRoute(
                                     players,
