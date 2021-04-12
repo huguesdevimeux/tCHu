@@ -320,10 +320,12 @@ public final class Game {
 
                         // possibleAdditionalCardsToPlay is empty -> he can't take the route
                         // chosenCards is empty -> does not want to take the route
-                        if (chosenCards.isEmpty() || possibleAdditionalCardsToPlay.isEmpty()) {
+                        if (possibleAdditionalCardsToPlay.isEmpty()) {
                             ReceiveInfoHandler.didNotClaimRoute(
                                     players, currentPlayerInfo, claimedRoute);
                         } else {
+                            chosenCards =
+                                    currentPlayer.chooseAdditionalCards(possibleAdditionalCardsToPlay);
                             cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
                             ReceiveInfoHandler.claimedRoute(
                                     players,
