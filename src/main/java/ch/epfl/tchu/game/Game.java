@@ -44,11 +44,16 @@ public final class Game {
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
         ReceiveInfoHandler.willPlayFirst(players, playersInfo.get(gameState.currentPlayerId()));
 
-        //each player receives 5 tickets and chooses at least 3 from these
+        // each player receives 5 tickets and chooses at least 3 from these
         initialTicketsManagement(players);
 
-        // finally, the game can start, the players receive the info that the current player can play
-        players.values().forEach((player) -> player.receiveInfo(playersInfo.get(gameState.currentPlayerId()).canPlay()));
+        // finally, the game can start, the players receive the info that the current player can
+        // play
+        players.values()
+                .forEach(
+                        (player) ->
+                                player.receiveInfo(
+                                        playersInfo.get(gameState.currentPlayerId()).canPlay()));
         System.out.println(gameState.currentPlayerState().carCount());
         // the following part represents the "mid-game" (ie each turn until the last round begins)
 
@@ -98,21 +103,27 @@ public final class Game {
      * (5 top tickets) and must pick at least three.
      *
      * @param players use it to <code>setInitialTicketChoice</code> to the player in question
-     *                //@param playerId the player in question
+     *     //@param playerId the player in question
      */
     private static void initialTicketsManagement(Map<PlayerId, Player> players) {
         for (PlayerId playerId : players.keySet()) {
             // player gets delivered the top 5 tickets
-            SortedBag<Ticket> initialTicketsChoice = gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
+            SortedBag<Ticket> initialTicketsChoice =
+                    gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
             players.get(playerId).setInitialTicketChoice(initialTicketsChoice);
-            //we update the states before the player can pick desired tickets
+            // we update the states before the player can pick desired tickets
             updatePlayerStates(players, gameState);
             SortedBag<Ticket> chosenInitialTickets = players.get(playerId).chooseInitialTickets();
-            // the player then chooses the tickets they want to keep and we have to remove the top tickets from the deck of tickets
-            gameState = gameState
-                    .withInitiallyChosenTickets(playerId, chosenInitialTickets)
-                    .withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
-            ReceiveInfoHandler.chooseTicketsInfo(players, playersInfo.get(gameState.currentPlayerId()), gameState.playerState(playerId).ticketCount());
+            // the player then chooses the tickets they want to keep and we have to remove the top
+            // tickets from the deck of tickets
+            gameState =
+                    gameState
+                            .withInitiallyChosenTickets(playerId, chosenInitialTickets)
+                            .withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+            ReceiveInfoHandler.chooseTicketsInfo(
+                    players,
+                    playersInfo.get(gameState.currentPlayerId()),
+                    gameState.playerState(playerId).ticketCount());
         }
     }
 
@@ -203,7 +214,8 @@ public final class Game {
                 // have to take care of it
                 gameState =
                         gameState.withChosenAdditionalTickets(topTicketsInGame, retainedTickets);
-                ReceiveInfoHandler.chooseTicketsInfo(players, currentPlayerInfo, retainedTickets.size());
+                ReceiveInfoHandler.chooseTicketsInfo(
+                        players, currentPlayerInfo, retainedTickets.size());
             } // else nothing
             // https://discord.com/channels/807922527716114432/807922528310788110/826799128306384926
         }
@@ -306,7 +318,8 @@ public final class Game {
                                     currentPlayer.chooseAdditionalCards(
                                             possibleAdditionalCardsToPlay);
                             if (chosenCards.isEmpty()) {
-                                ReceiveInfoHandler.didNotClaimRoute(players, currentPlayerInfo, claimedRoute);
+                                ReceiveInfoHandler.didNotClaimRoute(
+                                        players, currentPlayerInfo, claimedRoute);
                             } else {
                                 cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
                                 ReceiveInfoHandler.claimedRoute(
@@ -338,12 +351,13 @@ public final class Game {
         }
 
         public static void chooseTicketsInfo(
-                Map<PlayerId, Player> players, Info currentPlayer, int numberOfAdditionalChosenTickets) {
+                Map<PlayerId, Player> players,
+                Info currentPlayer,
+                int numberOfAdditionalChosenTickets) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(
-                                    currentPlayer.keptTickets(
-                                            numberOfAdditionalChosenTickets)));
+                                    currentPlayer.keptTickets(numberOfAdditionalChosenTickets)));
         }
 
         public static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
