@@ -23,6 +23,14 @@ public final class Route {
     private final Color color;
 
     /**
+     * Enum defines the type of route.
+     */
+    public enum Level {
+        OVERGROUND,
+        UNDERGROUND
+    }
+
+    /**
      * Route constructor.
      *
      * @param id Routes' identity
@@ -54,7 +62,7 @@ public final class Route {
      * @return id
      */
     public String id() {
-        return id;
+        return this.id;
     }
 
     /**
@@ -63,7 +71,7 @@ public final class Route {
      * @return station1
      */
     public Station station1() {
-        return station1;
+        return this.station1;
     }
 
     /**
@@ -72,7 +80,7 @@ public final class Route {
      * @return station2
      */
     public Station station2() {
-        return station2;
+        return this.station2;
     }
 
     /**
@@ -81,7 +89,7 @@ public final class Route {
      * @return length
      */
     public int length() {
-        return length;
+        return this.length;
     }
 
     /**
@@ -90,7 +98,7 @@ public final class Route {
      * @return level
      */
     public Level level() {
-        return level;
+        return this.level;
     }
 
     /**
@@ -99,7 +107,7 @@ public final class Route {
      * @return color
      */
     public Color color() {
-        return color;
+        return this.color;
     }
 
     /**
@@ -114,7 +122,7 @@ public final class Route {
     /**
      * Returns the opposite station from which this method is called.
      *
-     * @param station
+     * @param station return its opposite
      * @return opposite station
      * @throws IllegalArgumentException if argument station is neither of the start/end stations
      */
@@ -136,7 +144,9 @@ public final class Route {
             // when route is overground locomotive cards cannot be used
             if (color == null) {
                 for (Card card : Card.CARS) {
-                    IntStream.range(0, length).forEach(y -> cardList.add(card));
+                    //for all the cards in CARS, we add each card 'length' number of times
+                    //ie if length = 3: result is 3xBLACK, 3xVIOLET etc
+                    IntStream.range(0, length).forEach(i -> cardList.add(card));
                     /// adding all the cars added to cardBuilder into cardBag
                     cardBag.add(SortedBag.of(cardList));
                     // resetting cardBuilder to prevent from having subArrays of cardBag to have
@@ -144,17 +154,17 @@ public final class Route {
                     cardList.clear();
                 }
             } else {
+                //otherwise we only add the given color 'length' times
                 IntStream.range(0, length).forEach(y -> cardList.add(Card.of(this.color)));
                 cardBag.add(SortedBag.of(cardList));
             }
-
         } else {
             // if level is UNDERGROUND, Locomotive cards come into play.
             if (color == null) {
                 for (int i = this.length; i > 0; i--) {
                     for (Card card : Card.CARS) {
                         // same instructions as before
-                        IntStream.range(0, i).forEach(y -> cardList.add(card));
+                        IntStream.range(0, i).forEach(j -> cardList.add(card));
                         // adding locomotive cards to complete all the possible claim cards
                         // when route is a tunnel
                         while (cardList.size() < length) cardList.add(Card.LOCOMOTIVE);
@@ -162,7 +172,6 @@ public final class Route {
                         cardList.clear();
                     }
                 }
-
             } else {
                 for (int i = this.length; i > 0; i--) {
                     // same instructions but the color here does not matter
@@ -190,16 +199,18 @@ public final class Route {
      * @param drawnCards 3 cards drawn from the stack of cards
      * @return number of additional cards the player must play to take over route
      * @throws IllegalArgumentException if the route is not a tunnel
-     * @throws IllegalArgumentException if <\code> drawnCards </\code> does not contain exactly
-     *     three cards
+     * @throws IllegalArgumentException if <code>drawnCards</code> does not contain exactly three cards
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
         int additionalClaimCards = 0;
-        // adding the number  of locomotive cards in the drawn cards
+        // adding the number  of locomotive cards in the drawn cards if the player draws a locomotive -
+        //the player MUST play a locomotive
         additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
         for (Card drawn : drawnCards)
+            //adding all the cards that are NOT locomotive as that has already been taken into account
+            //but rather adding the drawnCards that match any of the claimCards
             additionalClaimCards +=
                     claimCards.stream()
                             .distinct()
@@ -212,15 +223,9 @@ public final class Route {
      * Returns the number of claimPoints (construction points) that a player gets when taking over a
      * route. Depends on the routes' length.
      *
-     * @return claimPoints
+     * @return claimPoints for the route of given <code>length</code>
      */
     public int claimPoints() {
         return Constants.ROUTE_CLAIM_POINTS.get(length);
-    }
-
-    /** Enum defines the type of route. */
-    public enum Level {
-        OVERGROUND,
-        UNDERGROUND
     }
 }
