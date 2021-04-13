@@ -4,9 +4,7 @@ import ch.epfl.tchu.Preconditions;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.TreeSet;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +29,8 @@ public final class Ticket implements Comparable<Ticket> {
         // Check that all the stations have the same name. stationName is the name of the first
         // station.
         String stationName = trips.get(0).from().name();
-        boolean fromStationsAllHaveSameName = trips.stream().allMatch(trip -> trip.from().name().equals(stationName));
+        boolean fromStationsAllHaveSameName =
+                trips.stream().allMatch(trip -> trip.from().name().equals(stationName));
         Preconditions.checkArgument(fromStationsAllHaveSameName);
         this.trips = trips;
         this.textRepresentation = computeTextRepresentation();
@@ -79,10 +78,7 @@ public final class Ticket implements Comparable<Ticket> {
         // On the technical side: This maps the trips List to a List of int corresponding to the
         // points of each trip. Then it computes the max.
         // If there is no max (trips is empty) then throw NoSuchElementException.
-        return trips.stream()
-                .mapToInt(trip -> trip.points(connectivity))
-                .max()
-                .getAsInt();
+        return trips.stream().mapToInt(trip -> trip.points(connectivity)).max().getAsInt();
     }
 
     /**

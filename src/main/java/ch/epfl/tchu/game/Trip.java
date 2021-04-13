@@ -22,8 +22,8 @@ public final class Trip {
     /**
      * Default constructor for Trip.
      *
-     * @param from   Starting {@link Station} of the trip. Must be not null.
-     * @param to     Ending {@link Station} of the trip. Must be not null.
+     * @param from Starting {@link Station} of the trip. Must be not null.
+     * @param to Ending {@link Station} of the trip. Must be not null.
      * @param points Amount of points of the Trip.
      */
     public Trip(Station from, Station to, int points) {
@@ -37,12 +37,12 @@ public final class Trip {
      * Returns all the possible trips between each Station of <code> from </code> list to <code>to
      * </code> list.
      *
-     * @param from   Starting stations
-     * @param to     Ending stations
+     * @param from Starting stations
+     * @param to Ending stations
      * @param points Amount of points of each trip.
      * @return All the possible trips.
      * @throws IllegalArgumentException if one of the list is empty or the amount of points is
-     *                                  negative.
+     *     negative.
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
         Preconditions.checkArgument(Math.min(from.size(), to.size()) > 0 && points > 0);
