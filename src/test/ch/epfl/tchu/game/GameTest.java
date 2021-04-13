@@ -1,13 +1,8 @@
 package ch.epfl.tchu.game;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.*;
-
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 import ch.epfl.test.TestRandomizer;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -22,6 +17,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
 
 @PrepareForTest(GameState.class)
 class GameTest {
@@ -60,8 +59,7 @@ class GameTest {
                                 TestRandomizer.newRandom()));
         players.forEach((playerId, player) -> verify(player, atLeastOnce()).drawSlot());
         players.forEach((playerId, player) -> verify(player, never()).claimedRoute());
-        // TODO Test is failing!
-        //        players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
+                players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
         players.forEach(
                 (playerId, player) -> verify(player).setInitialTicketChoice(any(SortedBag.class)));
     }

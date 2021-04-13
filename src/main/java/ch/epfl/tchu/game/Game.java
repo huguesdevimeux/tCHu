@@ -105,8 +105,8 @@ public final class Game {
 
         // from these 5 tickets, each player chooses their initial tickets
         playersInfo.forEach(
-                (ignored, playerInfo) ->
-                        ReceiveInfoHandler.chooseInitialTicketsInfo(players, playerInfo));
+                (playerId, playerInfo) ->
+                        ReceiveInfoHandler.chooseTicketsInfo(players, playerInfo, gameState.playerState(playerId).ticketCount()));
         // finally, the game can start, the players receive the info that the current player can
         // play
         players.forEach((ignored, player) -> player.receiveInfo(currentPlayerInfo.canPlay()));
@@ -154,7 +154,6 @@ public final class Game {
 
     // used to update the player of the states
     private static void updatePlayerStates(Map<PlayerId, Player> players, GameState gameState) {
-        // TODO remove the last parameter playerStates
         players.forEach(
                 (playerId, player) ->
                         player.updateState(gameState, gameState.playerState(playerId)));
@@ -217,10 +216,7 @@ public final class Game {
                 // have to take care of it
                 gameState =
                         gameState.withChosenAdditionalTickets(topTicketsInGame, retainedTickets);
-                players.forEach(
-                        (playerId, player) ->
-                                player.receiveInfo(
-                                        currentPlayerInfo.keptTickets(retainedTickets.size())));
+                ReceiveInfoHandler.chooseTicketsInfo(players, currentPlayerInfo, retainedTickets.size());
             } // else nothing
             // https://discord.com/channels/807922527716114432/807922528310788110/826799128306384926
         }
@@ -314,9 +310,6 @@ public final class Game {
                                                 amountOfCardsToPlay,
                                                 initialClaimCards,
                                                 SortedBag.of(drawnCards));
-
-                        System.out.println(gameState.currentPlayerState().cards());
-
                         // possibleAdditionalCardsToPlay is empty -> he can't take the route
                         // chosenCards is empty -> does not want to take the route
                         if (possibleAdditionalCardsToPlay.isEmpty()) {
@@ -326,22 +319,17 @@ public final class Game {
                             chosenCards =
                                     currentPlayer.chooseAdditionalCards(
                                             possibleAdditionalCardsToPlay);
-                            if (chosenCards.isEmpty()) {
-                                ReceiveInfoHandler.didNotClaimRoute(
-                                        players, currentPlayerInfo, claimedRoute);
-                            } else {
-                                cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
-                                ReceiveInfoHandler.claimedRoute(
-                                        players,
-                                        currentPlayerInfo,
-                                        claimedRoute,
-                                        cardsPlayedForTunnelClaim);
-                                // we have to sum up all the cards played to claim tunnel
-                                // withClaimedRoute automatically adds cards to discards
-                                gameState =
-                                        gameState.withClaimedRoute(
-                                                claimedRoute, cardsPlayedForTunnelClaim);
-                            }
+                            cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
+                            ReceiveInfoHandler.claimedRoute(
+                                    players,
+                                    currentPlayerInfo,
+                                    claimedRoute,
+                                    cardsPlayedForTunnelClaim);
+                            // we have to sum up all the cards played to claim tunnel
+                            // withClaimedRoute automatically adds cards to discards
+                            gameState =
+                                    gameState.withClaimedRoute(
+                                            claimedRoute, cardsPlayedForTunnelClaim);
                         }
                         // we add the drawn cards to the discards
                         gameState = gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
@@ -354,41 +342,41 @@ public final class Game {
     }
 
     private static class ReceiveInfoHandler {
-        private static void willPlayerFirst(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void willPlayerFirst(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) -> player.receiveInfo(currentPlayer.willPlayFirst()));
         }
 
-        private static void chooseInitialTicketsInfo(
-                Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void chooseTicketsInfo(
+                Map<PlayerId, Player> players, Info currentPlayer, int numberOfAdditionalChosenTickets) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(
                                     currentPlayer.keptTickets(
-                                            player.chooseInitialTickets().size())));
+                                            numberOfAdditionalChosenTickets)));
         }
 
-        private static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, allPlayers) ->
                             allPlayers.receiveInfo(currentPlayer.drewBlindCard()));
         }
 
-        private static void drewVisibleCard(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void drewVisibleCard(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, allPlayers) ->
                             allPlayers.receiveInfo(
                                     currentPlayer.drewVisibleCard(gameState.topCard())));
         }
 
-        private static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(
                                     currentPlayer.drewTickets(Constants.IN_GAME_TICKETS_COUNT)));
         }
 
-        private static void claimedRoute(
+        public static void claimedRoute(
                 Map<PlayerId, Player> players,
                 Info currentPlayer,
                 Route claimedRoute,
@@ -399,7 +387,7 @@ public final class Game {
                                     currentPlayer.claimedRoute(claimedRoute, cards)));
         }
 
-        private static void attemptedTunnelClaim(
+        public static void attemptedTunnelClaim(
                 Map<PlayerId, Player> players,
                 Info currentPlayer,
                 Route claimedRoute,
@@ -411,7 +399,7 @@ public final class Game {
                                             claimedRoute, SortedBag.of(cards))));
         }
 
-        private static void additionalCardsWereDrawnInfo(
+        public static void additionalCardsWereDrawnInfo(
                 Map<PlayerId, Player> p, Info cPlayer, List<Card> dCards, int aCards) {
             p.forEach(
                     (playerId, player) ->
@@ -419,14 +407,14 @@ public final class Game {
                                     cPlayer.drewAdditionalCards(SortedBag.of(dCards), aCards)));
         }
 
-        private static void didNotClaimRoute(
+        public static void didNotClaimRoute(
                 Map<PlayerId, Player> players, Info currentPlayer, Route claimedRoute) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(currentPlayer.didNotClaimRoute(claimedRoute)));
         }
 
-        private static void lastTurnBegins(
+        public static void lastTurnBegins(
                 GameState gameState, Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
@@ -435,21 +423,21 @@ public final class Game {
                                             gameState.currentPlayerState().carCount())));
         }
 
-        private static void longestTrail(
+        public static void longestTrail(
                 Map<PlayerId, Player> players, Info playerLongestTrail, Trail longest) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(playerLongestTrail.getsLongestTrailBonus(longest)));
         }
 
-        private static void playersHaveDrawn(
+        public static void playersHaveDrawn(
                 Map<PlayerId, Player> players, List<String> playerNames, int points) {
 
             players.forEach(
                     (playerId, player) -> player.receiveInfo(Info.draw(playerNames, points)));
         }
 
-        private static void playerWon(
+        public static void playerWon(
                 Map<PlayerId, Player> players, Info winnerInfo, int winnerPoints, int loserPoints) {
             players.forEach(
                     (playerId, player) ->
