@@ -43,7 +43,7 @@ public enum Card {
     /**
      * Default card constructor
      *
-     * @param color
+     * @param color color
      */
     Card(Color color) {
         this.color = color;
@@ -52,8 +52,8 @@ public enum Card {
     /**
      * Gets the color of the car
      *
-     * @param color
-     * @return the color of the car
+     * @param color color of the car
+     * @return the card of the given color
      */
     public static Card of(Color color) {
         return Card.valueOf(color.name());
