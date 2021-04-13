@@ -44,7 +44,7 @@ public final class Trail {
     }
 
     private static int computeLength(List<Route> routes) {
-        return routes.stream().map(Route::length).reduce(Integer::sum).orElse(0);
+        return routes.stream().map(Route::length).reduce(Integer::sum).get();
     }
 
     /**
@@ -61,6 +61,7 @@ public final class Trail {
             return new Trail(null, null, null);
         }
         if (routes.size() == 1) {
+            //we take the first and only route in the list and use its initial and final stations to form a trail
             return new Trail(routes.get(0).station1(), routes.get(0).station2(), routes);
         }
         // cs in the paper.
