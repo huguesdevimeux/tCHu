@@ -22,9 +22,7 @@ public final class Route {
     private final Level level;
     private final Color color;
 
-    /**
-     * Enum defines the type of route.
-     */
+    /** Enum defines the type of route. */
     public enum Level {
         OVERGROUND,
         UNDERGROUND
@@ -144,8 +142,8 @@ public final class Route {
             // when route is overground locomotive cards cannot be used
             if (color == null) {
                 for (Card card : Card.CARS) {
-                    //for all the cards in CARS, we add each card 'length' number of times
-                    //ie if length = 3: result is 3xBLACK, 3xVIOLET etc
+                    // for all the cards in CARS, we add each card 'length' number of times
+                    // ie if length = 3: result is 3xBLACK, 3xVIOLET etc
                     IntStream.range(0, length).forEach(i -> cardList.add(card));
                     /// adding all the cars added to cardBuilder into cardBag
                     cardBag.add(SortedBag.of(cardList));
@@ -154,7 +152,7 @@ public final class Route {
                     cardList.clear();
                 }
             } else {
-                //otherwise we only add the given color 'length' times
+                // otherwise we only add the given color 'length' times
                 IntStream.range(0, length).forEach(y -> cardList.add(Card.of(this.color)));
                 cardBag.add(SortedBag.of(cardList));
             }
@@ -199,18 +197,21 @@ public final class Route {
      * @param drawnCards 3 cards drawn from the stack of cards
      * @return number of additional cards the player must play to take over route
      * @throws IllegalArgumentException if the route is not a tunnel
-     * @throws IllegalArgumentException if <code>drawnCards</code> does not contain exactly three cards
+     * @throws IllegalArgumentException if <code>drawnCards</code> does not contain exactly three
+     *     cards
      */
     public int additionalClaimCardsCount(SortedBag<Card> claimCards, SortedBag<Card> drawnCards) {
         Preconditions.checkArgument(level.equals(Level.UNDERGROUND));
         Preconditions.checkArgument(drawnCards.size() == 3);
         int additionalClaimCards = 0;
-        // adding the number  of locomotive cards in the drawn cards if the player draws a locomotive -
-        //the player MUST play a locomotive
+        // adding the number  of locomotive cards in the drawn cards if the player draws a
+        // locomotive -
+        // the player MUST play a locomotive
         additionalClaimCards += drawnCards.stream().filter(Card.LOCOMOTIVE::equals).count();
         for (Card drawn : drawnCards)
-            //adding all the cards that are NOT locomotive as that has already been taken into account
-            //but rather adding the drawnCards that match any of the claimCards
+            // adding all the cards that are NOT locomotive as that has already been taken into
+            // account
+            // but rather adding the drawnCards that match any of the claimCards
             additionalClaimCards +=
                     claimCards.stream()
                             .distinct()
