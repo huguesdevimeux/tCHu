@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a Trip (an in-game move between two Stationa). Also known as "objectif" in the french
+ * Represents a Trip (an in-game move between two Stations). Also known as "objectif" in the french
  * version of the game. Immutable class.
  *
  * @author Hugues Devimeux (327282)
