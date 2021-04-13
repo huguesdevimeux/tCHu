@@ -31,10 +31,8 @@ public final class Ticket implements Comparable<Ticket> {
         // Check that all the stations have the same name. stationName is the name of the first
         // station.
         String stationName = trips.get(0).from().name();
-        Supplier<Boolean> hasStationAllTheSameName =
-                () -> trips.stream().allMatch(p -> p.from().name().equals(stationName));
-        Preconditions.checkArgument(hasStationAllTheSameName.get());
-
+        boolean fromStationsAllHaveSameName = trips.stream().allMatch(trip -> trip.from().name().equals(stationName));
+        Preconditions.checkArgument(fromStationsAllHaveSameName);
         this.trips = trips;
         this.textRepresentation = computeTextRepresentation();
     }
@@ -84,7 +82,7 @@ public final class Ticket implements Comparable<Ticket> {
         return trips.stream()
                 .mapToInt(trip -> trip.points(connectivity))
                 .max()
-                .orElseThrow(NoSuchElementException::new);
+                .getAsInt();
     }
 
     /**
