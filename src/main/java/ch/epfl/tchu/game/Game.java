@@ -106,7 +106,10 @@ public final class Game {
         // from these 5 tickets, each player chooses their initial tickets
         playersInfo.forEach(
                 (playerId, playerInfo) ->
-                        ReceiveInfoHandler.chooseTicketsInfo(players, playerInfo, gameState.playerState(playerId).ticketCount()));
+                        ReceiveInfoHandler.chooseTicketsInfo(
+                                players,
+                                playerInfo,
+                                gameState.playerState(playerId).ticketCount()));
         // finally, the game can start, the players receive the info that the current player can
         // play
         players.forEach((ignored, player) -> player.receiveInfo(currentPlayerInfo.canPlay()));
@@ -216,7 +219,8 @@ public final class Game {
                 // have to take care of it
                 gameState =
                         gameState.withChosenAdditionalTickets(topTicketsInGame, retainedTickets);
-                ReceiveInfoHandler.chooseTicketsInfo(players, currentPlayerInfo, retainedTickets.size());
+                ReceiveInfoHandler.chooseTicketsInfo(
+                        players, currentPlayerInfo, retainedTickets.size());
             } // else nothing
             // https://discord.com/channels/807922527716114432/807922528310788110/826799128306384926
         }
@@ -348,12 +352,13 @@ public final class Game {
         }
 
         public static void chooseTicketsInfo(
-                Map<PlayerId, Player> players, Info currentPlayer, int numberOfAdditionalChosenTickets) {
+                Map<PlayerId, Player> players,
+                Info currentPlayer,
+                int numberOfAdditionalChosenTickets) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(
-                                    currentPlayer.keptTickets(
-                                            numberOfAdditionalChosenTickets)));
+                                    currentPlayer.keptTickets(numberOfAdditionalChosenTickets)));
         }
 
         public static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
