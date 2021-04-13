@@ -354,12 +354,12 @@ public final class Game {
     }
 
     private static class ReceiveInfoHandler {
-        public static void willPlayerFirst(Map<PlayerId, Player> players, Info currentPlayer) {
+        private static void willPlayerFirst(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) -> player.receiveInfo(currentPlayer.willPlayFirst()));
         }
 
-        public static void chooseInitialTicketsInfo(
+        private static void chooseInitialTicketsInfo(
                 Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
@@ -368,27 +368,27 @@ public final class Game {
                                             player.chooseInitialTickets().size())));
         }
 
-        public static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
+        private static void drewBlindCard(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, allPlayers) ->
                             allPlayers.receiveInfo(currentPlayer.drewBlindCard()));
         }
 
-        public static void drewVisibleCard(Map<PlayerId, Player> players, Info currentPlayer) {
+        private static void drewVisibleCard(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, allPlayers) ->
                             allPlayers.receiveInfo(
                                     currentPlayer.drewVisibleCard(gameState.topCard())));
         }
 
-        public static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
+        private static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(
                                     currentPlayer.drewTickets(Constants.IN_GAME_TICKETS_COUNT)));
         }
 
-        public static void claimedRoute(
+        private static void claimedRoute(
                 Map<PlayerId, Player> players,
                 Info currentPlayer,
                 Route claimedRoute,
@@ -399,7 +399,7 @@ public final class Game {
                                     currentPlayer.claimedRoute(claimedRoute, cards)));
         }
 
-        public static void attemptedTunnelClaim(
+        private static void attemptedTunnelClaim(
                 Map<PlayerId, Player> players,
                 Info currentPlayer,
                 Route claimedRoute,
@@ -411,7 +411,7 @@ public final class Game {
                                             claimedRoute, SortedBag.of(cards))));
         }
 
-        public static void additionalCardsWereDrawnInfo(
+        private static void additionalCardsWereDrawnInfo(
                 Map<PlayerId, Player> p, Info cPlayer, List<Card> dCards, int aCards) {
             p.forEach(
                     (playerId, player) ->
@@ -419,14 +419,14 @@ public final class Game {
                                     cPlayer.drewAdditionalCards(SortedBag.of(dCards), aCards)));
         }
 
-        public static void didNotClaimRoute(
+        private static void didNotClaimRoute(
                 Map<PlayerId, Player> players, Info currentPlayer, Route claimedRoute) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(currentPlayer.didNotClaimRoute(claimedRoute)));
         }
 
-        public static void lastTurnBegins(
+        private static void lastTurnBegins(
                 GameState gameState, Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
@@ -435,21 +435,21 @@ public final class Game {
                                             gameState.currentPlayerState().carCount())));
         }
 
-        public static void longestTrail(
+        private static void longestTrail(
                 Map<PlayerId, Player> players, Info playerLongestTrail, Trail longest) {
             players.forEach(
                     (playerId, player) ->
                             player.receiveInfo(playerLongestTrail.getsLongestTrailBonus(longest)));
         }
 
-        public static void playersHaveDrawn(
+        private static void playersHaveDrawn(
                 Map<PlayerId, Player> players, List<String> playerNames, int points) {
 
             players.forEach(
                     (playerId, player) -> player.receiveInfo(Info.draw(playerNames, points)));
         }
 
-        public static void playerWon(
+        private static void playerWon(
                 Map<PlayerId, Player> players, Info winnerInfo, int winnerPoints, int loserPoints) {
             players.forEach(
                     (playerId, player) ->
