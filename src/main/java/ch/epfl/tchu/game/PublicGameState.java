@@ -24,14 +24,14 @@ public class PublicGameState {
     /**
      * Constructs the public part of the state of the game.
      *
-     * @param ticketsCount    Number of tickets.
-     * @param cardState       The PUBLIC state of the cards. Must be non null.
+     * @param ticketsCount Number of tickets.
+     * @param cardState The PUBLIC state of the cards. Must be non null.
      * @param currentPlayerId The ID of the current player. Must be non null.
-     * @param playerState     Public player State. Must be non null.
-     * @param lastPlayer      The last player who has played.
+     * @param playerState Public player State. Must be non null.
+     * @param lastPlayer The last player who has played.
      * @throws IllegalArgumentException if the deckSize is strictly negative.
      * @throws IllegalArgumentException if playerState does not have exactly two entries.
-     * @throws NullPointerException     if either cardState, currentPlayerId, playerState is null.
+     * @throws NullPointerException if either cardState, currentPlayerId, playerState is null.
      */
     public PublicGameState(
             int ticketsCount,

@@ -29,7 +29,8 @@ public final class Ticket implements Comparable<Ticket> {
         String stationName = trips.get(0).from().name();
         // Check that all the stations have the same name. stationName is the name of the first
         // station.
-        Preconditions.checkArgument(trips.stream().allMatch(trip -> trip.from().name().equals(stationName)));
+        Preconditions.checkArgument(
+                trips.stream().allMatch(trip -> trip.from().name().equals(stationName)));
         this.trips = trips;
         this.textRepresentation = computeTextRepresentation();
     }

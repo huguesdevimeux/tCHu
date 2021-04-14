@@ -23,8 +23,8 @@ public final class Trail {
     /**
      * Private constructor for Trail. WARNING : A trail is directed, while a route is NOT.
      *
-     * @param station1       Start station of the trail. Can be null.
-     * @param station2       End station of the trail. Can be null.
+     * @param station1 Start station of the trail. Can be null.
+     * @param station2 End station of the trail. Can be null.
      * @param compoundRoutes route composing the trail. Can NOT be null.
      */
     private Trail(Station station1, Station station2, List<Route> compoundRoutes) {
@@ -96,7 +96,10 @@ public final class Trail {
                                 !trail.compoundRoutes.contains(route)
                                         && (trail.station2().id() == route.station1().id());
                 // rs in the paper.
-                List<Route> routesConnectedWithStation1 = routes.stream().filter(filterRoutesConnectedWithStation1).collect(Collectors.toList());
+                List<Route> routesConnectedWithStation1 =
+                        routes.stream()
+                                .filter(filterRoutesConnectedWithStation1)
+                                .collect(Collectors.toList());
 
                 for (Route r : routesConnectedWithStation1) {
                     // The new ending station will be station2. (station1 was the connected node).
@@ -135,9 +138,9 @@ public final class Trail {
     /**
      * Returns a new Trail appended with the route and given station.
      *
-     * @param trail      the trail to append.
+     * @param trail the trail to append.
      * @param newStation the new station (must be specified because route are not directed
-     * @param route      : route to add.
+     * @param route : route to add.
      * @return the new Trail object.
      */
     private static Trail appendToTrail(Trail trail, Station newStation, Route route) {
@@ -195,5 +198,4 @@ public final class Trail {
                                 .collect(Collectors.toCollection(ArrayList::new)));
         return String.format("%s (%s)", namesIntermediateStations, length);
     }
-
 }
