@@ -60,7 +60,7 @@ public final class Deck<C extends Comparable<C>> {
      * @throws IllegalArgumentException if the {@link Deck} is empty.
      */
     public C topCard() {
-        if (isEmpty()) throw new IllegalArgumentException("Deck is empty!");
+        Preconditions.checkArgument(!isEmpty());
         return cards.get(size() - 1);
     }
 
@@ -81,9 +81,9 @@ public final class Deck<C extends Comparable<C>> {
      *
      * @return The same Deck but without the top card.
      * @throws IllegalArgumentException if the Deck is empty.
-     * @throws IllegalArgumentException if the Deck is empty.
      */
     public Deck<C> withoutTopCard() {
+        Preconditions.checkArgument(!isEmpty());
         return withoutTopCards(1);
     }
 
