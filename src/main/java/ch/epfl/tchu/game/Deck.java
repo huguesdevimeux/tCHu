@@ -57,7 +57,7 @@ public final class Deck<C extends Comparable<C>> {
      * Returns the top card of the deck.
      *
      * @return The top card of the Deck.
-     * @throws IllegalArgumentException if the Deck is empty.
+     * @throws IllegalArgumentException if the {@link Deck} is empty.
      */
     public C topCard() {
         if (isEmpty()) throw new IllegalArgumentException("Deck is empty!");
@@ -88,12 +88,13 @@ public final class Deck<C extends Comparable<C>> {
     }
 
     /**
-     * Returns an indentical Deck but without the n top cards, where n is count parameter.
+     * Returns an identical Deck but without the n top cards, where n is count parameter.
      *
-     * @param count Number of cards to substract from the Deck.
-     * @return the Deck substracted from count cards. @ŧhrows IllegalArgumentException count is not
-     *     within 0 and the size of the Deck.
+     * @param count Number of cards to subtract from the Deck.
+     * @return the Deck subtracted from count cards.
      * @throws IllegalArgumentException if count is not within the size of the Deck.
+     * @ŧhrows IllegalArgumentException count is not
+     * within 0 and the size of the Deck.
      */
     public Deck<C> withoutTopCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
