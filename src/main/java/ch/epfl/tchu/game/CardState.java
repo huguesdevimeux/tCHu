@@ -83,9 +83,8 @@ public final class CardState extends PublicCardState {
     }
 
     /**
-     * Returns the decks' top card.
-     * We don't have to use <code>Preconditions</code> here
-     * because <code>topCard</code> already deals with it.
+     * Returns the decks' top card. We don't have to use <code>Preconditions</code> here because
+     * <code>topCard</code> already deals with it.
      *
      * @return top <code>deck</code> card
      * @throws IllegalArgumentException if deck is empty
