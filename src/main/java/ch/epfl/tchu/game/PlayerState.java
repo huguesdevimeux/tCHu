@@ -140,7 +140,8 @@ public final class PlayerState extends PublicPlayerState {
         // WARNING drawnCards is useless for the logic. See Piazza @613
         Preconditions.checkArgument(1 <= additionalCardsCount && additionalCardsCount <= 3);
         // To check that the number of **different** cards is less than two,
-        // It uses a set : it does not allow duplicates, so it returns the different types of cards of the set.
+        // It uses a set : it does not allow duplicates, so it returns the different types of cards
+        // of the set.
         Preconditions.checkArgument(
                 (!initialCards.isEmpty()) && (initialCards.toSet().size() <= 2));
         Preconditions.checkArgument(drawnCards.size() == 3);
@@ -173,7 +174,7 @@ public final class PlayerState extends PublicPlayerState {
      * the given route with the given cards. It means that the player sees the route ADDED and the
      * claimCard SUBTRACTED from them.
      *
-     * @param route      The route the player is taking.
+     * @param route The route the player is taking.
      * @param claimCards The cards used to seize the route.
      * @return The new PlayerState.
      */
@@ -184,8 +185,7 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Returns the number of points - possibly negative - obtained by the player with their
-     * tickets.
+     * Returns the number of points - possibly negative - obtained by the player with their tickets.
      *
      * @return The number of points.
      */
