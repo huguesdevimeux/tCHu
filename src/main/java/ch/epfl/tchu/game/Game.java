@@ -16,19 +16,16 @@ public final class Game {
     private static final Map<PlayerId, Info> playersInfo = new HashMap<>();
     private static GameState gameState;
 
-    /**
-     * Not instantiable.
-     */
-    private Game() {
-    }
+    /** Not instantiable. */
+    private Game() {}
 
     /**
      * Method that makes the two <code>players</code> play the game.
      *
-     * @param players     the two players in the game
+     * @param players the two players in the game
      * @param playerNames name of the two players
-     * @param tickets     bag of tickets
-     * @param rng         random element
+     * @param tickets bag of tickets
+     * @param rng random element
      */
     public static void play(
             Map<PlayerId, Player> players,
@@ -40,8 +37,11 @@ public final class Game {
 
         // putting all of the elements of playerNames in a map where values are of class Info
         // for receiving infos purposes
-        playerNames.keySet().forEach(
-                (playerId) -> playersInfo.put(playerId, new Info(playerNames.get(playerId))));
+        playerNames
+                .keySet()
+                .forEach(
+                        (playerId) ->
+                                playersInfo.put(playerId, new Info(playerNames.get(playerId))));
 
         beginGame(players, playerNames);
 
@@ -77,13 +77,14 @@ public final class Game {
     }
 
     /**
-     * Deals with the beginning of the game. Initialises the players and deals with
-     * the ticket management at the beginning of the game
+     * Deals with the beginning of the game. Initialises the players and deals with the ticket
+     * management at the beginning of the game
      *
-     * @param players     players in the game
+     * @param players players in the game
      * @param playerNames names of <code>players</code>
      */
-    private static void beginGame(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames) {
+    private static void beginGame(
+            Map<PlayerId, Player> players, Map<PlayerId, String> playerNames) {
         // initialising both players
         players.forEach((playerId, player) -> player.initPlayers(playerId, playerNames));
         ReceiveInfoHandler.willPlayFirst(players, playersInfo.get(gameState.currentPlayerId()));
@@ -98,7 +99,7 @@ public final class Game {
      * (5 top tickets) and must pick at least three.
      *
      * @param players use it to <code>setInitialTicketChoice</code> to the player in question
-     *                //@param playerId the player in question
+     *     //@param playerId the player in question
      */
     private static void initialTicketsManagement(Map<PlayerId, Player> players) {
         for (PlayerId playerId : players.keySet()) {
@@ -189,9 +190,7 @@ public final class Game {
                     players, new LinkedList<>(playerNames.values()), winnerPoints);
     }
 
-    /**
-     * Handles the different turns logic.
-     */
+    /** Handles the different turns logic. */
     private static class TurnHandler {
         public static void drawTickets(
                 Map<PlayerId, Player> players, Player currentPlayer, Info currentPlayerInfo) {
@@ -226,7 +225,7 @@ public final class Game {
                     int indexOfChosenCard = currentPlayer.drawSlot();
                     // method drawSlot returns -1 if the player picks a card from the
                     // deck of cards or a number between 0 and 4 if one of the faceUp cards
-                    if (indexOfChosenCard == Constants.DECK_SLOT) { //aka == -1
+                    if (indexOfChosenCard == Constants.DECK_SLOT) { // aka == -1
                         ReceiveInfoHandler.drewBlindCard(players, currentPlayerInfo);
                         gameState = gameState.withBlindlyDrawnCard();
                     } else {
@@ -339,7 +338,9 @@ public final class Game {
                     .forEach(
                             (player) ->
                                     player.receiveInfo(
-                                            playersInfo.get(gameState.currentPlayerId()).canPlay()));
+                                            playersInfo
+                                                    .get(gameState.currentPlayerId())
+                                                    .canPlay()));
         }
 
         public static void chosenTicketsInfo(
