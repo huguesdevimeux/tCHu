@@ -26,12 +26,10 @@ public final class Ticket implements Comparable<Ticket> {
      */
     public Ticket(List<Trip> trips) {
         Preconditions.checkArgument(!trips.isEmpty());
+        String stationName = trips.get(0).from().name();
         // Check that all the stations have the same name. stationName is the name of the first
         // station.
-        String stationName = trips.get(0).from().name();
-        boolean fromStationsAllHaveSameName =
-                trips.stream().allMatch(trip -> trip.from().name().equals(stationName));
-        Preconditions.checkArgument(fromStationsAllHaveSameName);
+        Preconditions.checkArgument(trips.stream().allMatch(trip -> trip.from().name().equals(stationName)));
         this.trips = trips;
         this.textRepresentation = computeTextRepresentation();
     }
@@ -48,9 +46,6 @@ public final class Ticket implements Comparable<Ticket> {
     }
 
     private String computeTextRepresentation() {
-        // This is a stream thing, it basically starts from the List trips and compute a new List
-        // with the String representation "Station (NumberOfPoints)".
-        // :: operator is to reference a method, without calling it.
         TreeSet<String> endingStationsNames =
                 trips.stream()
                         .map(p -> String.format("%s (%s)", p.to().name(), p.points()))
@@ -58,7 +53,6 @@ public final class Ticket implements Comparable<Ticket> {
         // All the stations have the same starting point, therefore we can take the first one.
         String startStationName = trips.get(0).from().name();
         // Add brackets in the representation depending on the number of destinations to display
-        // (one liner condition).
         String template = (trips.size() > 1) ? "%s - {%s}" : "%s - %s";
         return String.format(template, startStationName, String.join(", ", endingStationsNames));
     }
@@ -77,8 +71,7 @@ public final class Ticket implements Comparable<Ticket> {
 
         // On the technical side: This maps the trips List to a List of int corresponding to the
         // points of each trip. Then it computes the max.
-        // If there is no max (trips is empty) then throw NoSuchElementException.
-        return trips.stream().mapToInt(trip -> trip.points(connectivity)).max().getAsInt();
+        return trips.stream().mapToInt(trip -> trip.points(connectivity)).max().orElse(0);
     }
 
     /**

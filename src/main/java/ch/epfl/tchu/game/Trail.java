@@ -1,6 +1,7 @@
 package ch.epfl.tchu.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,17 +23,15 @@ public final class Trail {
     /**
      * Private constructor for Trail. WARNING : A trail is directed, while a route is NOT.
      *
-     * @param station1 Start station of the trail. Can be null.
-     * @param station2 End station of the trail. Can be null.
-     * @param compoundRoutes route composing the trail. Can be null.
+     * @param station1       Start station of the trail. Can be null.
+     * @param station2       End station of the trail. Can be null.
+     * @param compoundRoutes route composing the trail. Can NOT be null.
      */
     private Trail(Station station1, Station station2, List<Route> compoundRoutes) {
         // NOTE : Station 1 and Station2 are to specify the direction of the trail (a Route is
         // undirected when a Trail is directed).
-        this.compoundRoutes = compoundRoutes;
-        int lengthTemp = 0;
-        if (!(compoundRoutes == null)) lengthTemp = computeLength(compoundRoutes);
-        this.length = lengthTemp;
+        this.compoundRoutes = List.copyOf(compoundRoutes);
+        this.length = computeLength(compoundRoutes);
         // station1 and station2 are null <=> length == 0.
         if (length == 0 || station1 == null || station2 == null) {
             this.station1 = null;
@@ -44,7 +43,7 @@ public final class Trail {
     }
 
     private static int computeLength(List<Route> routes) {
-        return routes.stream().map(Route::length).reduce(Integer::sum).get();
+        return routes.stream().map(Route::length).reduce(Integer::sum).orElse(0);
     }
 
     /**
@@ -58,7 +57,7 @@ public final class Trail {
     public static Trail longest(List<Route> routes) {
         if (routes.isEmpty()) {
             // Create an empty Trail.
-            return new Trail(null, null, null);
+            return new Trail(null, null, Collections.emptyList());
         }
         if (routes.size() == 1) {
             // we take the first and only route in the list and use its initial and final stations
@@ -86,24 +85,19 @@ public final class Trail {
             List<Trail> newIterationTrails = new ArrayList<>();
 
             for (Trail trail : constructingTrails) {
-                // There are two "direction to check : one where the route station1 is the future
+                // There are two "directions" to check : one where the route station1 is the future
                 // tip of the trail, one where the route's station 2 is the future tip of the trail.
                 // A route can be added these two conditions are satisfied:
                 //  - the end station of the trail is one of the stations of the route.
-                //  - the route does not blongs to the trail.
-                Predicate<Route> belongsToTrail = (route) -> trail.compoundRoutes().contains(route);
+                //  - the route does not belongs to the trail.
 
                 Predicate<Route> filterRoutesConnectedWithStation1 =
                         (route) ->
-                                !belongsToTrail.test(route)
+                                !trail.compoundRoutes.contains(route)
                                         && (trail.station2().id() == route.station1().id());
                 // rs in the paper.
-                List<Route> routesConnectedWithStation1 = new ArrayList<>();
-                for (Route route1 : routes) {
-                    if (filterRoutesConnectedWithStation1.test(route1)) {
-                        routesConnectedWithStation1.add(route1);
-                    }
-                }
+                List<Route> routesConnectedWithStation1 = routes.stream().filter(filterRoutesConnectedWithStation1).collect(Collectors.toList());
+
                 for (Route r : routesConnectedWithStation1) {
                     // The new ending station will be station2. (station1 was the connected node).
                     Trail newTrail = appendToTrail(trail, r.station2(), r);
@@ -116,7 +110,7 @@ public final class Trail {
 
                 Predicate<Route> filterRouteConnectedWithStation2 =
                         (route) ->
-                                !belongsToTrail.test(route)
+                                !trail.compoundRoutes.contains(route)
                                         && trail.station2().equals(route.station2());
                 // rs in the paper.
                 List<Route> routesConnectedWithStation2 =
@@ -139,15 +133,15 @@ public final class Trail {
     }
 
     /**
-     * Returns a new Trail appended with the route and given station .
+     * Returns a new Trail appended with the route and given station.
      *
-     * @param trail the trail to append.
+     * @param trail      the trail to append.
      * @param newStation the new station (must be specified because route are not directed
-     * @param route : route to add.
+     * @param route      : route to add.
      * @return the new Trail object.
      */
     private static Trail appendToTrail(Trail trail, Station newStation, Route route) {
-        List<Route> newRoutes = new ArrayList<>(trail.compoundRoutes());
+        List<Route> newRoutes = new ArrayList<>(trail.compoundRoutes);
         newRoutes.add(route);
         return new Trail(trail.station1(), newStation, newRoutes);
     }
@@ -183,7 +177,7 @@ public final class Trail {
     public String toString() {
         String startStationName = station1 != null ? station1.name() : "null";
         String endStationName = station2 != null ? station2.name() : "null";
-        if (compoundRoutes == null || compoundRoutes.size() == 1) {
+        if (compoundRoutes.size() <= 1) {
             return String.format("%s - %s (%s)", startStationName, endStationName, length);
         }
         List<Station> intermediateStations = new ArrayList<>();
@@ -202,12 +196,4 @@ public final class Trail {
         return String.format("%s (%s)", namesIntermediateStations, length);
     }
 
-    /**
-     * Gets compoundRoutes. can be null.
-     *
-     * @return value of compoundRoutes
-     */
-    private List<Route> compoundRoutes() {
-        return compoundRoutes;
-    }
 }

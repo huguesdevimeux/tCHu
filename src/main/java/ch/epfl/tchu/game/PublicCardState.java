@@ -25,11 +25,11 @@ public class PublicCardState {
      * @param discardsSize number of discarded cards
      */
     public PublicCardState(List<Card> faceUpCards, int deckSize, int discardsSize) {
+        Preconditions.checkArgument(faceUpCards.size() == 5);
+        Preconditions.checkArgument(Math.min(deckSize, discardsSize) >= 0);
         this.faceUpCards = List.copyOf(faceUpCards);
         this.deckSize = deckSize;
         this.discardsSize = discardsSize;
-        Preconditions.checkArgument(faceUpCards.size() == 5);
-        Preconditions.checkArgument(Math.min(deckSize, discardsSize) >= 0);
     }
 
     /**
@@ -56,10 +56,10 @@ public class PublicCardState {
      *
      * @param slot index to check
      * @return the card at index <code>slot</code>
+     * @throws IndexOutOfBoundsException if slot is not within 0 and 5 (included)
      */
     public Card faceUpCard(int slot) {
-        Objects.checkIndex(slot, 5);
-        return faceUpCards.get(slot);
+        return faceUpCards.get(Objects.checkIndex(slot, 5));
     }
 
     /**

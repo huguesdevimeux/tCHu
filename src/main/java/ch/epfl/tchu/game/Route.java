@@ -39,7 +39,7 @@ public final class Route {
      * @param color Can be any color
      * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of
      *     bounds defined by Constants.java
-     * @throws NullPointerException if either id, station1, station2 or level are null
+     * @throws NullPointerException if either id, station1, station2 or level is null
      */
     public Route(
             String id, Station station1, Station station2, int length, Level level, Color color) {
