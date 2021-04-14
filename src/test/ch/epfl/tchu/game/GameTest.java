@@ -60,8 +60,7 @@ class GameTest {
                                 TestRandomizer.newRandom()));
         players.forEach((playerId, player) -> verify(player, atLeastOnce()).drawSlot());
         players.forEach((playerId, player) -> verify(player, never()).claimedRoute());
-        // TODO Test is failing!
-        //        players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
+        players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
         players.forEach(
                 (playerId, player) -> verify(player).setInitialTicketChoice(any(SortedBag.class)));
     }
