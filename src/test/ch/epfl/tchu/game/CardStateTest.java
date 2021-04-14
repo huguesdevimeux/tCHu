@@ -1,11 +1,12 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.test.TestRandomizer;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CardStateTest {
     private Deck<Card> testedDeck;

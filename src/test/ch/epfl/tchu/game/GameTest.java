@@ -1,8 +1,13 @@
 package ch.epfl.tchu.game;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.*;
+
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 import ch.epfl.test.TestRandomizer;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -18,18 +23,12 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.*;
-
 @PrepareForTest(GameState.class)
 class GameTest {
 
-    @Spy
-    private StandardTestedPlayer mockedPlayer2;
+    @Spy private StandardTestedPlayer mockedPlayer2;
 
-    @Spy
-    private StandardTestedPlayer mockedPlayer1;
+    @Spy private StandardTestedPlayer mockedPlayer1;
     private Map<PlayerId, String> playersNames;
     private Map<PlayerId, Info> playersInfos;
 
@@ -61,8 +60,7 @@ class GameTest {
                                 TestRandomizer.newRandom()));
         players.forEach((playerId, player) -> verify(player, atLeastOnce()).drawSlot());
         players.forEach((playerId, player) -> verify(player, never()).claimedRoute());
-        // TODO Test is failing!
-        //        players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
+        players.forEach((playerId, player) -> verify(player).chooseInitialTickets());
         players.forEach(
                 (playerId, player) -> verify(player).setInitialTicketChoice(any(SortedBag.class)));
     }
@@ -198,18 +196,18 @@ class GameTest {
 
         public StandardTestedPlayer whoAlwaysTriesToDrawTicket() {
             doAnswer(
-                    invocationOnMock -> {
-                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
-                        return TurnKind.DRAW_TICKETS;
-                    })
+                            invocationOnMock -> {
+                                verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
+                                return TurnKind.DRAW_TICKETS;
+                            })
                     .when(this)
                     .nextTurn();
             // Always takes the first ticket.
             doAnswer(
-                    invocationOnMock -> {
-                        SortedBag<Ticket> ticketSortedBag = invocationOnMock.getArgument(0);
-                        return SortedBag.of(ticketSortedBag.get(0));
-                    })
+                            invocationOnMock -> {
+                                SortedBag<Ticket> ticketSortedBag = invocationOnMock.getArgument(0);
+                                return SortedBag.of(ticketSortedBag.get(0));
+                            })
                     .when(this)
                     .chooseTickets(any(SortedBag.class));
             return this;
@@ -217,41 +215,41 @@ class GameTest {
 
         public StandardTestedPlayer whoAlwaysTriesToTakeARouteWhenPossible() {
             doAnswer(
-                    invocationOnMock -> {
-                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
-                        List<Route> claimableRoutes =
-                                ChMap.routes().stream()
-                                        .filter(this.playerState::canClaimRoute)
-                                        .collect(Collectors.toList());
-                        if (claimableRoutes.size() == 0) {
-                            System.out.printf(
-                                    "%s can't take a any route, so chose to draw cards"
-                                            + " instead.%n",
-                                    this.name);
-                            return TurnKind.DRAW_CARDS;
-                        }
-                        this.nextRouteToClaim =
-                                claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
-                        List<SortedBag<Card>> tempPossibleClaimCards =
-                                this.playerState.possibleClaimCards(nextRouteToClaim);
-                        this.nextInitialCardsUsedToClaimRoute =
-                                tempPossibleClaimCards.get(
-                                        rng.nextInt(tempPossibleClaimCards.size()));
-                        return TurnKind.CLAIM_ROUTE;
-                    })
+                            invocationOnMock -> {
+                                verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
+                                List<Route> claimableRoutes =
+                                        ChMap.routes().stream()
+                                                .filter(this.playerState::canClaimRoute)
+                                                .collect(Collectors.toList());
+                                if (claimableRoutes.size() == 0) {
+                                    System.out.printf(
+                                            "%s can't take a any route, so chose to draw cards"
+                                                    + " instead.%n",
+                                            this.name);
+                                    return TurnKind.DRAW_CARDS;
+                                }
+                                this.nextRouteToClaim =
+                                        claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
+                                List<SortedBag<Card>> tempPossibleClaimCards =
+                                        this.playerState.possibleClaimCards(nextRouteToClaim);
+                                this.nextInitialCardsUsedToClaimRoute =
+                                        tempPossibleClaimCards.get(
+                                                rng.nextInt(tempPossibleClaimCards.size()));
+                                return TurnKind.CLAIM_ROUTE;
+                            })
                     .when(this)
                     .nextTurn();
 
             doAnswer(o -> this.nextRouteToClaim).when(this).claimedRoute();
             doAnswer(o -> this.nextInitialCardsUsedToClaimRoute).when(this).initialClaimCards();
             doAnswer(
-                    invocationOnMock -> {
-                        List<SortedBag<Card>> additionalCardsThatCanbePlayed =
-                                invocationOnMock.getArgument(0);
-                        if (additionalCardsThatCanbePlayed.size() > 0)
-                            return additionalCardsThatCanbePlayed.get(0);
-                        else return SortedBag.of();
-                    })
+                            invocationOnMock -> {
+                                List<SortedBag<Card>> additionalCardsThatCanbePlayed =
+                                        invocationOnMock.getArgument(0);
+                                if (additionalCardsThatCanbePlayed.size() > 0)
+                                    return additionalCardsThatCanbePlayed.get(0);
+                                else return SortedBag.of();
+                            })
                     .when(this)
                     .chooseAdditionalCards(any(List.class));
             return this;
@@ -260,11 +258,11 @@ class GameTest {
         public StandardTestedPlayer whoIsADummyPlayer() {
             // Outputs the infos.
             doAnswer(
-                    invocationOnMock -> {
-                        System.out.printf("LOGGING from : %s%n", this.name);
-                        System.out.println(invocationOnMock.<String>getArgument(0));
-                        return null;
-                    })
+                            invocationOnMock -> {
+                                System.out.printf("LOGGING from : %s%n", this.name);
+                                System.out.println(invocationOnMock.<String>getArgument(0));
+                                return null;
+                            })
                     .when(this)
                     .receiveInfo(anyString());
             // Returns the first ticket.
@@ -273,10 +271,10 @@ class GameTest {
                     .chooseTickets(any(SortedBag.class));
             // Always select to draw a new card
             doAnswer(
-                    o -> {
-                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
-                        return TurnKind.DRAW_CARDS;
-                    })
+                            o -> {
+                                verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
+                                return TurnKind.DRAW_CARDS;
+                            })
                     .when(this)
                     .nextTurn();
 
@@ -294,55 +292,53 @@ class GameTest {
 
         public StandardTestedPlayer whoPlaysRandomly() {
             doAnswer(
-                    invocationOnMock -> {
-                        verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
-                        // A new random is instanciated everytime, if I use
-                        // TestRandomizer.newRandom() the same value is returned every time
-                        // ..
-                        double decision = new Random().nextDouble();
-                        if (decision < 0.3) {
-                            return TurnKind.DRAW_TICKETS;
-                        }
-                        List<Route> claimableRoutes =
-                                ChMap.routes().stream()
-                                        .filter(this.playerState::canClaimRoute)
-                                        .collect(Collectors.toList());
-                        if (claimableRoutes.size() == 0) {
-                            System.out.printf(
-                                    "%s can't take a any route, so chose to draw cards"
-                                            + " instead.%n",
-                                    this.name);
-                            return TurnKind.DRAW_CARDS;
-                        }
-                        this.nextRouteToClaim =
-                                claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
-                        List<SortedBag<Card>> tempPossibleClaimCards =
-                                this.playerState.possibleClaimCards(nextRouteToClaim);
-                        this.nextInitialCardsUsedToClaimRoute =
-                                tempPossibleClaimCards.get(
-                                        rng.nextInt(tempPossibleClaimCards.size()));
-                        return TurnKind.CLAIM_ROUTE;
-                    })
+                            invocationOnMock -> {
+                                verify(this, atMost(this.MAX_NUMBER_OF_TURNS)).nextTurn();
+                                // A new random is instanciated everytime, if I use
+                                // TestRandomizer.newRandom() the same value is returned every time
+                                // ..
+                                double decision = new Random().nextDouble();
+                                if (decision < 0.3) {
+                                    return TurnKind.DRAW_TICKETS;
+                                }
+                                List<Route> claimableRoutes =
+                                        ChMap.routes().stream()
+                                                .filter(this.playerState::canClaimRoute)
+                                                .collect(Collectors.toList());
+                                if (claimableRoutes.size() == 0) {
+                                    System.out.printf(
+                                            "%s can't take a any route, so chose to draw cards"
+                                                    + " instead.%n",
+                                            this.name);
+                                    return TurnKind.DRAW_CARDS;
+                                }
+                                this.nextRouteToClaim =
+                                        claimableRoutes.get(rng.nextInt(claimableRoutes.size()));
+                                List<SortedBag<Card>> tempPossibleClaimCards =
+                                        this.playerState.possibleClaimCards(nextRouteToClaim);
+                                this.nextInitialCardsUsedToClaimRoute =
+                                        tempPossibleClaimCards.get(
+                                                rng.nextInt(tempPossibleClaimCards.size()));
+                                return TurnKind.CLAIM_ROUTE;
+                            })
                     .when(this)
                     .nextTurn();
             // Always takes the first ticket.
             doAnswer(
-                    invocationOnMock -> {
-                        SortedBag<Ticket> ticketSortedBag = invocationOnMock.getArgument(0);
-                        return SortedBag.of(ticketSortedBag.get(0));
-                    })
+                            invocationOnMock -> {
+                                SortedBag<Ticket> ticketSortedBag = invocationOnMock.getArgument(0);
+                                return SortedBag.of(ticketSortedBag.get(0));
+                            })
                     .when(this)
                     .chooseTickets(any(SortedBag.class));
             return this;
         }
 
         @Override
-        public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
-        }
+        public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {}
 
         @Override
-        public void receiveInfo(String info) {
-        }
+        public void receiveInfo(String info) {}
 
         @Override
         public void updateState(PublicGameState newState, PlayerState ownState) {
