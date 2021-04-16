@@ -16,7 +16,7 @@ public final class Preconditions {
      * Throws IllegalArgumentException when the argument is false.
      *
      * @param shouldBeTrue Expression to check.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if <code>shouldBeTrue</code> is false
      */
     public static void checkArgument(boolean shouldBeTrue) {
         if (!shouldBeTrue) throw new IllegalArgumentException();

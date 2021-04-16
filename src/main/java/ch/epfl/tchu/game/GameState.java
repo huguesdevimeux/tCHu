@@ -185,10 +185,9 @@ public final class GameState extends PublicGameState {
     public GameState withInitiallyChosenTickets(
             PlayerId playerId, SortedBag<Ticket> chosenTickets) {
         Preconditions.checkArgument(this.playerStates.get(playerId).ticketCount() == 0);
-        // NOTE : this methods does not modified the deck of tickets, and it's intended. cf paper.
-        // Make this.playerStates muable.
+        // NOTE : this method does not modify the deck of tickets, and it's intended. cf paper.
         EnumMap<PlayerId, PlayerState> tempPlayerState = new EnumMap<>(this.playerStates);
-        // Add update the playerState for the given PlayerId
+        // Update the playerState for the given PlayerId.
         tempPlayerState.computeIfPresent(
                 playerId, (id, playerState) -> playerState.withAddedTickets(chosenTickets));
         return GameStateWithSamePlayers(this.deckTickets, this.cardState, tempPlayerState);
@@ -290,9 +289,7 @@ public final class GameState extends PublicGameState {
      * @return Whether the last turn begins.
      */
     public boolean lastTurnBegins() {
-        boolean temp = this.currentPlayerState().carCount() <= 2 && lastPlayer() == null;
-        System.out.printf("Last turn begins ? %s%n", temp);
-        return temp;
+        return this.currentPlayerState().carCount() <= 2 && lastPlayer() == null;
     }
 
     /**

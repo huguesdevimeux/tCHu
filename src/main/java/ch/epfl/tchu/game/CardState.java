@@ -3,10 +3,7 @@ package ch.epfl.tchu.game;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 /**
  * CardState represents the state of cards, be it face up cards, deck cards or discarded cards.
@@ -24,8 +21,8 @@ public final class CardState extends PublicCardState {
      * @param faceUpCards 5 cards visible by both players
      * @param deckSize number of cards composing the deck
      * @param discardsSize number of discarded cards
-     * @param deck
-     * @param discardCards
+     * @param deck The deck of the cardState.
+     * @param discardCards The discard of of the cardState.
      */
     private CardState(
             List<Card> faceUpCards,
@@ -67,6 +64,7 @@ public final class CardState extends PublicCardState {
      * @param slot index at which we switch the face up card with the decks' top card
      * @return card state with switched face up card at index slot with decks' top card
      * @throws IndexOutOfBoundsException if <code>slot</code> is not between 0 and 5 (excluded)
+     * @throws IllegalArgumentException if the deck is empty
      */
     public CardState withDrawnFaceUpCard(int slot) {
         List<Card> faceUpCards = new ArrayList<>(faceUpCards());
@@ -85,7 +83,8 @@ public final class CardState extends PublicCardState {
     }
 
     /**
-     * Returns the decks' top card.
+     * Returns the decks' top card. We don't have to use <code>Preconditions</code> here because
+     * <code>topCard</code> already deals with it.
      *
      * @return top <code>deck</code> card
      * @throws IllegalArgumentException if deck is empty

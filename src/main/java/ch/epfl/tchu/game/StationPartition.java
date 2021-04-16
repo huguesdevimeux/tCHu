@@ -5,7 +5,7 @@ import ch.epfl.tchu.Preconditions;
 import java.util.stream.IntStream;
 
 /**
- * Represents a flat partition.
+ * Represents a flat partition. Immutable.
  *
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
