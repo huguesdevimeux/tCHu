@@ -173,16 +173,14 @@ public final class Game {
         sortedPoints.sort(Map.Entry.comparingByValue());
 
         if (longestTrail != null) {
-            // NOTE : longestTrail shouldn't in theory be null. This is mostly to suppress IDE's warning and prevent any NullPointer exception to be thrown
+            // NOTE : longestTrail shouldn't in theory be null. This is mostly to suppress IDE's
+            // warning and prevent any NullPointer exception to be thrown
             ReceiveInfoHandler.longestTrail(
                     players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
         }
         updatePlayerStates(players, gameState);
 
-        int winnerPoints =
-                sortedPoints
-                        .get(sortedPoints.size() - 1)
-                        .getValue();
+        int winnerPoints = sortedPoints.get(sortedPoints.size() - 1).getValue();
         PlayerId winnerId = sortedPoints.get(sortedPoints.size() - 1).getKey();
         int loserPoints = sortedPoints.get(0).getValue();
         if (winnerPoints != loserPoints)
@@ -302,8 +300,7 @@ public final class Game {
                                 players, currentPlayerInfo, claimedRoute);
                     } else {
                         chosenCards =
-                                currentPlayer.chooseAdditionalCards(
-                                        possibleAdditionalCardsToPlay);
+                                currentPlayer.chooseAdditionalCards(possibleAdditionalCardsToPlay);
                         // chosenCards is empty -> does not want to take the route
                         if (chosenCards.isEmpty()) {
                             ReceiveInfoHandler.didNotClaimRoute(
