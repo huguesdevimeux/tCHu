@@ -141,7 +141,7 @@ public final class PlayerState extends PublicPlayerState {
         Preconditions.checkArgument(1 <= additionalCardsCount && additionalCardsCount <= 3);
         // To check that the number of **different** cards is less than two,
         // It uses a set : it does not allow duplicates, so it returns the different types of cards
-        // of the set.
+        // of the SortedBag.
         Preconditions.checkArgument(
                 (!initialCards.isEmpty()) && (initialCards.toSet().size() <= 2));
         Preconditions.checkArgument(drawnCards.size() == 3);
@@ -190,7 +190,7 @@ public final class PlayerState extends PublicPlayerState {
      * @return The number of points.
      */
     public int ticketPoints() {
-        // Compute the maxID for so StationPartition has a sufficient size.
+        // Compute the maxID so StationPartition has a sufficient size.
         int maxID =
                 this.routes.stream()
                         .mapToInt(route -> Math.max(route.station1().id(), route.station2().id()))

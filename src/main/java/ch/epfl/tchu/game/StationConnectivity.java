@@ -14,5 +14,5 @@ public interface StationConnectivity {
      * @param s2 Second station.
      * @return Whether the two stations are connected.
      */
-    public abstract boolean connected(Station s1, Station s2);
+    boolean connected(Station s1, Station s2);
 }

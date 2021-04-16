@@ -172,14 +172,17 @@ public final class Game {
         }
         sortedPoints.sort(Map.Entry.comparingByValue());
 
-        ReceiveInfoHandler.longestTrail(
-                players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
+        if (longestTrail != null) {
+            // NOTE : longestTrail shouldn't in theory be null. This is mostly to suppress IDE's warning and prevent any NullPointer exception to be thrown
+            ReceiveInfoHandler.longestTrail(
+                    players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
+        }
         updatePlayerStates(players, gameState);
 
         int winnerPoints =
                 sortedPoints
                         .get(sortedPoints.size() - 1)
-                        .getValue(); // pointsOfEachPlayerSorted.lastEntry().getValue();
+                        .getValue();
         PlayerId winnerId = sortedPoints.get(sortedPoints.size() - 1).getKey();
         int loserPoints = sortedPoints.get(0).getValue();
         if (winnerPoints != loserPoints)
@@ -225,7 +228,7 @@ public final class Game {
                     int indexOfChosenCard = currentPlayer.drawSlot();
                     // method drawSlot returns -1 if the player picks a card from the
                     // deck of cards or a number between 0 and 4 if one of the faceUp cards
-                    if (indexOfChosenCard == Constants.DECK_SLOT) { // aka == -1
+                    if (indexOfChosenCard == Constants.DECK_SLOT) {
                         ReceiveInfoHandler.drewBlindCard(players, currentPlayerInfo);
                         gameState = gameState.withBlindlyDrawnCard();
                     } else {
@@ -250,78 +253,77 @@ public final class Game {
             SortedBag<Card> initialClaimCards = currentPlayer.initialClaimCards();
             boolean canClaimRoute = gameState.currentPlayerState().canClaimRoute(claimedRoute);
             List<Card> drawnCards = new ArrayList<>();
+            if (!canClaimRoute) return;
 
-            if (canClaimRoute) {
-                if (claimedRoute.level().equals(Route.Level.OVERGROUND)) {
-                    // players receive the info that the current played has claimed route
+            if (claimedRoute.level().equals(Route.Level.OVERGROUND)) {
+                // players receive the info that the current played has claimed route
+                ReceiveInfoHandler.claimedRoute(
+                        players, currentPlayerInfo, claimedRoute, initialClaimCards);
+                // adding the claimed route to the current player's claimed routes
+                gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
+            } else {
+                ReceiveInfoHandler.attemptedTunnelClaim(
+                        players, currentPlayerInfo, claimedRoute, initialClaimCards);
+                // in case drawn cards are needed for an attempt to claim a tunnel
+                // the program must add the THREE top deck cards to the drawn cards because when
+                // attempting to claim a tunnel, only three cards are drawn
+                for (int i = 0; i < Constants.ADDITIONAL_TUNNEL_CARDS; i++) {
+                    gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+                    drawnCards.add(gameState.topCard());
+                    gameState = gameState.withoutTopCard();
+                }
+                gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
+                int amountOfCardsToPlay =
+                        claimedRoute.additionalClaimCardsCount(
+                                initialClaimCards, SortedBag.of(drawnCards));
+
+                if (amountOfCardsToPlay == 0) {
+                    ReceiveInfoHandler.additionalCardsWereDrawnInfo(
+                            players, currentPlayerInfo, drawnCards, 0);
+                    // no additional cards to play-> player claims the tunnel directly
+                    gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                     ReceiveInfoHandler.claimedRoute(
                             players, currentPlayerInfo, claimedRoute, initialClaimCards);
-                    // adding the claimed route to the current player's claimed routes
-                    gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                 } else {
-                    ReceiveInfoHandler.attemptedTunnelClaim(
-                            players, currentPlayerInfo, claimedRoute, initialClaimCards);
-                    // in case drawn cards are needed for an attempt to claim a tunnel
-                    // the program must add the THREE top deck cards to the drawn cards because when
-                    // attempting to claim a tunnel, only three cards are drawn
-                    for (int i = 0; i < Constants.ADDITIONAL_TUNNEL_CARDS; i++) {
-                        gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                        drawnCards.add(gameState.topCard());
-                        gameState = gameState.withoutTopCard();
-                    }
-                    gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                    int amountOfCardsToPlay =
-                            claimedRoute.additionalClaimCardsCount(
-                                    initialClaimCards, SortedBag.of(drawnCards));
-
-                    if (amountOfCardsToPlay == 0) {
-                        ReceiveInfoHandler.additionalCardsWereDrawnInfo(
-                                players, currentPlayerInfo, drawnCards, 0);
-                        // no additional cards to play-> player claims the tunnel directly
-                        gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
-                        ReceiveInfoHandler.claimedRoute(
-                                players, currentPlayerInfo, claimedRoute, initialClaimCards);
+                    ReceiveInfoHandler.additionalCardsWereDrawnInfo(
+                            players, currentPlayerInfo, drawnCards, amountOfCardsToPlay);
+                    // player must choose which additional cards they want to play when
+                    // attempting to claim tunnel
+                    List<SortedBag<Card>> possibleAdditionalCardsToPlay =
+                            gameState
+                                    .currentPlayerState()
+                                    .possibleAdditionalCards(
+                                            amountOfCardsToPlay,
+                                            initialClaimCards,
+                                            SortedBag.of(drawnCards));
+                    // possibleAdditionalCardsToPlay empty -> can't take the route
+                    if (possibleAdditionalCardsToPlay.isEmpty()) {
+                        ReceiveInfoHandler.didNotClaimRoute(
+                                players, currentPlayerInfo, claimedRoute);
                     } else {
-                        ReceiveInfoHandler.additionalCardsWereDrawnInfo(
-                                players, currentPlayerInfo, drawnCards, amountOfCardsToPlay);
-                        // player must choose which additional cards they want to play when
-                        // attempting to claim tunnel
-                        List<SortedBag<Card>> possibleAdditionalCardsToPlay =
-                                gameState
-                                        .currentPlayerState()
-                                        .possibleAdditionalCards(
-                                                amountOfCardsToPlay,
-                                                initialClaimCards,
-                                                SortedBag.of(drawnCards));
-                        // possibleAdditionalCardsToPlay empty -> can't take the route
-                        if (possibleAdditionalCardsToPlay.isEmpty()) {
+                        chosenCards =
+                                currentPlayer.chooseAdditionalCards(
+                                        possibleAdditionalCardsToPlay);
+                        // chosenCards is empty -> does not want to take the route
+                        if (chosenCards.isEmpty()) {
                             ReceiveInfoHandler.didNotClaimRoute(
                                     players, currentPlayerInfo, claimedRoute);
                         } else {
-                            chosenCards =
-                                    currentPlayer.chooseAdditionalCards(
-                                            possibleAdditionalCardsToPlay);
-                            // chosenCards is empty -> does not want to take the route
-                            if (chosenCards.isEmpty()) {
-                                ReceiveInfoHandler.didNotClaimRoute(
-                                        players, currentPlayerInfo, claimedRoute);
-                            } else {
-                                cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
-                                ReceiveInfoHandler.claimedRoute(
-                                        players,
-                                        currentPlayerInfo,
-                                        claimedRoute,
-                                        cardsPlayedForTunnelClaim);
-                                // we have to sum up all the cards played to claim tunnel
-                                // withClaimedRoute automatically adds cards to discards
-                                gameState =
-                                        gameState.withClaimedRoute(
-                                                claimedRoute, cardsPlayedForTunnelClaim);
-                            }
+                            cardsPlayedForTunnelClaim = initialClaimCards.union(chosenCards);
+                            ReceiveInfoHandler.claimedRoute(
+                                    players,
+                                    currentPlayerInfo,
+                                    claimedRoute,
+                                    cardsPlayedForTunnelClaim);
+                            // we have to sum up all the cards played to claim tunnel
+                            // withClaimedRoute automatically adds cards to discards
+                            gameState =
+                                    gameState.withClaimedRoute(
+                                            claimedRoute, cardsPlayedForTunnelClaim);
                         }
-                        // we add the drawn cards to the discards
-                        gameState = gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                     }
+                    // we add the drawn cards to the discards
+                    gameState = gameState.withMoreDiscardedCards(SortedBag.of(drawnCards));
                 }
             }
         }
