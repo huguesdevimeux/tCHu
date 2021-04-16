@@ -43,7 +43,7 @@ public enum Card {
     /**
      * Default card constructor
      *
-     * @param color color
+     * @param color The color to be given.```
      */
     Card(Color color) {
         this.color = color;
