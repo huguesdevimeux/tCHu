@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a Trip (an in-game move between two Station). Also known as "objectif" in the french
+ * Represents a Trip (an in-game move between two Stations). Also known as "objectif" in the french
  * version of the game. Immutable class.
  *
  * @author Hugues Devimeux (327282)
@@ -45,7 +45,7 @@ public final class Trip {
      *     negative.
      */
     public static List<Trip> all(List<Station> from, List<Station> to, int points) {
-        Preconditions.checkArgument(from.size() > 0 && to.size() > 0 && points > 0);
+        Preconditions.checkArgument(Math.min(from.size(), to.size()) > 0 && points > 0);
         ArrayList<Trip> trips = new ArrayList<>();
         for (Station startingStation : from) {
             for (Station endingStation : to) {
@@ -56,15 +56,15 @@ public final class Trip {
     }
 
     public Station from() {
-        return from;
+        return this.from;
     }
 
     public Station to() {
-        return to;
+        return this.to;
     }
 
     public int points() {
-        return points;
+        return this.points;
     }
 
     /**

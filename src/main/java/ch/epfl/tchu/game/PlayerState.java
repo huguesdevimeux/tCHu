@@ -7,6 +7,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Class to represent the player state containing the information about the player.
+ *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
@@ -137,10 +139,13 @@ public final class PlayerState extends PublicPlayerState {
             int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
         // WARNING drawnCards is useless for the logic. See Piazza @613
         Preconditions.checkArgument(1 <= additionalCardsCount && additionalCardsCount <= 3);
-        // The set does not allow duplicates, so it returns the different types of cards of the set.
+        // To check that the number of **different** cards is less than two,
+        // It uses a set : it does not allow duplicates, so it returns the different types of cards
+        // of the SortedBag.
         Preconditions.checkArgument(
                 (!initialCards.isEmpty()) && (initialCards.toSet().size() <= 2));
         Preconditions.checkArgument(drawnCards.size() == 3);
+
         // Removes the initial cards from the cards to get the additional cards the player can add.
         SortedBag<Card> cardsToPlay = this.cards.difference(initialCards);
         // The set gets every different type of cards that has initialCards.
@@ -167,7 +172,7 @@ public final class PlayerState extends PublicPlayerState {
     /**
      * Returns an identical state to the receiver, except that the player has additionally seized
      * the given route with the given cards. It means that the player sees the route ADDED and the
-     * claimCard subtracted from them.
+     * claimCard SUBTRACTED from them.
      *
      * @param route The route the player is taking.
      * @param claimCards The cards used to seize the route.
@@ -180,14 +185,12 @@ public final class PlayerState extends PublicPlayerState {
     }
 
     /**
-     * Returns the number of points - possibly negative - obtained by the player thanks to their
-     * tickets.
+     * Returns the number of points - possibly negative - obtained by the player with their tickets.
      *
      * @return The number of points.
      */
     public int ticketPoints() {
-        // For each route, take the max id of the two stations of the route. Then, take the maximum
-        // of these maxima.
+        // Compute the maxID so StationPartition has a sufficient size.
         int maxID =
                 this.routes.stream()
                         .mapToInt(route -> Math.max(route.station1().id(), route.station2().id()))
