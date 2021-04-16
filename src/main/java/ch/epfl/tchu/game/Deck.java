@@ -92,8 +92,8 @@ public final class Deck<C extends Comparable<C>> {
      *
      * @param count Number of cards to subtract from the Deck.
      * @return the Deck subtracted from count cards.
-     * @throws IllegalArgumentException if count is not within the size of the Deck. @ŧhrows
-     *     IllegalArgumentException count is not within 0 and the size of the Deck.
+     * @throws IllegalArgumentException if count is not within the size of the Deck.
+     * @throws IllegalArgumentException count is not within 0 and the size of the Deck.
      */
     public Deck<C> withoutTopCards(int count) {
         Preconditions.checkArgument(0 <= count && count <= size());
