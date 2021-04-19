@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: ch.epfl.tchu.game.GameStateTest
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.018 s <<< FAILURE! - in ch.epfl.tchu.game.GameStateTest
+ch.epfl.tchu.game.GameStateTest.chosenAdditionalTickets  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <4> but was: <2>
+	at ch.epfl.tchu.game.GameStateTest.chosenAdditionalTickets(GameStateTest.java:186)
+

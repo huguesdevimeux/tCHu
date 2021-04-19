@@ -1,7 +1,7 @@
 package ch.epfl.tchu.net;
 
 /**
- * Enumeration of all the possible messages sent to the players`.
+ * Enumeration of all the possible messages sent to the players.
  *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
