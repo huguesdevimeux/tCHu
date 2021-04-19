@@ -60,17 +60,13 @@ public interface Serde<T> {
             @Override
             public SortedBag<T> deserialize(String s) {
                 List<String> a = Arrays.asList(s.split(Pattern.quote(separator), -1));
-                return SortedBag.of(a.stream()
-                        .map(obj::deserialize)
-                        .collect(Collectors.toList()));
+                return SortedBag.of(a.stream().map(obj::deserialize).collect(Collectors.toList()));
             }
         };
     }
 
     private static <T> String serializedString(Serde<T> obj, List<T> t, String separator) {
-        List<String> stringList = t.stream()
-                .map(obj::serialize)
-                .collect(Collectors.toList());
+        List<String> stringList = t.stream().map(obj::serialize).collect(Collectors.toList());
         return String.join(separator, stringList);
     }
 }
