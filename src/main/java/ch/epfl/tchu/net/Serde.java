@@ -38,10 +38,7 @@ public interface Serde<T> {
         return new Serde<>() {
             @Override
             public String serialize(List<T> t) {
-                List<String> stringList = t.stream()
-                        .map(obj::serialize)
-                        .collect(Collectors.toList());
-                return String.join(separator, stringList);
+                return Serde.serializedString(obj, t, separator);
             }
 
             @Override
@@ -56,20 +53,24 @@ public interface Serde<T> {
     static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> obj, String separator) {
         return new Serde<>() {
             @Override
-            public String serialize(SortedBag<T> ts) {
-                List<String> stringList = ts.toList().stream()
-                        .map(obj::serialize)
-                        .collect(Collectors.toList());
-                return String.join(separator, stringList);
+            public String serialize(SortedBag<T> t) {
+                return Serde.serializedString(obj, t.toList(), separator);
             }
 
             @Override
             public SortedBag<T> deserialize(String s) {
-                List<String> a = Arrays.asList(s.split(Pattern.quote(separator), -1));
-                return SortedBag.of(a.stream()
+                List<String> stringList = Arrays.asList(s.split(Pattern.quote(separator), -1));
+                return SortedBag.of(stringList.stream()
                         .map(obj::deserialize)
                         .collect(Collectors.toList()));
             }
         };
+    }
+
+    private static <T> String serializedString(Serde<T> obj, List<T> ts, String separator) {
+        List<String> stringList = ts.stream()
+                .map(obj::serialize)
+                .collect(Collectors.toList());
+        return String.join(separator, stringList);
     }
 }
