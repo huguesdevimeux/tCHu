@@ -69,7 +69,7 @@ public interface Serde<T> {
     }
 
     /**
-     * Returning the serde corresponding to a list.
+     * Given a list, returns the serializer of its elements.
      *
      * @param objList to (de)serialize its elements
      * @param <T> type of the object to (de)serialize
