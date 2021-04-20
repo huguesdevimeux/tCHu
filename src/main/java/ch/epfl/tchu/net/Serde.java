@@ -113,7 +113,6 @@ public interface Serde<T> {
              */
             @Override
             public List<T> deserialize(String s) {
-                Preconditions.checkArgument(s.contains(separator) && !s.isEmpty());
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
                         .map(serde::deserialize)
                         .collect(Collectors.toList());
@@ -169,7 +168,6 @@ public interface Serde<T> {
      * @return a String that's been serialized from the list
      */
     private static <T> String listToStringSerializer(Serde<T> serde, List<T> listToSerialize, String separator) {
-        Preconditions.checkArgument(!listToSerialize.isEmpty());
         //creation of a list of Strings where each element of the list given as parameter is SERIALIZED
         List<String> stringList = listToSerialize.stream().map(serde::serialize).collect(Collectors.toList());
         return String.join(separator, stringList);

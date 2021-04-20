@@ -4,10 +4,7 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
@@ -54,11 +51,11 @@ public class Serdes {
                     cardListSerde.serialize(i.faceUpCards()),
                     intSerde.serialize(i.deckSize()),
                     intSerde.serialize(i.discardsSize()))
-            , (s -> {
+            , (s) -> {
                 String[] elements = s.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                 return new PublicCardState(cardListSerde.deserialize(elements[0]),
                         intSerde.deserialize(elements[1]), intSerde.deserialize(elements[2]));
-            }));
+            });
 
 
     public static final Serde<PublicPlayerState> publicPlayerStateSerde = Serde.of(i -> String.join(SEMI_COLON_SEPARATOR,
@@ -67,7 +64,9 @@ public class Serdes {
             routeListSerde.serialize(i.routes()))
             , (s) -> {
                 String[] elements = s.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
-                return new PublicPlayerState(intSerde.deserialize(elements[0]), intSerde.deserialize(elements[1]), routeListSerde.deserialize(elements[2]));
+                return new PublicPlayerState(intSerde.deserialize(elements[0]),
+                        intSerde.deserialize(elements[1]),
+                        routeListSerde.deserialize(elements[2]));
             });
 
     public static final Serde<PlayerState> playerStateSerde = Serde.of(
@@ -83,27 +82,46 @@ public class Serdes {
             });
 
 
-    public static final Serde<PublicGameState> publicGameStateSerde = gameStateSerdeHandler();
+    public static Serde<PublicGameState> publicGameStateSerde = Serde.of(
+            i -> String.join(COLON_SEPARATOR,
+                        intSerde.serialize(i.ticketsCount()),
+                        publicCardStateSerde.serialize(i.cardState()),
+                        playerIdSerde.serialize(i.currentPlayerId()),
+                        publicPlayerStateSerde.serialize(i.playerState(i.currentPlayerId())),
+                        publicPlayerStateSerde.serialize(i.playerState(i.currentPlayerId().next())))
+
+            , s -> {
+                String[] elements = s.split(Pattern.quote(COLON_SEPARATOR), -1);
+                Map<PlayerId, PublicPlayerState> map = Map.of(playerIdSerde.deserialize(elements[2]),
+                        publicPlayerStateSerde.deserialize(elements[3]),
+                        playerIdSerde.deserialize(elements[2]).next(),
+                        publicPlayerStateSerde.deserialize(elements[4]));
+
+                return new PublicGameState(intSerde.deserialize(elements[0]), publicCardStateSerde.deserialize(elements[1])
+                        , playerIdSerde.deserialize(elements[2]), map, playerIdSerde.deserialize(elements[2]));
+            });
 
 
-    private static Serde<PublicGameState> gameStateSerdeHandler() {
-        return Serde.of(
-                i -> {
-                    Map<PlayerId, PublicPlayerState> a = Map.of(PLAYER_1, i.playerState(PLAYER_1), PLAYER_2, i.playerState(PLAYER_2));
-                    return String.join(COLON_SEPARATOR,
-                            intSerde.serialize(i.ticketsCount()),
-                            publicCardStateSerde.serialize(i.cardState()),
-                            playerIdSerde.serialize(i.currentPlayerId()),
-                            publicPlayerStateSerde.serialize(a.get(PLAYER_1)));
-                    //publicPlayerStateSerde.serialize(a.get(PLAYER_2)));
+    public static void main(String[] args) {
+        List<Card> fu = List.of(Card.RED, Card.WHITE, Card.BLUE, Card.BLACK, Card.RED);
+        PublicCardState cs = new PublicCardState(fu, 30, 31);
+        List<Route> rs1 = ChMap.routes().subList(0, 2);
+        Map<PlayerId, PublicPlayerState> ps = Map.of(
+                PLAYER_1, new PublicPlayerState(10, 11, rs1),
+                PLAYER_2, new PublicPlayerState(20, 21, List.of()));
+        PublicGameState gs =
+                new PublicGameState(40, cs, PLAYER_2, ps, null);
 
-                }
-                , s -> {
-                    String[] elements = s.split(Pattern.quote(COLON_SEPARATOR), -1);
-                    Map<PlayerId, PublicPlayerState> a = Map.of(PLAYER_1, publicPlayerStateSerde.deserialize(elements[3]), PLAYER_2, publicPlayerStateSerde.deserialize(elements[4]));
-                    return new PublicGameState(intSerde.deserialize(elements[0]), publicCardStateSerde.deserialize(elements[1])
-                            , playerIdSerde.deserialize(elements[2]), a, PLAYER_1);
-                });
+        //supposed to get 40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;:
+        System.out.println(publicGameStateSerde.serialize(gs));
+        //we get 40:6,7,2,0,6;30;31:1:20;21;:10;11;0,1 which makes more sense but okay so la ya pas le meme truc
+
+        //qd je deserialize le string soit du prof ou le notre, on a une erreur mais qui disparait quand on ajoute un 0 apres le 21;
+        //(ici il est a la tte fin)
+        System.out.println(
+                publicGameStateSerde.deserialize("40:6,7,2,0,6;30;31:1:10;11;0,1:20;21;0:")
+        );
+//        System.out.println(a.ticketsCount());
     }
 }
 
