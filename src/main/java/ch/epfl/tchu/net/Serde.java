@@ -35,7 +35,7 @@ public interface Serde<T> {
     T deserialize(String s);
 
     /**
-     * static method to create a simple serde.
+     * Creates a simple serde given the serializer dans the deserializer.
      *
      * @param serializer Function to serialize an object of type <code>T</code>
      * @param deserializer Function to deserialize a String into an object of type <code>T</code>
