@@ -114,7 +114,6 @@ public interface Serde<T> {
              */
             @Override
             public List<T> deserialize(String s) {
-                Preconditions.checkArgument(s.contains(separator) && !s.isEmpty());
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
                         .map(serde::deserialize)
                         .collect(Collectors.toList());
@@ -154,7 +153,6 @@ public interface Serde<T> {
              */
             @Override
             public SortedBag<T> deserialize(String s) {
-                Preconditions.checkArgument(s.contains(separator) && !s.isEmpty());
                 List<String> splitString = Arrays.asList(s.split(Pattern.quote(separator), -1));
                 return SortedBag.of(
                         splitString.stream().map(serde::deserialize).collect(Collectors.toList()));
@@ -173,7 +171,6 @@ public interface Serde<T> {
      */
     private static <T> String listToStringSerializer(
             Serde<T> serde, List<T> listToSerialize, String separator) {
-        Preconditions.checkArgument(!listToSerialize.isEmpty());
         // creation of a list of Strings where each element of the list given as parameter is
         // SERIALIZED
         List<String> stringList =
