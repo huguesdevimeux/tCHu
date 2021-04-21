@@ -6,7 +6,6 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -31,10 +30,11 @@ public final class Serdes {
     /** Serde for Strings using Base64 class */
     public static final Serde<String> stringSerde =
             Serde.of(
-                    obj ->
-                            Base64.getEncoder()
-                                    .encodeToString(obj.getBytes(StandardCharsets.UTF_8)),
-                    str -> new String(Base64.getDecoder().decode(str.getBytes()), StandardCharsets.UTF_8));
+                    obj -> Base64.getEncoder().encodeToString(obj.getBytes(StandardCharsets.UTF_8)),
+                    str ->
+                            new String(
+                                    Base64.getDecoder().decode(str.getBytes()),
+                                    StandardCharsets.UTF_8));
 
     /** Serde for PlayerId */
     public static final Serde<PlayerId> playerIdSerde = Serde.oneOf(PlayerId.ALL);
