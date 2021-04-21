@@ -103,7 +103,7 @@ public interface Serde<T> {
              */
             @Override
             public String serialize(List<T> listToSerialize) {
-                return Serde.listToStringSerializer(serde, listToSerialize, separator);
+                return Serde.ToStringSerializer(serde, listToSerialize, separator);
             }
 
             /**
@@ -141,14 +141,13 @@ public interface Serde<T> {
              */
             @Override
             public String serialize(SortedBag<T> bagToSerialize) {
-                return Serde.listToStringSerializer(serde, bagToSerialize.toList(), separator);
+                return Serde.ToStringSerializer(serde, bagToSerialize.toList(), separator);
             }
 
             /**
              * Returns a deserialized string in the form of a Sorted Bag.
              *
-             * @param s of type <code>String</code> to deserialize into type <code>SortedBag<T>
-             *     </code>
+             * @param s of type <code>String</code> to deserialize into type SortedBag<T>
              * @return a bag that's been deserialized from the string s
              */
             @Override
@@ -169,7 +168,7 @@ public interface Serde<T> {
      * @param <T> type of the object to (de)serialize
      * @return a String that's been serialized from the list
      */
-    private static <T> String listToStringSerializer(
+    private static <T> String ToStringSerializer(
             Serde<T> serde, List<T> listToSerialize, String separator) {
         // creation of a list of Strings where each element of the list given as parameter is
         // SERIALIZED
