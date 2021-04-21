@@ -50,36 +50,33 @@ public final class Serdes {
     public static final Serde<Route> routeSerde = Serde.oneOf(ChMap.routes());
     /** Serde for Tickets */
     public static final Serde<Ticket> ticketSerde = Serde.oneOf(ChMap.tickets());
-    /** Serde for Lists of strings */
+    /** Serde for Lists of strings to separate with "," */
     public static final Serde<List<String>> stringListSerde =
             Serde.listOf(stringSerde, COMMA_SEPARATOR);
-
-    /** Serde for Lists of cards */
+    /** Serde for Lists of cards to separate with "," */
     public static final Serde<List<Card>> cardListSerde = Serde.listOf(cardSerde, COMMA_SEPARATOR);
-    /** Serde for Lists of routes */
+    /** Serde for Lists of routes to separate with "," */
     public static final Serde<List<Route>> routeListSerde =
             Serde.listOf(routeSerde, COMMA_SEPARATOR);
-
-    /** Serde for sorted bags of cards */
+    /** Serde for sorted bags of cards to separate with "," */
     public static final Serde<SortedBag<Card>> cardBagSerde =
             Serde.bagOf(cardSerde, COMMA_SEPARATOR);
-    /** Serde for sorted bags of tickets */
+    /** Serde for sorted bags of tickets to separate with "," */
     public static final Serde<SortedBag<Ticket>> ticketBagSerde =
             Serde.bagOf(ticketSerde, COMMA_SEPARATOR);
-    /** Serde for Lists of SortedBags of cards */
+    /** Serde for Lists of SortedBags of cards to separate with ";" */
     public static final Serde<List<SortedBag<Card>>> listOfCardBagSerde =
             Serde.listOf(cardBagSerde, SEMI_COLON_SEPARATOR);
-
-    /** Serde for public card states */
+    /** Serde for public card states to separate with ";" */
     public static final Serde<PublicCardState> publicCardStateSerde =
             Serde.of(
-                    (object) -> // join each element from the constructor of Public
+                    (publicCardState) -> // join each element from the constructor of Public
                             // cardState with ";"
                             String.join(
                                     SEMI_COLON_SEPARATOR,
-                                    cardListSerde.serialize(object.faceUpCards()),
-                                    intSerde.serialize(object.deckSize()),
-                                    intSerde.serialize(object.discardsSize())),
+                                    cardListSerde.serialize(publicCardState.faceUpCards()),
+                                    intSerde.serialize(publicCardState.deckSize()),
+                                    intSerde.serialize(publicCardState.discardsSize())),
                     (str) -> {
                         // to deserialize, split the string with ";" and deserialize each element
                         // the numbers 0,1,2 are indexes to correspond to the index of the
@@ -93,23 +90,23 @@ public final class Serdes {
                                 intSerde.deserialize(elements[2]));
                     });
 
-    /** Serde for public player states */
+    /** Serde for public player states to separate with ";" */
     public static final Serde<PublicPlayerState> publicPlayerStateSerde =
             // same principle as the previous Serde, join each serialized item
             // from the constructor of PublicPlayerState by ";"
             Serde.of(
-                    (i) ->
+                    (publicPlayerState) ->
                             String.join(
                                     SEMI_COLON_SEPARATOR,
-                                    intSerde.serialize(i.ticketCount()),
-                                    intSerde.serialize(i.cardCount()),
-                                    routeListSerde.serialize(i.routes())),
-                    (s) -> {
+                                    intSerde.serialize(publicPlayerState.ticketCount()),
+                                    intSerde.serialize(publicPlayerState.cardCount()),
+                                    routeListSerde.serialize(publicPlayerState.routes())),
+                    (str) -> {
                         // same principle as the previous Serde, split the string with ";"
                         // and deserialize each element. the numbers 0,1,2 are indexes
                         // that correspond to the index of the attributes of the constructor
                         // of the class PublicCardState
-                        String[] elements = s.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
+                        String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PublicPlayerState(
                                 intSerde.deserialize(elements[0]),
                                 intSerde.deserialize(elements[1]),
@@ -121,18 +118,18 @@ public final class Serdes {
                                 verifyIfListIsEmpty(elements, routeListSerde, 2));
                     });
 
-    /** Serde for PlayerStates */
+    /** Serde for PlayerStates to separate with ";" */
     public static final Serde<PlayerState> playerStateSerde =
             // functions in the same way as the previous Serdes.
             Serde.of(
-                    (i) ->
+                    (playerState) ->
                             String.join(
                                     SEMI_COLON_SEPARATOR,
-                                    ticketBagSerde.serialize(i.tickets()),
-                                    cardBagSerde.serialize(i.cards()),
-                                    routeListSerde.serialize(i.routes())),
-                    (s) -> {
-                        String[] elements = s.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
+                                    ticketBagSerde.serialize(playerState.tickets()),
+                                    cardBagSerde.serialize(playerState.cards()),
+                                    routeListSerde.serialize(playerState.routes())),
+                    (str) -> {
+                        String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PlayerState(
                                 ticketBagSerde.deserialize(elements[0]),
                                 cardBagSerde.deserialize(elements[1]),
@@ -142,32 +139,32 @@ public final class Serdes {
                                 verifyIfListIsEmpty(elements, routeListSerde, 2));
                     });
 
-    /** Serde for public game states */
+    /** Serde for public game states to separate with ":" */
     public static final Serde<PublicGameState> publicGameStateSerde =
             Serde.of( // same principle, join each serialized element with ":"
                     // there is a certain order to serialize elements in so we can use hard
                     // coded elements such as PLAYER_1: Cf paper
-                    (i) ->
+                    (publicGameState) ->
                             String.join(
                                     COLON_SEPARATOR,
-                                    intSerde.serialize(i.ticketsCount()),
-                                    publicCardStateSerde.serialize(i.cardState()),
-                                    playerIdSerde.serialize(i.currentPlayerId()),
-                                    publicPlayerStateSerde.serialize(i.playerState(PLAYER_1)),
-                                    publicPlayerStateSerde.serialize(i.playerState(PLAYER_2)),
+                                    intSerde.serialize(publicGameState.ticketsCount()),
+                                    publicCardStateSerde.serialize(publicGameState.cardState()),
+                                    playerIdSerde.serialize(publicGameState.currentPlayerId()),
+                                    publicPlayerStateSerde.serialize(publicGameState.playerState(PLAYER_1)),
+                                    publicPlayerStateSerde.serialize(publicGameState.playerState(PLAYER_2)),
                                     // if the last player is null, we serialize an empty string
                                     // otherwise we serialize the lastPlayer using playerIdSerde
-                                    i.lastPlayer() == null
+                                    publicGameState.lastPlayer() == null
                                             ? stringSerde.serialize("")
-                                            : playerIdSerde.serialize(i.lastPlayer())),
-                    (s) -> {
+                                            : playerIdSerde.serialize(publicGameState.lastPlayer())),
+                    (str) -> {
                         // we split the string but now we have an array of 5 elements
                         // in order, these are the attributes of the constructor of
                         // PublicGameState.java
                         // index 0 -> int ticketsCount, index 1 -> PublicCardState
                         // index 2 -> currentPlayerId, index 3,4 -> publicPlayerStates to
                         // put into a map. index 5 -> lastPlayerId
-                        String[] elements = s.split(Pattern.quote(COLON_SEPARATOR), -1);
+                        String[] elements = str.split(Pattern.quote(COLON_SEPARATOR), -1);
                         PublicPlayerState firstPS = publicPlayerStateSerde.deserialize(elements[3]);
                         PublicPlayerState secondPS =
                                 publicPlayerStateSerde.deserialize(elements[4]);
