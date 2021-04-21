@@ -6,6 +6,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -30,16 +31,11 @@ public final class Serdes {
     /** Serde for Strings using Base64 class */
     public static final Serde<String> stringSerde =
             Serde.of(
-                    object ->
+                    obj ->
                             Base64.getEncoder()
-                                    .encodeToString(object.getBytes(StandardCharsets.UTF_8)),
-                    str ->
-                            Arrays.toString(
-                                    Base64.getDecoder()
-                                            .decode(
-                                                    new String(
-                                                            str.getBytes(
-                                                                    StandardCharsets.UTF_8)))));
+                                    .encodeToString(obj.getBytes(StandardCharsets.UTF_8)),
+                    str -> new String(Base64.getDecoder().decode(str.getBytes()), StandardCharsets.UTF_8));
+
     /** Serde for PlayerId */
     public static final Serde<PlayerId> playerIdSerde = Serde.oneOf(PlayerId.ALL);
     /** Serde for TurnKind */
@@ -113,7 +109,9 @@ public final class Serdes {
                                 // ie the list of routes is empty or not
                                 // if it is, we must use an emptyList, otherwise we deserialize
                                 // using routeListSerde
-                                verifyIfListIsEmpty(elements, routeListSerde, 2));
+                                elements[2].isEmpty()
+                                        ? Collections.emptyList()
+                                        : routeListSerde.deserialize(elements[2]));
                     });
 
     /** Serde for PlayerStates to separate with ";" */
@@ -133,7 +131,9 @@ public final class Serdes {
                                 cardBagSerde.deserialize(elements[1]),
                                 // we also have to verify if we should use an empty list or
                                 // deserialize using routeListSerde
-                                verifyIfListIsEmpty(elements, routeListSerde, 2));
+                                elements[2].isEmpty()
+                                        ? Collections.emptyList()
+                                        : routeListSerde.deserialize(elements[2]));
                     });
 
     /** Serde for public game states to separate with ":" */
@@ -182,13 +182,4 @@ public final class Serdes {
                                 map,
                                 lastPlayer);
                     });
-
-    // private method that evaluates if the string in elements at the given index is empty or not
-    // returns an EmptyList if it is and the deserialized element if not.
-    private static <T> List<T> verifyIfListIsEmpty(
-            String[] elements, Serde<List<T>> serde, int index) {
-        return elements[index].isEmpty()
-                ? Collections.emptyList()
-                : serde.deserialize(elements[index]);
-    }
 }

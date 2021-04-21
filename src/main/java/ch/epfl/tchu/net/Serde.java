@@ -73,6 +73,7 @@ public interface Serde<T> {
      *
      * @param objList to (de)serialize its elements
      * @param <T> type of the object to (de)serialize
+     * @throws IllegalArgumentException if the list in argument is empty
      * @return Serde corresponding to a list
      */
     static <T> Serde<T> oneOf(List<T> objList) {
@@ -89,6 +90,7 @@ public interface Serde<T> {
      * @param serde to use to (de)serialize
      * @param separator separating character between each element
      * @param <T> type of the object to (de)serialize
+     * @throws IllegalArgumentException if the separator is null
      * @return a serde capable of (de)serializing lists of (de)serialized values
      */
     static <T> Serde<List<T>> listOf(Serde<T> serde, String separator) {
