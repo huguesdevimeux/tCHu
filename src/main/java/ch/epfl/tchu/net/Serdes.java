@@ -150,13 +150,16 @@ public final class Serdes {
                                     intSerde.serialize(publicGameState.ticketsCount()),
                                     publicCardStateSerde.serialize(publicGameState.cardState()),
                                     playerIdSerde.serialize(publicGameState.currentPlayerId()),
-                                    publicPlayerStateSerde.serialize(publicGameState.playerState(PLAYER_1)),
-                                    publicPlayerStateSerde.serialize(publicGameState.playerState(PLAYER_2)),
+                                    publicPlayerStateSerde.serialize(
+                                            publicGameState.playerState(PLAYER_1)),
+                                    publicPlayerStateSerde.serialize(
+                                            publicGameState.playerState(PLAYER_2)),
                                     // if the last player is null, we serialize an empty string
                                     // otherwise we serialize the lastPlayer using playerIdSerde
                                     publicGameState.lastPlayer() == null
                                             ? stringSerde.serialize("")
-                                            : playerIdSerde.serialize(publicGameState.lastPlayer())),
+                                            : playerIdSerde.serialize(
+                                                    publicGameState.lastPlayer())),
                     (str) -> {
                         // we split the string but now we have an array of 5 elements
                         // in order, these are the attributes of the constructor of
