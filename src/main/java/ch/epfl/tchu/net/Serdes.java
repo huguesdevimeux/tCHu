@@ -80,8 +80,7 @@ public final class Serdes {
                     (str) -> {
                         // to deserialize, split the string with ";" and deserialize each element
                         // the numbers 0,1,2 are indexes to correspond to the index of the
-                        // attributes of
-                        // the constructor of the class PublicCardState -
+                        // attributes of the constructor of the class PublicCardState -
                         // ie index 0 -> attribute List<Cards>faceUpCards -> use of cardListSerde
                         String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PublicCardState(
@@ -113,8 +112,7 @@ public final class Serdes {
                                 // however now we have to verify if the third attribute
                                 // ie the list of routes is empty or not
                                 // if it is, we must use an emptyList, otherwise we deserialize
-                                // using
-                                // routeListSerde
+                                // using routeListSerde
                                 verifyIfListIsEmpty(elements, routeListSerde, 2));
                     });
 
@@ -134,8 +132,7 @@ public final class Serdes {
                                 ticketBagSerde.deserialize(elements[0]),
                                 cardBagSerde.deserialize(elements[1]),
                                 // we also have to verify if we should use an empty list or
-                                // deserialize
-                                // using routeListSerde
+                                // deserialize using routeListSerde
                                 verifyIfListIsEmpty(elements, routeListSerde, 2));
                     });
 
