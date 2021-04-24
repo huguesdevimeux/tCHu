@@ -1,8 +1,18 @@
 package tchu.net;
 
+import static ch.epfl.tchu.game.Card.*;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+import static ch.epfl.tchu.net.Serdes.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import ch.epfl.tchu.net.Serde;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,15 +20,8 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import static ch.epfl.tchu.game.Card.*;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-import static ch.epfl.tchu.net.Serdes.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+interface EqualityAsserter<T> extends BiConsumer<T, T> {}
 
-interface EqualityAsserter<T> extends BiConsumer<T, T> {
-}
 class SerdesTest {
 
     private final Base64.Encoder encoder = Base64.getEncoder();
@@ -79,11 +82,18 @@ class SerdesTest {
 
     @Test
     void testWithTicket() {
-      ChMap.tickets().forEach(i -> {
-          assertEquals(String.valueOf(ChMap.tickets().indexOf(i)), ticketSerde.serialize(i));
-          assertEquals(i, ticketSerde.deserialize(String.valueOf(ChMap.tickets().indexOf(i))));
-          assertEquals(i, ticketSerde.deserialize(ticketSerde.serialize(i)));
-      });
+        ChMap.tickets()
+                .forEach(
+                        i -> {
+                            assertEquals(
+                                    String.valueOf(ChMap.tickets().indexOf(i)),
+                                    ticketSerde.serialize(i));
+                            assertEquals(
+                                    i,
+                                    ticketSerde.deserialize(
+                                            String.valueOf(ChMap.tickets().indexOf(i))));
+                            assertEquals(i, ticketSerde.deserialize(ticketSerde.serialize(i)));
+                        });
     }
 
     @Test

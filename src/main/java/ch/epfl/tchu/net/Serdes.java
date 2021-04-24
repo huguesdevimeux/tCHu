@@ -80,8 +80,8 @@ public final class Serdes {
                         // ie index 0 -> attribute List<Cards>faceUpCards -> use of cardListSerde
                         String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PublicCardState(
-                                //we don't have to verify if elements[0] is empty
-                                //because the face up cards' size = 5
+                                // we don't have to verify if elements[0] is empty
+                                // because the face up cards' size = 5
                                 cardListSerde.deserialize(elements[0]),
                                 intSerde.deserialize(elements[1]),
                                 intSerde.deserialize(elements[2]));
