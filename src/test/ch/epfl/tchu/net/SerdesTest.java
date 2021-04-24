@@ -1,18 +1,8 @@
-package ch.epfl.tchu.net;
-
-import static ch.epfl.tchu.game.Card.*;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-import static ch.epfl.tchu.net.Serdes.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
+package tchu.net;
 
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
-import ch.epfl.test.TestRandomizer;
-
+import ch.epfl.tchu.net.Serde;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,12 +10,19 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-interface EqualityAsserter<T> extends BiConsumer<T, T> {}
+import static ch.epfl.tchu.game.Card.*;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+import static ch.epfl.tchu.net.Serdes.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+interface EqualityAsserter<T> extends BiConsumer<T, T> {
+}
 class SerdesTest {
 
     private final Base64.Encoder encoder = Base64.getEncoder();
-    private final Random random = TestRandomizer.newRandom();
+    private final Random random = ch.epfl.test.TestRandomizer.newRandom();
     private final Base64.Decoder decoder = Base64.getDecoder();
     private List<Card> allCards;
     private ArrayList<Route> allRoutes;
@@ -82,9 +79,11 @@ class SerdesTest {
 
     @Test
     void testWithTicket() {
-        for (int i = 0; i < ChMap.tickets().size(); i++) {
-            testSerdeWithValues(ticketSerde, ChMap.tickets().get(i), String.valueOf(i));
-        }
+      ChMap.tickets().forEach(i -> {
+          assertEquals(String.valueOf(ChMap.tickets().indexOf(i)), ticketSerde.serialize(i));
+          assertEquals(i, ticketSerde.deserialize(String.valueOf(ChMap.tickets().indexOf(i))));
+          assertEquals(i, ticketSerde.deserialize(ticketSerde.serialize(i)));
+      });
     }
 
     @Test
@@ -193,7 +192,7 @@ class SerdesTest {
         EqualityAsserter<PublicCardState> publicCardStateEqualityAsserter =
                 (publicCardState, publicCardState2) -> {
                     assertEquals(publicCardState.deckSize(), publicCardState2.deckSize());
-                    assertEquals(publicCardState.discardsSize(), publicCardState2.deckSize());
+                    assertEquals(publicCardState.discardsSize(), publicCardState2.discardsSize());
                     assertEquals(publicCardState.faceUpCards(), publicCardState2.faceUpCards());
                     assertEquals(publicCardState.totalSize(), publicCardState2.totalSize());
                 };
@@ -232,7 +231,7 @@ class SerdesTest {
         EqualityAsserter<PublicPlayerState> publicPlayerStateEqualityAsserter =
                 (p1, p2) -> {
                     assertEquals(p1.ticketCount(), p2.ticketCount());
-                    assertEquals(p1.carCount(), p1.carCount());
+                    assertEquals(p1.carCount(), p2.carCount());
                     assertEquals(p1.routes(), p2.routes());
                 };
 
@@ -242,7 +241,7 @@ class SerdesTest {
                         SEPARATOR,
                         List.of(
                                 intSerde.serialize(p.ticketCount()),
-                                intSerde.serialize(p.carCount()),
+                                intSerde.serialize(p.cardCount()),
                                 routeListSerde.serialize(p.routes())));
         // This test fails. TODO
         testSerdeWithValues(publicPlayerStateSerde, p, target, publicPlayerStateEqualityAsserter);
@@ -260,7 +259,7 @@ class SerdesTest {
                             SEPARATOR,
                             List.of(
                                     intSerde.serialize(p.ticketCount()),
-                                    intSerde.serialize(p.carCount()),
+                                    intSerde.serialize(p.cardCount()),
                                     routeListSerde.serialize(p.routes())));
             testSerdeWithValues(
                     publicPlayerStateSerde, p, target, publicPlayerStateEqualityAsserter);
@@ -268,13 +267,13 @@ class SerdesTest {
     }
 
     @Test
-    void testWithPlayerSTate() {
+    void testWithPlayerState() {
         int TESTS_ITERATIONS = 50;
         String SEPARATOR = ";";
         EqualityAsserter<PlayerState> playerStateEqualityAsserter =
                 (p1, p2) -> {
                     assertEquals(p1.tickets(), p2.tickets());
-                    assertEquals(p1.cards(), p1.cards());
+                    assertEquals(p1.cards(), p2.cards());
                     assertEquals(p1.routes(), p2.routes());
                 };
 
@@ -286,7 +285,6 @@ class SerdesTest {
                                 ticketBagSerde.serialize(p.tickets()),
                                 cardBagSerde.serialize(p.cards()),
                                 routeListSerde.serialize(p.routes())));
-        // This test fails. TODO
         testSerdeWithValues(playerStateSerde, p, target, playerStateEqualityAsserter);
 
         for (int i = 1; i < TESTS_ITERATIONS; i++) {
