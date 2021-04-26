@@ -1,13 +1,13 @@
 package ch.epfl.tchu.net;
 
-import static ch.epfl.tchu.net.Serdes.*;
-
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
+
+import static ch.epfl.tchu.net.Serdes.*;
 
 /**
  * Represents a proxy player. Meant to be used by {@link ch.epfl.tchu.game.Game} as a normal Player.
@@ -91,9 +91,9 @@ public class RemotePlayerProxy implements Player {
 
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
-        return networkInteractionHandler(MessageId.CHOOSE_TICKETS)
-                .map(ticketBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+		return networkInteractionHandler(MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)))
+			.map(ticketBagSerde::deserialize)
+			.orElseThrow(() -> new IllegalStateException("Expected response from network."));
     }
 
     @Override
@@ -154,7 +154,6 @@ public class RemotePlayerProxy implements Player {
                 this.outRedirect.write(String.join(NetConst.SPACE, serializedArgs));
             this.outRedirect.write(NetConst.SPACE + NetConst.ENDLINE);
             this.outRedirect.flush();
-            // TODO difference between NO RESPONSE and EMPTY RESPONSE
             return Optional.ofNullable(this.inRedirect.readLine());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -162,7 +161,5 @@ public class RemotePlayerProxy implements Player {
     }
 }
 
-// TODO : test with empty sorted bag
-// TODO : document messageId class attributes.
 // TODO update doc with @throws
 // TODO replace IllegalStateException by IO expections
