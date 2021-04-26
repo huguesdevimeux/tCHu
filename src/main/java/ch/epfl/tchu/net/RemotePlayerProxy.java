@@ -154,6 +154,7 @@ public class RemotePlayerProxy implements Player {
                 this.outRedirect.write(String.join(NetConst.SPACE, serializedArgs));
             this.outRedirect.write(NetConst.SPACE + NetConst.ENDLINE);
             this.outRedirect.flush();
+            // The Optional will be empty if readLine returns null.
             return Optional.ofNullable(this.inRedirect.readLine());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
