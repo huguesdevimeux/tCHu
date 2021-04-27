@@ -45,7 +45,7 @@ public class RemotePlayerClient {
                 List<String> splitResp =
                         new ArrayList<>(
                                 Arrays.asList(
-                                        respFromNetwork.split(Pattern.quote(NetConst.SPACE))));
+                                        respFromNetwork.split(Pattern.quote(NetConst.SPACE), -1)));
                 MessageId messageId = MessageId.valueOf(splitResp.get(0));
                 splitResp.remove(0);
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
