@@ -82,7 +82,7 @@ public class RemotePlayerClient {
             case INIT_PLAYERS:
                 // Deserializer handmade. See RemotePlayerProxy l. 48 for serializer implementation.
                 List<String> playersSerialized =
-                        List.of(args.get(1).split(Pattern.quote(COMMA_SEPARATOR))).stream()
+                        List.of(args.get(1).split(Pattern.quote(COMMA_SEPARATOR), -1)).stream()
                                 .map(stringSerde::deserialize)
                                 .collect(Collectors.toList());
 
