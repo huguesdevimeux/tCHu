@@ -5,6 +5,7 @@ import ch.epfl.tchu.SortedBag;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -94,7 +95,7 @@ public interface Serde<T> {
      * @return a serde capable of (de)serializing lists of (de)serialized values
      */
     static <T> Serde<List<T>> listOf(Serde<T> serde, String separator) {
-        Preconditions.checkArgument(separator != null);
+        Objects.requireNonNull(separator);
         return new Serde<>() {
             /**
              * Returns a Serialized string where each element of the parameter is separated by

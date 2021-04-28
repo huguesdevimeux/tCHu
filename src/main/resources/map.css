@@ -1,0 +1,261 @@
+/* Map */
+
+ImageView {
+    -fx-image: url("map.png");
+}
+
+.track {
+    -fx-stroke: dimgray;
+    -fx-stroke-width: 1;
+    -fx-stroke-type: outside;
+}
+
+.BLACK .track {
+    -fx-stroke: grey;
+}
+
+.UNDERGROUND .track {
+    -fx-stroke-dash-array: 8 4;
+    -fx-stroke-dash-offset: 4;
+    -fx-stroke-line-cap: butt;
+}
+
+.route:hover .track {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.car {
+    visibility: hidden;
+}
+
+.car Rectangle {
+    -fx-stroke-type: centered;
+    -fx-stroke: dimgrey;
+    -fx-stroke-width: 2;
+}
+
+.car Circle {
+    -fx-stroke-width: 1;
+    -fx-stroke: dimgrey;
+    -fx-fill: white;
+}
+
+.PLAYER_1 .car {
+    visibility: visible;
+}
+
+.PLAYER_2 .car {
+    visibility: visible;
+}
+
+/* Position of individual track segments */
+#BAD_BAL_1_1 { -fx-translate-x: 497; -fx-translate-y: 123; -fx-rotate: 27 }
+#BAD_BAL_1_2 { -fx-translate-x: 457; -fx-translate-y: 107; -fx-rotate: 17 }
+#BAD_BAL_1_3 { -fx-translate-x: 415; -fx-translate-y: 105; -fx-rotate: -8 }
+#BAD_OLT_1_1 { -fx-translate-x: 505; -fx-translate-y: 158; -fx-rotate: -30 }
+#BAD_OLT_1_2 { -fx-translate-x: 468; -fx-translate-y: 180; -fx-rotate: -30 }
+#BAD_ZUR_1_1 { -fx-translate-x: 560; -fx-translate-y: 156; -fx-rotate: 26 }
+#BAL_DE1_1_1 { -fx-translate-x: 382; -fx-translate-y: 79; -fx-rotate: -81 }
+#BAL_DEL_1_1 { -fx-translate-x: 357; -fx-translate-y: 143; -fx-rotate: -52 }
+#BAL_DEL_1_2 { -fx-translate-x: 325; -fx-translate-y: 170; -fx-rotate: -28 }
+#BAL_OLT_1_1 { -fx-translate-x: 393; -fx-translate-y: 148; -fx-rotate: -114 }
+#BAL_OLT_1_2 { -fx-translate-x: 419; -fx-translate-y: 182; -fx-rotate: -139 }
+#BEL_LOC_1_1 { -fx-translate-x: 700; -fx-translate-y: 596; -fx-rotate: -12 }
+#BEL_LUG_1_1 { -fx-translate-x: 725; -fx-translate-y: 622; -fx-rotate: -81 }
+#BEL_WAS_1_1 { -fx-translate-x: 705; -fx-translate-y: 564; -fx-rotate: -124 }
+#BEL_WAS_1_2 { -fx-translate-x: 682; -fx-translate-y: 530; -fx-rotate: -124 }
+#BEL_WAS_1_3 { -fx-translate-x: 659; -fx-translate-y: 494; -fx-rotate: -124 }
+#BEL_WAS_1_4 { -fx-translate-x: 636; -fx-translate-y: 460; -fx-rotate: -124 }
+#BER_FRI_1_1 { -fx-translate-x: 309; -fx-translate-y: 353; -fx-rotate: -40 }
+#BER_INT_1_3 { -fx-translate-x: 414; -fx-translate-y: 422; -fx-rotate: 12 }
+#BER_INT_1_2 { -fx-translate-x: 377; -fx-translate-y: 402; -fx-rotate: 45 }
+#BER_INT_1_1 { -fx-translate-x: 356; -fx-translate-y: 367; -fx-rotate: 69 }
+#BER_NEU_1_1 { -fx-translate-x: 302; -fx-translate-y: 323; -fx-rotate: 8 }
+#BER_NEU_1_2 { -fx-translate-x: 261; -fx-translate-y: 317; -fx-rotate: 8 }
+#BER_LUC_1_1 { -fx-translate-x: 382; -fx-translate-y: 328; -fx-rotate: 4 }
+#BER_LUC_1_2 { -fx-translate-x: 424; -fx-translate-y: 328; -fx-rotate: -8 }
+#BER_LUC_1_3 { -fx-translate-x: 465; -fx-translate-y: 320; -fx-rotate: -14 }
+#BER_LUC_1_4 { -fx-translate-x: 505; -fx-translate-y: 305; -fx-rotate: -24 }
+#BER_SOL_1_1 { -fx-translate-x: 352; -fx-translate-y: 292; -fx-rotate: -84 }
+#BER_SOL_1_2 { -fx-translate-x: 359; -fx-translate-y: 249; -fx-rotate: -84 }
+#BRI_IT5_1_1 { -fx-translate-x: 497; -fx-translate-y: 569; -fx-rotate: 56 }
+#BRI_IT5_1_2 { -fx-translate-x: 520; -fx-translate-y: 604; -fx-rotate: 56 }
+#BRI_IT5_1_3 { -fx-translate-x: 544; -fx-translate-y: 638; -fx-rotate: 56 }
+#BRI_INT_1_1 { -fx-translate-x: 453; -fx-translate-y: 505; -fx-rotate: -113 }
+#BRI_INT_1_2 { -fx-translate-x: 445; -fx-translate-y: 464; -fx-rotate: -89 }
+#BRI_LOC_1_1 { -fx-translate-x: 506; -fx-translate-y: 527; -fx-rotate: -20 }
+#BRI_LOC_1_2 { -fx-translate-x: 545; -fx-translate-y: 512; -fx-rotate: -20 }
+#BRI_LOC_1_3 { -fx-translate-x: 584; -fx-translate-y: 496; -fx-rotate: -20 }
+#BRI_LOC_1_4 { -fx-translate-x: 616; -fx-translate-y: 498; -fx-rotate: 66 }
+#BRI_LOC_1_5 { -fx-translate-x: 633; -fx-translate-y: 537; -fx-rotate: 66 }
+#BRI_LOC_1_6 { -fx-translate-x: 649; -fx-translate-y: 577; -fx-rotate: 66 }
+#BRI_SIO_1_1 { -fx-translate-x: 444; -fx-translate-y: 559; -fx-rotate: -29 }
+#BRI_SIO_1_2 { -fx-translate-x: 403; -fx-translate-y: 573; -fx-rotate: -7 }
+#BRI_SIO_1_3 { -fx-translate-x: 360; -fx-translate-y: 572; -fx-rotate: 8 }
+#BRI_WAS_1_1 { -fx-translate-x: 494; -fx-translate-y: 506; -fx-rotate: -33 }
+#BRI_WAS_1_2 { -fx-translate-x: 529; -fx-translate-y: 483; -fx-rotate: -33 }
+#BRI_WAS_1_3 { -fx-translate-x: 564; -fx-translate-y: 461; -fx-rotate: -33 }
+#BRI_WAS_1_4 { -fx-translate-x: 598; -fx-translate-y: 438; -fx-rotate: -33 }
+#BRU_COI_1_1 { -fx-translate-x: 949; -fx-translate-y: 535; -fx-rotate: 54 }
+#BRU_COI_1_2 { -fx-translate-x: 925; -fx-translate-y: 502; -fx-rotate: 54 }
+#BRU_COI_1_3 { -fx-translate-x: 901; -fx-translate-y: 468; -fx-rotate: 54 }
+#BRU_COI_1_4 { -fx-translate-x: 877; -fx-translate-y: 434; -fx-rotate: 54 }
+#BRU_COI_1_5 { -fx-translate-x: 852; -fx-translate-y: 400; -fx-rotate: 54 }
+#BRU_DAV_1_1 { -fx-translate-x: 975; -fx-translate-y: 525; -fx-rotate: 80 }
+#BRU_DAV_1_2 { -fx-translate-x: 968; -fx-translate-y: 484; -fx-rotate: 80 }
+#BRU_DAV_1_3 { -fx-translate-x: 961; -fx-translate-y: 444; -fx-rotate: 80 }
+#BRU_DAV_1_4 { -fx-translate-x: 954; -fx-translate-y: 404; -fx-rotate: 80 }
+#BRU_IT2_1_1 { -fx-translate-x: 995; -fx-translate-y: 589; -fx-rotate: 60 }
+#BRU_IT2_1_2 { -fx-translate-x: 1016; -fx-translate-y: 626; -fx-rotate: 60 }
+#COI_DAV_1_1 { -fx-translate-x: 871; -fx-translate-y: 368; -fx-rotate: 0 }
+#COI_DAV_1_2 { -fx-translate-x: 913; -fx-translate-y: 369; -fx-rotate: 0 }
+#COI_SAR_1_1 { -fx-translate-x: 820; -fx-translate-y: 336; -fx-rotate: 62 }
+#COI_WAS_1_1 { -fx-translate-x: 816; -fx-translate-y: 398; -fx-rotate: -54 }
+#COI_WAS_1_2 { -fx-translate-x: 788; -fx-translate-y: 429; -fx-rotate: -44 }
+#COI_WAS_1_3 { -fx-translate-x: 751; -fx-translate-y: 449; -fx-rotate: -16 }
+#COI_WAS_1_4 { -fx-translate-x: 710; -fx-translate-y: 449; -fx-rotate: 18 }
+#COI_WAS_1_5 { -fx-translate-x: 671; -fx-translate-y: 433; -fx-rotate: 30 }
+#DAV_IT1_1_1 { -fx-translate-x: 980; -fx-translate-y: 382; -fx-rotate: 10 }
+#DAV_IT1_1_2 { -fx-translate-x: 1021; -fx-translate-y: 389; -fx-rotate: 10 }
+#DAV_IT1_1_3 { -fx-translate-x: 1063; -fx-translate-y: 395; -fx-rotate: 10 }
+#DAV_AT3_1_1 { -fx-translate-x: 979; -fx-translate-y: 356; -fx-rotate: -17 }
+#DAV_AT3_1_2 { -fx-translate-x: 1020; -fx-translate-y: 342; -fx-rotate: -18 }
+#DAV_AT3_1_3 { -fx-translate-x: 1059; -fx-translate-y: 329; -fx-rotate: -18 }
+#DAV_SAR_1_1 { -fx-translate-x: 918; -fx-translate-y: 341; -fx-rotate: 37 }
+#DAV_SAR_1_2 { -fx-translate-x: 882; -fx-translate-y: 319; -fx-rotate: 30 }
+#DAV_SAR_1_3 { -fx-translate-x: 842; -fx-translate-y: 307; -fx-rotate: 3 }
+#DEL_FR4_1_1 { -fx-translate-x: 299; -fx-translate-y: 149; -fx-rotate: -83 }
+#DEL_FR4_1_2 { -fx-translate-x: 303; -fx-translate-y: 108; -fx-rotate: -83 }
+#DEL_LCF_1_1 { -fx-translate-x: 262; -fx-translate-y: 194; -fx-rotate: -18 }
+#DEL_LCF_1_2 { -fx-translate-x: 223; -fx-translate-y: 211; -fx-rotate: -28 }
+#DEL_LCF_1_3 { -fx-translate-x: 187; -fx-translate-y: 239; -fx-rotate: -52 }
+#DEL_SOL_1_1 { -fx-translate-x: 327; -fx-translate-y: 201; -fx-rotate: 18 }
+#DE2_SCE_1_1 { -fx-translate-x: 637; -fx-translate-y: 27; -fx-rotate: -28 }
+#DE3_KRE_1_1 { -fx-translate-x: 743; -fx-translate-y: 43; -fx-rotate: 60 }
+#DE4_KRE_1_1 { -fx-translate-x: 784; -fx-translate-y: 51; -fx-rotate: -43 }
+#DE5_STG_1_1 { -fx-translate-x: 859; -fx-translate-y: 103; -fx-rotate: -34 }
+#DE5_STG_1_2 { -fx-translate-x: 824; -fx-translate-y: 126; -fx-rotate: -34 }
+#FR1_MAR_1_1 { -fx-translate-x: 188; -fx-translate-y: 686; -fx-rotate: -48 }
+#FR1_MAR_1_2 { -fx-translate-x: 215; -fx-translate-y: 655; -fx-rotate: -48 }
+#FR2_GEN_1_1 { -fx-translate-x: 23; -fx-translate-y: 622; -fx-rotate: -80 }
+#FR3_LCF_1_1 { -fx-translate-x: 96; -fx-translate-y: 230; -fx-rotate: 28 }
+#FR3_LCF_1_2 { -fx-translate-x: 134; -fx-translate-y: 249; -fx-rotate: 28 }
+#FRI_LAU_1_1 { -fx-translate-x: 255; -fx-translate-y: 396; -fx-rotate: -36 }
+#FRI_LAU_1_2 { -fx-translate-x: 223; -fx-translate-y: 420; -fx-rotate: -36 }
+#FRI_LAU_1_3 { -fx-translate-x: 191; -fx-translate-y: 444; -fx-rotate: -36 }
+#GEN_LAU_1_1 { -fx-translate-x: 33; -fx-translate-y: 554; -fx-rotate: -77 }
+#GEN_LAU_1_2 { -fx-translate-x: 48; -fx-translate-y: 513; -fx-rotate: -65 }
+#GEN_LAU_1_3 { -fx-translate-x: 90; -fx-translate-y: 475; -fx-rotate: -18 }
+#GEN_LAU_1_4 { -fx-translate-x: 132; -fx-translate-y: 465; -fx-rotate: -9 }
+#GEN_YVE_1_1 { -fx-translate-x: 13; -fx-translate-y: 548; -fx-rotate: -94 }
+#GEN_YVE_1_2 { -fx-translate-x: 12; -fx-translate-y: 508; -fx-rotate: -93 }
+#GEN_YVE_1_3 { -fx-translate-x: 20; -fx-translate-y: 466; -fx-rotate: -68 }
+#GEN_YVE_1_4 { -fx-translate-x: 43; -fx-translate-y: 432; -fx-rotate: -45 }
+#GEN_YVE_1_5 { -fx-translate-x: 78; -fx-translate-y: 407; -fx-rotate: -25 }
+#GEN_YVE_1_6 { -fx-translate-x: 119; -fx-translate-y: 393; -fx-rotate: -11 }
+#INT_LUC_1_1 { -fx-translate-x: 479; -fx-translate-y: 426; -fx-rotate: -9 }
+#INT_LUC_1_2 { -fx-translate-x: 518; -fx-translate-y: 406; -fx-rotate: -44 }
+#INT_LUC_1_3 { -fx-translate-x: 542; -fx-translate-y: 373; -fx-rotate: -71 }
+#INT_LUC_1_4 { -fx-translate-x: 549; -fx-translate-y: 331; -fx-rotate: -94 }
+#IT3_LUG_1_1 { -fx-translate-x: 753; -fx-translate-y: 694; -fx-rotate: -12 }
+#IT3_LUG_1_2 { -fx-translate-x: 723; -fx-translate-y: 687; -fx-rotate: 79 }
+#IT4_LOC_1_1 { -fx-translate-x: 645; -fx-translate-y: 678; -fx-rotate: 105 }
+#IT4_LOC_1_2 { -fx-translate-x: 655; -fx-translate-y: 639; -fx-rotate: 105 }
+#KRE_SCE_1_1 { -fx-translate-x: 724; -fx-translate-y: 65; -fx-rotate: 24 }
+#KRE_SCE_1_2 { -fx-translate-x: 683; -fx-translate-y: 54; -fx-rotate: 8 }
+#KRE_SCE_1_3 { -fx-translate-x: 642; -fx-translate-y: 50; -fx-rotate: 3 }
+#KRE_STG_1_1 { -fx-translate-x: 778; -fx-translate-y: 110; -fx-rotate: 64 }
+#KRE_WIN_1_1 { -fx-translate-x: 722; -fx-translate-y: 94; -fx-rotate: -14 }
+#KRE_WIN_1_2 { -fx-translate-x: 681; -fx-translate-y: 104; -fx-rotate: -14 }
+#LCF_NEU_1_1 { -fx-translate-x: 192; -fx-translate-y: 291; -fx-rotate: 36 }
+#LCF_YVE_1_1 { -fx-translate-x: 141; -fx-translate-y: 284; -fx-rotate: -36 }
+#LCF_YVE_1_2 { -fx-translate-x: 117; -fx-translate-y: 319; -fx-rotate: -75 }
+#LCF_YVE_1_3 { -fx-translate-x: 126; -fx-translate-y: 359; -fx-rotate: -130 }
+#LAU_MAR_1_1 { -fx-translate-x: 193; -fx-translate-y: 489; -fx-rotate: 26 }
+#LAU_MAR_1_2 { -fx-translate-x: 226; -fx-translate-y: 514; -fx-rotate: 53 }
+#LAU_MAR_1_3 { -fx-translate-x: 242; -fx-translate-y: 553; -fx-rotate: 85 }
+#LAU_MAR_1_4 { -fx-translate-x: 241; -fx-translate-y: 595; -fx-rotate: 97 }
+#LAU_NEU_1_1 { -fx-translate-x: 170; -fx-translate-y: 427; -fx-rotate: -56 }
+#LAU_NEU_1_2 { -fx-translate-x: 200; -fx-translate-y: 395; -fx-rotate: -37 }
+#LAU_NEU_1_3 { -fx-translate-x: 236; -fx-translate-y: 373; -fx-rotate: -29 }
+#LAU_NEU_1_4 { -fx-translate-x: 234; -fx-translate-y: 341; -fx-rotate: 64 }
+#LOC_LUG_1_1 { -fx-translate-x: 690; -fx-translate-y: 628; -fx-rotate: 45 }
+#LUC_OLT_1_1 { -fx-translate-x: 511; -fx-translate-y: 282; -fx-rotate: -2 }
+#LUC_OLT_1_2 { -fx-translate-x: 471; -fx-translate-y: 269; -fx-rotate: 39 }
+#LUC_OLT_1_3 { -fx-translate-x: 449; -fx-translate-y: 232; -fx-rotate: 79 }
+#LUC_SCZ_1_1 { -fx-translate-x: 582; -fx-translate-y: 307; -fx-rotate: 17 }
+#LUC_ZOU_1_1 { -fx-translate-x: 561; -fx-translate-y: 260; -fx-rotate: -43 }
+#MAR_SIO_1_1 { -fx-translate-x: 273; -fx-translate-y: 615; -fx-rotate: -32 }
+#MAR_SIO_1_2 { -fx-translate-x: 305; -fx-translate-y: 589; -fx-rotate: -44 }
+#NEU_SOL_1_1 { -fx-translate-x: 224; -fx-translate-y: 282; -fx-rotate: -78 }
+#NEU_SOL_1_2 { -fx-translate-x: 245; -fx-translate-y: 244; -fx-rotate: -42 }
+#NEU_SOL_1_3 { -fx-translate-x: 283; -fx-translate-y: 225; -fx-rotate: -16 }
+#NEU_SOL_1_4 { -fx-translate-x: 325; -fx-translate-y: 221; -fx-rotate: 4 }
+#NEU_YVE_1_1 { -fx-translate-x: 189; -fx-translate-y: 324; -fx-rotate: -13 }
+#NEU_YVE_1_2 { -fx-translate-x: 163; -fx-translate-y: 354; -fx-rotate: -89 }
+#AT1_STG_1_1 { -fx-translate-x: 947; -fx-translate-y: 204; -fx-rotate: 20 }
+#AT1_STG_1_2 { -fx-translate-x: 908; -fx-translate-y: 190; -fx-rotate: 20 }
+#AT1_STG_1_3 { -fx-translate-x: 869; -fx-translate-y: 176; -fx-rotate: 20 }
+#AT1_STG_1_4 { -fx-translate-x: 830; -fx-translate-y: 162; -fx-rotate: 20 }
+#AT2_VAD_1_1 { -fx-translate-x: 883; -fx-translate-y: 245; -fx-rotate: -7 }
+#OLT_SOL_1_1 { -fx-translate-x: 399; -fx-translate-y: 213; -fx-rotate: -6 }
+#OLT_ZUR_1_1 { -fx-translate-x: 480; -fx-translate-y: 200; -fx-rotate: -11 }
+#OLT_ZUR_1_2 { -fx-translate-x: 522; -fx-translate-y: 192; -fx-rotate: -11 }
+#OLT_ZUR_1_3 { -fx-translate-x: 562; -fx-translate-y: 184; -fx-rotate: -11 }
+#PFA_SAR_1_1 { -fx-translate-x: 692; -fx-translate-y: 273; -fx-rotate: 56 }
+#PFA_SAR_1_2 { -fx-translate-x: 724; -fx-translate-y: 299; -fx-rotate: 24 }
+#PFA_SAR_1_3 { -fx-translate-x: 766; -fx-translate-y: 306; -fx-rotate: -1 }
+#PFA_SCZ_1_1 { -fx-translate-x: 651; -fx-translate-y: 280; -fx-rotate: 122 }
+#PFA_STG_1_1 { -fx-translate-x: 712; -fx-translate-y: 232; -fx-rotate: -20 }
+#PFA_STG_1_2 { -fx-translate-x: 751; -fx-translate-y: 214; -fx-rotate: -32 }
+#PFA_STG_1_3 { -fx-translate-x: 778; -fx-translate-y: 182; -fx-rotate: -66 }
+#PFA_ZUR_1_1 { -fx-translate-x: 666; -fx-translate-y: 216; -fx-rotate: 70 }
+#PFA_ZUR_1_2 { -fx-translate-x: 634; -fx-translate-y: 191; -fx-rotate: 6 }
+#SAR_VAD_1_1 { -fx-translate-x: 825; -fx-translate-y: 278; -fx-rotate: -51 }
+#SCE_WIN_1_1 { -fx-translate-x: 616; -fx-translate-y: 87; -fx-rotate: 66 }
+#SCE_ZUR_1_1 { -fx-translate-x: 581; -fx-translate-y: 59; -fx-rotate: -29 }
+#SCE_ZUR_1_2 { -fx-translate-x: 560; -fx-translate-y: 95; -fx-rotate: -89 }
+#SCE_ZUR_1_3 { -fx-translate-x: 575; -fx-translate-y: 135; -fx-rotate: -126 }
+#SCZ_WAS_1_1 { -fx-translate-x: 612; -fx-translate-y: 347; -fx-rotate: 92 }
+#SCZ_WAS_1_2 { -fx-translate-x: 612; -fx-translate-y: 388; -fx-rotate: 90 }
+#SCZ_ZOU_1_1 { -fx-translate-x: 606; -fx-translate-y: 281; -fx-rotate: 72 }
+#STG_VAD_1_1 { -fx-translate-x: 807; -fx-translate-y: 183; -fx-rotate: 63 }
+#STG_VAD_1_2 { -fx-translate-x: 826; -fx-translate-y: 220; -fx-rotate: 63 }
+#STG_WIN_1_1 { -fx-translate-x: 756; -fx-translate-y: 138; -fx-rotate: -2 }
+#STG_WIN_1_2 { -fx-translate-x: 715; -fx-translate-y: 140; -fx-rotate: -2 }
+#STG_WIN_1_3 { -fx-translate-x: 673; -fx-translate-y: 133; -fx-rotate: 26 }
+#STG_ZUR_1_1 { -fx-translate-x: 758; -fx-translate-y: 155; -fx-rotate: -7 }
+#STG_ZUR_1_2 { -fx-translate-x: 717; -fx-translate-y: 161; -fx-rotate: -7 }
+#STG_ZUR_1_3 { -fx-translate-x: 676; -fx-translate-y: 166; -fx-rotate: -7 }
+#STG_ZUR_1_4 { -fx-translate-x: 634; -fx-translate-y: 171; -fx-rotate: -7 }
+#WIN_ZUR_1_1 { -fx-translate-x: 611; -fx-translate-y: 134; -fx-rotate: -52 }
+#ZOU_ZUR_1_1 { -fx-translate-x: 589; -fx-translate-y: 214; -fx-rotate: -92 }
+#GEN_LAU_2_1 { -fx-translate-x: 49; -fx-translate-y: 559; -fx-rotate: -77 }
+#GEN_LAU_2_2 { -fx-translate-x: 64; -fx-translate-y: 518; -fx-rotate: -65 }
+#GEN_LAU_2_3 { -fx-translate-x: 95; -fx-translate-y: 490; -fx-rotate: -18 }
+#GEN_LAU_2_4 { -fx-translate-x: 136; -fx-translate-y: 480; -fx-rotate: -8 }
+#FRI_LAU_2_1 { -fx-translate-x: 265; -fx-translate-y: 408; -fx-rotate: -36 }
+#FRI_LAU_2_2 { -fx-translate-x: 233; -fx-translate-y: 432; -fx-rotate: -36 }
+#FRI_LAU_2_3 { -fx-translate-x: 201; -fx-translate-y: 456; -fx-rotate: -36 }
+#BER_FRI_2_1 { -fx-translate-x: 320; -fx-translate-y: 366; -fx-rotate: -40 }
+#BER_LUC_2_1 { -fx-translate-x: 385; -fx-translate-y: 344; -fx-rotate: 4 }
+#BER_LUC_2_2 { -fx-translate-x: 428; -fx-translate-y: 344; -fx-rotate: -9 }
+#BER_LUC_2_3 { -fx-translate-x: 468; -fx-translate-y: 336; -fx-rotate: -15 }
+#BER_LUC_2_4 { -fx-translate-x: 509; -fx-translate-y: 321; -fx-rotate: -24 }
+#LUC_ZOU_2_1 { -fx-translate-x: 572; -fx-translate-y: 271; -fx-rotate: -43 }
+#ZOU_ZUR_2_1 { -fx-translate-x: 604; -fx-translate-y: 214; -fx-rotate: -92 }
+#WIN_ZUR_2_1 { -fx-translate-x: 624; -fx-translate-y: 143; -fx-rotate: -52 }
+#SCE_WIN_2_1 { -fx-translate-x: 630; -fx-translate-y: 81; -fx-rotate: 66 }
+#SCZ_ZOU_2_1 { -fx-translate-x: 621; -fx-translate-y: 277; -fx-rotate: 72 }
+#SCZ_WAS_2_1 { -fx-translate-x: 629; -fx-translate-y: 348; -fx-rotate: 92 }
+#SCZ_WAS_2_2 { -fx-translate-x: 629; -fx-translate-y: 389; -fx-rotate: 91 }
+#BEL_WAS_2_1 { -fx-translate-x: 718; -fx-translate-y: 554; -fx-rotate: -124 }
+#BEL_WAS_2_2 { -fx-translate-x: 695; -fx-translate-y: 520; -fx-rotate: -124 }
+#BEL_WAS_2_3 { -fx-translate-x: 672; -fx-translate-y: 484; -fx-rotate: -124 }
+#BEL_WAS_2_4 { -fx-translate-x: 649; -fx-translate-y: 450; -fx-rotate: -124 }
+#BEL_LUG_2_1 { -fx-translate-x: 741; -fx-translate-y: 625; -fx-rotate: -81 }
+
+/* Local Variables: */
+/* css-fontify-colors: nil */
+/* End: */
