@@ -5,7 +5,6 @@ import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
 
 import static javafx.beans.property.ReadOnlyIntegerProperty.readOnlyIntegerProperty;
 
-import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
 import javafx.beans.property.ObjectProperty;
@@ -27,7 +26,8 @@ public class ObservableGameState {
     private PlayerState playerState;
     private PlayerId correspondingPlayer;
     // 1st group of properties
-    private final ObjectProperty<Integer> percentageOfTicketsRemaining = percentageOfTicketsRemaining();
+    private final ObjectProperty<Integer> percentageOfTicketsRemaining =
+            percentageOfTicketsRemaining();
     private final ObjectProperty<Integer> percentageOfCardsRemaining = percentageOfCardsRemaining();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final List<ObjectProperty<Route>> allRoutes = createRoutes();
@@ -42,7 +42,8 @@ public class ObservableGameState {
     // we stock the number of each type of card in a list such that the numbers in the list
     // represent the number of cards of the card at given index in Card.ALL. f.ex.
     // if a player has one black card, the list will be [1,0,0,0,0,0,0,0,0]
-    private final List<ObjectProperty<Integer>> playersNumberOfEachCards = createPlayersCardsOfEachColor();
+    private final List<ObjectProperty<Integer>> playersNumberOfEachCards =
+            createPlayersCardsOfEachColor();
     // in order to verify if a player can claim a route, we use a list of BOOLEANS the size of the
     // total number of routes in the game and for each route, if the player can claim it,
     // we assign true, false otherwise (false is the default value).
