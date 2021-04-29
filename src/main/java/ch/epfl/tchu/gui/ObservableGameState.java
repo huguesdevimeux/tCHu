@@ -1,6 +1,12 @@
 package ch.epfl.tchu.gui;
 
+import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
+import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
+
+import static javafx.beans.property.ReadOnlyIntegerProperty.readOnlyIntegerProperty;
+
 import ch.epfl.tchu.game.*;
+
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,10 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
-
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
-import static javafx.beans.property.ReadOnlyIntegerProperty.readOnlyIntegerProperty;
 
 /**
  * Representation of the observable state /part of the game.
@@ -26,8 +28,7 @@ public class ObservableGameState {
     private PlayerState playerState;
     private PlayerId correspondingPlayer;
     // 1st group of properties
-    private final IntegerProperty percentageOfTicketsRemaining =
-            percentageOfTicketsRemaining();
+    private final IntegerProperty percentageOfTicketsRemaining = percentageOfTicketsRemaining();
     private final IntegerProperty percentageOfCardsRemaining = percentageOfCardsRemaining();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final List<ObjectProperty<Route>> allRoutes = createRoutes();
@@ -42,8 +43,7 @@ public class ObservableGameState {
     // we stock the number of each type of card in a list such that the numbers in the list
     // represent the number of cards of the card at given index in Card.ALL. f.ex.
     // if a player has one black card, the list will be [1,0,0,0,0,0,0,0,0]
-    private final List<IntegerProperty> playersNumberOfEachCards =
-            createPlayersCardsOfEachColor();
+    private final List<IntegerProperty> playersNumberOfEachCards = createPlayersCardsOfEachColor();
     // in order to verify if a player can claim a route, we use a list of BOOLEANS the size of the
     // total number of routes in the game and for each route, if the player can claim it,
     // we assign true, false otherwise (false is the default value).
@@ -76,7 +76,7 @@ public class ObservableGameState {
      * Updates all of the attributes.
      *
      * @param newGameState the new gameState
-     * @param playerState  the player state
+     * @param playerState the player state
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
         this.newGameState = newGameState;
