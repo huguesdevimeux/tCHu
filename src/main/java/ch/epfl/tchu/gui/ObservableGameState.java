@@ -1,19 +1,19 @@
 package ch.epfl.tchu.gui;
 
+import ch.epfl.tchu.game.*;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
+
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
-
 import static javafx.beans.property.ReadOnlyIntegerProperty.readOnlyIntegerProperty;
-
-import ch.epfl.tchu.game.*;
-
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
-import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Representation of the observable state /part of the game.
@@ -26,28 +26,28 @@ public class ObservableGameState {
     private PlayerState playerState;
     private PlayerId correspondingPlayer;
     // 1st group of properties
-    private final ObjectProperty<Integer> percentageOfTicketsRemaining =
+    private final IntegerProperty percentageOfTicketsRemaining =
             percentageOfTicketsRemaining();
-    private final ObjectProperty<Integer> percentageOfCardsRemaining = percentageOfCardsRemaining();
+    private final IntegerProperty percentageOfCardsRemaining = percentageOfCardsRemaining();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final List<ObjectProperty<Route>> allRoutes = createRoutes();
     // 2nd group of properties
     // to stock the numbers of each players tickets, cards, etc, we use a 2-sized list
-    private final List<ObjectProperty<Integer>> eachPlayersTickets = createPlayersTickets();
-    private final List<ObjectProperty<Integer>> eachPlayersCards = createPlayersCards();
-    private final List<ObjectProperty<Integer>> eachPlayersCars = createPlayersCars();
-    private final List<ObjectProperty<Integer>> eachPlayersClaimPoints = createPlayersClaimPoints();
+    private final List<IntegerProperty> eachPlayersTickets = createPlayersTickets();
+    private final List<IntegerProperty> eachPlayersCards = createPlayersCards();
+    private final List<IntegerProperty> eachPlayersCars = createPlayersCars();
+    private final List<IntegerProperty> eachPlayersClaimPoints = createPlayersClaimPoints();
     // 3rd group of properties
-    private final ObjectProperty<List<Ticket>> playersTickets = createPlayersListOfTickets();
+    private final ObservableList<Ticket> playersTickets = createPlayersListOfTickets();
     // we stock the number of each type of card in a list such that the numbers in the list
     // represent the number of cards of the card at given index in Card.ALL. f.ex.
     // if a player has one black card, the list will be [1,0,0,0,0,0,0,0,0]
-    private final List<ObjectProperty<Integer>> playersNumberOfEachCards =
+    private final List<IntegerProperty> playersNumberOfEachCards =
             createPlayersCardsOfEachColor();
     // in order to verify if a player can claim a route, we use a list of BOOLEANS the size of the
     // total number of routes in the game and for each route, if the player can claim it,
     // we assign true, false otherwise (false is the default value).
-    private final List<ObjectProperty<Boolean>> playerCanClaimRoute = playerCanClaimRoute();
+    private final List<BooleanProperty> playerCanClaimRoute = playerCanClaimRoute();
 
     /**
      * Instantiable constructor. Sets by default all attributes to null, 0, or false, depending on
@@ -67,7 +67,7 @@ public class ObservableGameState {
         eachPlayersCards.forEach(i -> i.set(0));
         eachPlayersCars.forEach(i -> i.set(0));
         eachPlayersClaimPoints.forEach(i -> i.set(0));
-        playersTickets.set(null);
+        playersTickets.setAll(List.of());
         playersNumberOfEachCards.forEach(i -> i.set(0));
         playerCanClaimRoute.forEach(i -> i.set(false));
     }
@@ -76,7 +76,7 @@ public class ObservableGameState {
      * Updates all of the attributes.
      *
      * @param newGameState the new gameState
-     * @param playerState the player state
+     * @param playerState  the player state
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
         this.newGameState = newGameState;
@@ -121,7 +121,7 @@ public class ObservableGameState {
         }
 
         // simply setting the object property as the tickets of the player
-        playersTickets.set(playerState.tickets().toList());
+        playersTickets.setAll(playerState.tickets().toList());
 
         // counting the number of cards equal to each card individually (from Card.ALL)
         for (Card card : Card.ALL) {
@@ -164,12 +164,12 @@ public class ObservableGameState {
 
     // private methods to "create"/initialize the attributes as either
     // empty lists, or being assigned to 0 or false
-    private static ObjectProperty<Integer> percentageOfTicketsRemaining() {
-        return new SimpleObjectProperty<>(0);
+    private static IntegerProperty percentageOfTicketsRemaining() {
+        return new SimpleIntegerProperty(0);
     }
 
-    private static ObjectProperty<Integer> percentageOfCardsRemaining() {
-        return new SimpleObjectProperty<>(0);
+    private static IntegerProperty percentageOfCardsRemaining() {
+        return new SimpleIntegerProperty(0);
     }
 
     private static List<ObjectProperty<Card>> createFaceUpCards() {
@@ -186,49 +186,49 @@ public class ObservableGameState {
         return allRoutes;
     }
 
-    private static List<ObjectProperty<Integer>> createPlayersTickets() {
-        List<ObjectProperty<Integer>> eachPlayersTickets = new ArrayList<>();
+    private static List<IntegerProperty> createPlayersTickets() {
+        List<IntegerProperty> eachPlayersTickets = new ArrayList<>();
         IntStream.range(0, PlayerId.COUNT)
-                .forEach(i -> eachPlayersTickets.add(new SimpleObjectProperty<>()));
+                .forEach(i -> eachPlayersTickets.add(new SimpleIntegerProperty(0)));
         return eachPlayersTickets;
     }
 
-    private static List<ObjectProperty<Integer>> createPlayersCards() {
-        List<ObjectProperty<Integer>> eachPlayersCards = new ArrayList<>();
+    private static List<IntegerProperty> createPlayersCards() {
+        List<IntegerProperty> eachPlayersCards = new ArrayList<>();
         IntStream.range(0, PlayerId.COUNT)
-                .forEach(i -> eachPlayersCards.add(new SimpleObjectProperty<>()));
+                .forEach(i -> eachPlayersCards.add(new SimpleIntegerProperty(0)));
         return eachPlayersCards;
     }
 
-    private static List<ObjectProperty<Integer>> createPlayersCars() {
-        List<ObjectProperty<Integer>> eachPlayersCars = new ArrayList<>();
+    private static List<IntegerProperty> createPlayersCars() {
+        List<IntegerProperty> eachPlayersCars = new ArrayList<>();
         IntStream.range(0, PlayerId.COUNT)
-                .forEach(i -> eachPlayersCars.add(new SimpleObjectProperty<>()));
+                .forEach(i -> eachPlayersCars.add(new SimpleIntegerProperty(0)));
         return eachPlayersCars;
     }
 
-    private static List<ObjectProperty<Integer>> createPlayersClaimPoints() {
-        List<ObjectProperty<Integer>> eachPlayersClaimPoints = new ArrayList<>();
+    private static List<IntegerProperty> createPlayersClaimPoints() {
+        List<IntegerProperty> eachPlayersClaimPoints = new ArrayList<>();
         IntStream.range(0, PlayerId.COUNT)
-                .forEach(i -> eachPlayersClaimPoints.add(new SimpleObjectProperty<>(0)));
+                .forEach(i -> eachPlayersClaimPoints.add(new SimpleIntegerProperty(0)));
         return eachPlayersClaimPoints;
     }
 
-    private static ObjectProperty<List<Ticket>> createPlayersListOfTickets() {
-        return new SimpleObjectProperty<>();
+    private static ObservableList<Ticket> createPlayersListOfTickets() {
+        return FXCollections.observableArrayList();
     }
 
-    private static List<ObjectProperty<Integer>> createPlayersCardsOfEachColor() {
-        List<ObjectProperty<Integer>> playersNumberOfEachCards = new ArrayList<>();
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
+        List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
         IntStream.range(0, Card.COUNT)
-                .forEach(i -> playersNumberOfEachCards.add(new SimpleObjectProperty<>(0)));
+                .forEach(i -> playersNumberOfEachCards.add(new SimpleIntegerProperty(0)));
         return playersNumberOfEachCards;
     }
 
-    private static List<ObjectProperty<Boolean>> playerCanClaimRoute() {
-        List<ObjectProperty<Boolean>> playerCanClaimRoute = new ArrayList<>();
+    private static List<BooleanProperty> playerCanClaimRoute() {
+        List<BooleanProperty> playerCanClaimRoute = new ArrayList<>();
         IntStream.range(0, ChMap.routes().size())
-                .forEach(i -> playerCanClaimRoute.add(new SimpleObjectProperty<>(false)));
+                .forEach(i -> playerCanClaimRoute.add(new SimpleBooleanProperty(false)));
         return playerCanClaimRoute;
     }
 
@@ -249,33 +249,32 @@ public class ObservableGameState {
         return allRoutes.get(slot);
     }
 
-    public ReadOnlyObjectProperty<Integer> playerTicketCount(PlayerState playerState) {
-        return new SimpleObjectProperty<>(playerState.ticketCount());
+    public ReadOnlyIntegerProperty playerTicketCount(PlayerState playerState) {
+        return new SimpleIntegerProperty(playerState.ticketCount());
     }
 
-    public ReadOnlyObjectProperty<Integer> playerCardCount(PlayerState playerState) {
-        return new SimpleObjectProperty<>(playerState.cardCount());
+    public ReadOnlyIntegerProperty playerCardCount(PlayerState playerState) {
+        return new SimpleIntegerProperty(playerState.cardCount());
     }
 
-    public ReadOnlyObjectProperty<Integer> playerCarCount(PlayerState playerState) {
-        return new SimpleObjectProperty<>(playerState.carCount());
+    public ReadOnlyIntegerProperty playerCarCount(PlayerState playerState) {
+        return new SimpleIntegerProperty(playerState.carCount());
     }
 
-    public ReadOnlyObjectProperty<Integer> playerClaimPoints(PlayerState playerState) {
-        return new SimpleObjectProperty<>(playerState.claimPoints());
+    public ReadOnlyIntegerProperty playerClaimPoints(PlayerState playerState) {
+        return new SimpleIntegerProperty(playerState.claimPoints());
     }
 
     public ReadOnlyObjectProperty<List<Ticket>> playersTicketsList(PlayerState playerState) {
         return new SimpleObjectProperty<>(playerState.tickets().toList());
     }
 
-    public ReadOnlyObjectProperty<Integer> playersNumberOfCards(
-            PlayerState playerState, Card card) {
-        return new SimpleObjectProperty<>(
-                (int) playerState.cards().stream().filter(c -> c.equals(card)).count());
+    public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
+        return new SimpleIntegerProperty(
+                playersNumberOfEachCards.get(Card.ALL.indexOf(card)).get());
     }
 
-    public ReadOnlyObjectProperty<Boolean> playerCanClaimRoute(Route route) {
+    public ReadOnlyBooleanProperty playerCanClaimRoute(Route route) {
         return playerCanClaimRoute.get(ChMap.routes().indexOf(route));
     }
 
