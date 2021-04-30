@@ -1,12 +1,7 @@
 package ch.epfl.tchu.gui;
 
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
-
-import static javafx.beans.property.ReadOnlyIntegerProperty.readOnlyIntegerProperty;
-
+import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
-
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
+import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
+
 /**
  * Representation of the observable state /part of the game.
  *
@@ -24,9 +22,6 @@ import java.util.stream.IntStream;
  * @author Hugues Devimeux (327282)
  */
 public class ObservableGameState {
-    private PublicGameState newGameState;
-    private PlayerState playerState;
-    private PlayerId correspondingPlayer;
     // 1st group of properties
     private final IntegerProperty percentageOfTicketsRemaining = percentageOfTicketsRemaining();
     private final IntegerProperty percentageOfCardsRemaining = percentageOfCardsRemaining();
@@ -48,6 +43,9 @@ public class ObservableGameState {
     // total number of routes in the game and for each route, if the player can claim it,
     // we assign true, false otherwise (false is the default value).
     private final List<BooleanProperty> playerCanClaimRoute = playerCanClaimRoute();
+    private PublicGameState newGameState;
+    private PlayerState playerState;
+    private final PlayerId correspondingPlayer;
 
     /**
      * Instantiable constructor. Sets by default all attributes to null, 0, or false, depending on
@@ -234,11 +232,11 @@ public class ObservableGameState {
 
     // simple getters as Read Only properties
     public ReadOnlyIntegerProperty percentageTickets() {
-        return readOnlyIntegerProperty(percentageOfTicketsRemaining);
+        return percentageOfTicketsRemaining;
     }
 
     public ReadOnlyIntegerProperty percentageCards() {
-        return readOnlyIntegerProperty(percentageOfTicketsRemaining);
+        return percentageOfTicketsRemaining;
     }
 
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
@@ -265,24 +263,37 @@ public class ObservableGameState {
         return new SimpleIntegerProperty(playerState.claimPoints());
     }
 
-    public ReadOnlyObjectProperty<List<Ticket>> playersTicketsList(PlayerState playerState) {
-        return new SimpleObjectProperty<>(playerState.tickets().toList());
+    public ReadOnlyObjectProperty<ObservableList<Ticket>> playersTicketsList() {
+        return new SimpleObjectProperty<>(playersTickets);
     }
 
     public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
-        return new SimpleIntegerProperty(
-                playersNumberOfEachCards.get(Card.ALL.indexOf(card)).get());
+        return playersNumberOfEachCards.get(Card.ALL.indexOf(card));
     }
 
     public ReadOnlyBooleanProperty playerCanClaimRoute(Route route) {
         return playerCanClaimRoute.get(ChMap.routes().indexOf(route));
     }
 
-    public ReadOnlyObjectProperty<PublicGameState> getCurrentGameState() {
+    public ReadOnlyBooleanProperty playerCanDrawTickets(PublicGameState publicGameState) {
+        return new SimpleBooleanProperty(publicGameState.canDrawTickets());
+    }
+
+    public ReadOnlyBooleanProperty playerCanDrawCards(PublicGameState publicGameState) {
+        return new SimpleBooleanProperty(publicGameState.canDrawCards());
+    }
+
+    public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(
+            PlayerState playerState, Route route) {
+        return new SimpleObjectProperty<>(playerState.possibleClaimCards(route));
+    }
+
+    // Simple getters for the gameState and the PlayerState.
+    public ReadOnlyObjectProperty<PublicGameState> getGameState() {
         return new SimpleObjectProperty<>(newGameState);
     }
 
-    public ReadOnlyObjectProperty<PlayerState> getCurrentPlayerState() {
+    public ReadOnlyObjectProperty<PlayerState> getPlayerState() {
         return new SimpleObjectProperty<>(playerState);
     }
 }
