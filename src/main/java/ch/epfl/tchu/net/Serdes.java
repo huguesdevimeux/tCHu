@@ -1,14 +1,17 @@
 package ch.epfl.tchu.net;
 
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 
 /**
  * Class with all the useful Serdes.
@@ -17,9 +20,10 @@ import java.util.regex.Pattern;
  * @author Hugues Devimeux (327282)
  */
 public final class Serdes {
-    private static final String COMMA_SEPARATOR = ",";
-    private static final String SEMI_COLON_SEPARATOR = ";";
-    private static final String COLON_SEPARATOR = ":";
+	// TODO public because of the handmade map deserializer of RemotepLayerTest. The deserde should be here.
+    public static final String COMMA_SEPARATOR = ",";
+    public static final String SEMI_COLON_SEPARATOR = ";";
+    public static final String COLON_SEPARATOR = ":";
 
     /** Not instantiable. */
     private Serdes() {}
