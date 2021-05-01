@@ -13,7 +13,7 @@ import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
 
 /**
- * Representation of the observable state /part of the game.
+ * Representation of the observable state/part of the game.
  *
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
