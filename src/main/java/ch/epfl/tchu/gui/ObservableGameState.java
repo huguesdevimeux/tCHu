@@ -43,9 +43,9 @@ public class ObservableGameState {
     // total number of routes in the game and for each route, if the player can claim it,
     // we assign true, false otherwise (false is the default value).
     private final List<BooleanProperty> playerCanClaimRoute = playerCanClaimRoute();
+    private final PlayerId correspondingPlayer;
     private PublicGameState newGameState;
     private PlayerState playerState;
-    private final PlayerId correspondingPlayer;
 
     /**
      * Instantiable constructor. Sets by default all attributes to null, 0, or false, depending on
@@ -70,6 +70,7 @@ public class ObservableGameState {
         playerCanClaimRoute.forEach(i -> i.set(false));
     }
 
+
     /**
      * Updates all of the attributes.
      *
@@ -87,11 +88,12 @@ public class ObservableGameState {
         percentageOfTicketsRemaining.set(
                 (int) ((1 - (double) numOfTicketsUsed / ChMap.tickets().size()) * 100));
 
-        // same calculating process but for cards
-        int numOfCardsUsed =
-                PlayerId.ALL.stream().mapToInt(i -> newGameState.playerState(i).cardCount()).sum();
         percentageOfCardsRemaining.set(
-                (int) ((1 - (double) numOfCardsUsed / newGameState.cardState().deckSize()) * 100));
+                (int)
+                        ((1
+                                        - (double) newGameState.cardState().deckSize()
+                                                / Constants.ALL_CARDS.size())
+                                * 100));
 
         // setting the face up cards
         for (int slot : FACE_UP_CARD_SLOTS) {
@@ -247,24 +249,24 @@ public class ObservableGameState {
         return allRoutes.get(slot);
     }
 
-    public ReadOnlyIntegerProperty playerTicketCount(PlayerState playerState) {
-        return new SimpleIntegerProperty(playerState.ticketCount());
+    public ReadOnlyIntegerProperty playerTicketCount(PlayerId playerId) {
+        return eachPlayersTickets.get(PlayerId.ALL.indexOf(playerId));
     }
 
-    public ReadOnlyIntegerProperty playerCardCount(PlayerState playerState) {
-        return new SimpleIntegerProperty(playerState.cardCount());
+    public ReadOnlyIntegerProperty playerCardCount(PlayerId playerId) {
+        return eachPlayersCards.get(PlayerId.ALL.indexOf(playerId));
     }
 
-    public ReadOnlyIntegerProperty playerCarCount(PlayerState playerState) {
-        return new SimpleIntegerProperty(playerState.carCount());
+    public ReadOnlyIntegerProperty playerCarCount(PlayerId playerId) {
+        return eachPlayersCars.get(PlayerId.ALL.indexOf(playerId));
     }
 
-    public ReadOnlyIntegerProperty playerClaimPoints(PlayerState playerState) {
-        return new SimpleIntegerProperty(playerState.claimPoints());
+    public ReadOnlyIntegerProperty playerClaimPoints(PlayerId playerId) {
+        return eachPlayersClaimPoints.get(PlayerId.ALL.indexOf(playerId));
     }
 
-    public ReadOnlyObjectProperty<ObservableList<Ticket>> playersTicketsList() {
-        return new SimpleObjectProperty<>(playersTickets);
+    public ObservableList<Ticket> playersTicketsList() {
+        return FXCollections.unmodifiableObservableList(playersTickets);
     }
 
     public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
