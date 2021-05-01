@@ -67,53 +67,6 @@ public class ObservableGameState {
         playerCanClaimRoute.forEach(i -> i.set(false));
     }
 
-    // private methods to "create"/initialize the attributes as either
-    // empty lists, or being assigned to 0 or false
-    private static IntegerProperty percentageOfTicketsRemaining() {
-        return new SimpleIntegerProperty(0);
-    }
-
-    private static IntegerProperty percentageOfCardsRemaining() {
-        return new SimpleIntegerProperty(0);
-    }
-
-    private static List<ObjectProperty<Card>> createFaceUpCards() {
-        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>();
-        IntStream.range(0, FACE_UP_CARDS_COUNT)
-                .forEach(i -> faceUpCards.add(new SimpleObjectProperty<>()));
-        return faceUpCards;
-    }
-
-    private static ObservableList<Ticket> createPlayersListOfTickets() {
-        return FXCollections.observableArrayList();
-    }
-
-    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
-        List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
-        IntStream.range(0, Card.COUNT)
-                .forEach(i -> playersNumberOfEachCards.add(new SimpleIntegerProperty(0)));
-        return playersNumberOfEachCards;
-    }
-
-    private static List<BooleanProperty> playerCanClaimRoute() {
-        List<BooleanProperty> playerCanClaimRoute = new ArrayList<>();
-        IntStream.range(0, ChMap.routes().size())
-                .forEach(i -> playerCanClaimRoute.add(new SimpleBooleanProperty(false)));
-        return playerCanClaimRoute;
-    }
-
-    public static void main(String[] args) {
-        ObservableGameState obs = new ObservableGameState(PlayerId.PLAYER_1);
-        PublicCardState pcs = new PublicCardState(List.of(Card.BLUE, Card.BLUE, Card.BLUE, Card.BLUE, Card.BLUE), 30, 0);
-        PlayerState ps1 = new PlayerState(SortedBag.of(ChMap.tickets().subList(0, 7)), SortedBag.of(10, Card.BLUE, 11, Card.BLACK), ChMap.routes().subList(0, 5));
-        PlayerState ps2 = new PlayerState(SortedBag.of(ChMap.tickets().subList(3, 10)), SortedBag.of(10, Card.YELLOW, 10, Card.VIOLET), ChMap.routes().subList(10, 16));
-
-
-        PublicGameState pgs = new PublicGameState(30, pcs, PlayerId.PLAYER_1, Map.of(PlayerId.PLAYER_1, ps1, PlayerId.PLAYER_2, ps2), null);
-
-        obs.setState(pgs, ps1);
-    }
-
     /**
      * Updates all of the attributes.
      *
@@ -199,6 +152,41 @@ public class ObservableGameState {
                 .anyMatch(i -> !i.equals(route) && i.stations().equals(route.stations()));
     }
 
+    // private methods to "create"/initialize the attributes as either
+    // empty lists, or being assigned to 0 or false
+    private static IntegerProperty percentageOfTicketsRemaining() {
+        return new SimpleIntegerProperty(0);
+    }
+
+    private static IntegerProperty percentageOfCardsRemaining() {
+        return new SimpleIntegerProperty(0);
+    }
+
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
+        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>();
+        IntStream.range(0, FACE_UP_CARDS_COUNT)
+                .forEach(i -> faceUpCards.add(new SimpleObjectProperty<>()));
+        return faceUpCards;
+    }
+
+    private static ObservableList<Ticket> createPlayersListOfTickets() {
+        return FXCollections.observableArrayList();
+    }
+
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
+        List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
+        IntStream.range(0, Card.COUNT)
+                .forEach(i -> playersNumberOfEachCards.add(new SimpleIntegerProperty(0)));
+        return playersNumberOfEachCards;
+    }
+
+    private static List<BooleanProperty> playerCanClaimRoute() {
+        List<BooleanProperty> playerCanClaimRoute = new ArrayList<>();
+        IntStream.range(0, ChMap.routes().size())
+                .forEach(i -> playerCanClaimRoute.add(new SimpleBooleanProperty(false)));
+        return playerCanClaimRoute;
+    }
+
     // simple getters as Read Only properties
     public ReadOnlyIntegerProperty percentageTickets() {
         return percentageOfTicketsRemaining;
@@ -244,11 +232,11 @@ public class ObservableGameState {
         return playerCanClaimRoute.get(ChMap.routes().indexOf(route));
     }
 
-    public ReadOnlyBooleanProperty playerCanDrawTickets(PublicGameState publicGameState) {
+    public ReadOnlyBooleanProperty canDrawTickets(PublicGameState publicGameState) {
         return new SimpleBooleanProperty(publicGameState.canDrawTickets());
     }
 
-    public ReadOnlyBooleanProperty playerCanDrawCards(PublicGameState publicGameState) {
+    public ReadOnlyBooleanProperty canDrawCards(PublicGameState publicGameState) {
         return new SimpleBooleanProperty(publicGameState.canDrawCards());
     }
 
