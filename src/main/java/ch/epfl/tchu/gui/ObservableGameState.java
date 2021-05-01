@@ -149,7 +149,7 @@ public class ObservableGameState {
      */
     private boolean routeHasNeighbour(Route route) {
         return ChMap.routes().stream()
-                .anyMatch(i -> !i.equals(route) && i.stations().equals(route.stations()));
+                .anyMatch(routeTemp -> !routeTemp.equals(route) && routeTemp.stations().equals(routeTemp.stations()));
     }
 
     // private methods to "create"/initialize the attributes as either
