@@ -71,12 +71,11 @@ public final class Stage9Test extends Application {
                 new SimpleObjectProperty<>(Stage9Test::drawCard);
 
         Node mapView = createMapView(gameState, claimRoute, Stage9Test::chooseCards);
-        //        Node cardsView = DecksViewCreator
-        //                .createCardsView(gameState, drawTickets, drawCard);
-        //        Node handView = DecksViewCreator
-        //                .createHandView(gameState);
+        //                Node cardsView = DecksViewCreator
+        //                        .createCardsView(gameState, drawTickets, drawCard);
+        Node handView = DecksViewCreator.createHandView(gameState);
 
-        BorderPane mainPane = new BorderPane(mapView);
+        BorderPane mainPane = new BorderPane(mapView, null, null, handView, null);
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.show();
 
