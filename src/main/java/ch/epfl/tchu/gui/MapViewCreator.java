@@ -16,7 +16,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
-public class MapViewCreator {
+class MapViewCreator {
     private static final String LOCOMOTIVE_COLOR = "NEUTRAL";
     private static final String STYLE_CLASS_ROUTE = "route";
     private static final String STYLE_CLASS_TRACK = "track";
@@ -24,9 +24,18 @@ public class MapViewCreator {
     private static final String STYLE_CLASS_CAR = "car";
     private static final String STYLE_SHEET_MAP = "map.css";
     private static final String STYLE_SHEET_COLORS = "colors.css";
+    private static final int RECTANGLE_LENGTH = 36;
+    private static final int RECTANGLE_WIDTH = 12;
+    private static final int CIRCLE1_COORD_X = 12;
+    private static final int CIRCLE2_COORD_X = 24;
+    private static final int CIRCLE_COORD_Y = 6;
+    private static final int CIRCLE_RADIUS = 3;
 
-    /** Not instantiable. */
-    private MapViewCreator() {}
+    /**
+     * Not instantiable.
+     */
+    private MapViewCreator() {
+    }
 
     public static Node createMapView(
             ObservableGameState obsGameState,
@@ -50,18 +59,18 @@ public class MapViewCreator {
                 Group eachRoutesBlock = new Group();
                 eachRoutesBlock.setId(String.format("%s_%s", route.id(), i));
 
-                Rectangle rectForTracks = new Rectangle(36, 12);
+                Rectangle rectForTracks = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
                 eachRoutesBlock.getChildren().add(rectForTracks);
 
                 Group routesCarsGroup = new Group();
                 routesCarsGroup.getStyleClass().add(STYLE_CLASS_CAR);
 
-                Rectangle rectForCars = new Rectangle(36, 12);
+                Rectangle rectForCars = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
 
-                Circle circle1 = new Circle(12, 6, 3);
-                Circle circle2 = new Circle(24, 6, 3);
+                Circle circle1 = new Circle(CIRCLE1_COORD_X, CIRCLE_COORD_Y, CIRCLE_RADIUS);
+                Circle circle2 = new Circle(CIRCLE2_COORD_X, CIRCLE_COORD_Y, CIRCLE_RADIUS);
 
                 // established hierarchy : cars group -> block group -> route group
                 routesCarsGroup.getChildren().addAll(rectForCars, circle1, circle2);
