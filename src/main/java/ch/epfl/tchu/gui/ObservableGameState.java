@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
@@ -36,13 +37,11 @@ public class ObservableGameState {
     // we stock the number of each type of card in a list such that the numbers in the list
     // represent the number of cards of the card at given index in Card.ALL. f.ex.
     // if a player has one black card, the list will be [1,0,0,0,0,0,0,0,0]
-    private final List<IntegerProperty> playersNumberOfEachCards =
-            Collections.nCopies(Card.COUNT, new SimpleIntegerProperty(0));
+    private final List<IntegerProperty> currentPlayersNumberOfEachCards = createPlayersCardsOfEachColor();
     // in order to verify if a player can claim a route, we use a list of BOOLEANS the size of the
     // total number of routes in the game and for each route, if the player can claim it,
     // we assign true, false otherwise (false is the default value).
-    private final List<BooleanProperty> playerCanClaimRoute =
-            Collections.nCopies(ChMap.routes().size(), new SimpleBooleanProperty(false));
+    private final List<BooleanProperty> playerCanClaimRoute = playerCanClaimRoute();
     private final PlayerId correspondingPlayer;
     private PublicGameState newGameState;
     private PlayerState playerState;
@@ -55,14 +54,8 @@ public class ObservableGameState {
      */
     public ObservableGameState(PlayerId correspondingPlayer) {
         this.correspondingPlayer = correspondingPlayer;
-        playerState = null;
-        newGameState = null;
-        faceUpCards.forEach(i -> i.set(null));
-        percentageOfTicketsRemaining.set(0);
-        percentageOfCardsRemaining.set(0);
-        playersTickets.setAll(List.of());
-        playersNumberOfEachCards.forEach(i -> i.set(0));
-        playerCanClaimRoute.forEach(i -> i.set(false));
+        this.playerState = null;
+        this.newGameState = null;
     }
 
     /**
@@ -91,14 +84,6 @@ public class ObservableGameState {
             faceUpCards.get(slot).set(newCard);
         }
 
-        for (Route route : ChMap.routes()) {
-            if (newGameState.playerState(correspondingPlayer).routes().contains(route))
-                allRoutes.put(route, new SimpleObjectProperty<>(correspondingPlayer));
-            else if (newGameState.playerState(correspondingPlayer.next()).routes().contains(route))
-                allRoutes.put(route, new SimpleObjectProperty<>(correspondingPlayer.next()));
-            else allRoutes.put(route, null);
-        }
-        System.out.println(allRoutes);
         // for each player, we need to know the tickets, cards, cars count as well as their claim
         // points we put these in lists of object properties of size 2
         for (PlayerId playerId : PlayerId.ALL) {
@@ -113,30 +98,52 @@ public class ObservableGameState {
 
         // counting the number of cards equal to each card individually (from Card.ALL)
         for (Card card : Card.ALL) {
-            playersNumberOfEachCards
+            currentPlayersNumberOfEachCards
                     .get(Card.ALL.indexOf(card))
                     .set((int) playerState.cards().stream().filter(c -> c.equals(card)).count());
         }
 
-        Set<List<Station>> neighbouringRouteStations = new HashSet<>();
-        // we first create a set using a list of stations in order to deal with double routes.
-        // if the routes are "neighbours", they have the same "from" and "to" stations, so we add
+        Set<List<Station>> neighbouringRoutesStations = new HashSet<>();
+        // We first create a set using a list of stations in order to deal with double routes.
+        // If the routes are "neighbours", they have the same "from" and "to" stations, so we add
         // all the neighboured routes to the set using their stations.
         newGameState.claimedRoutes().stream()
                 .filter(this::routeHasNeighbour)
-                .forEach(r -> neighbouringRouteStations.add(r.stations()));
-        // we create 3 booleans which are conditions to be met in order to claim a route.
+                .forEach(r -> neighbouringRoutesStations.add(r.stations()));
         for (Route route : ChMap.routes()) {
+            //setting the 4th property of the first group
+            if (newGameState.playerState(correspondingPlayer).routes().contains(route))
+                allRoutes.put(route, new SimpleObjectProperty<>(correspondingPlayer));
+            else if (newGameState.playerState(correspondingPlayer.next()).routes().contains(route))
+                allRoutes.put(route, new SimpleObjectProperty<>(correspondingPlayer.next()));
+            else allRoutes.put(route, null);
+
+            // Setting the last property
+            // We create 3 booleans which are conditions to be met in order to claim a route.
             boolean pStateIsCurrentPState = playerState.equals(newGameState.currentPlayerState());
             boolean routeIsNotClaimed =
                     !newGameState.claimedRoutes().contains(route)
-                            && !neighbouringRouteStations.contains(route.stations());
+                            && !neighbouringRoutesStations.contains(route.stations());
             boolean canClaimRoute = playerState.canClaimRoute(route);
             if (pStateIsCurrentPState && routeIsNotClaimed && canClaimRoute) {
                 // set true if all conditions are met
                 playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(true);
             }
         }
+    }
+
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
+        List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
+        IntStream.range(0, Card.COUNT)
+                .forEach(i -> playersNumberOfEachCards.add(new SimpleIntegerProperty(0)));
+        return playersNumberOfEachCards;
+    }
+
+    private static List<BooleanProperty> playerCanClaimRoute() {
+        List<BooleanProperty> playerCanClaimRoute = new ArrayList<>();
+        IntStream.range(0, ChMap.routes().size())
+                .forEach(i -> playerCanClaimRoute.add(new SimpleBooleanProperty(false)));
+        return playerCanClaimRoute;
     }
 
     /**
@@ -188,7 +195,7 @@ public class ObservableGameState {
     }
 
     public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
-        return playersNumberOfEachCards.get(Card.ALL.indexOf(card));
+        return currentPlayersNumberOfEachCards.get(Card.ALL.indexOf(card));
     }
 
     public ReadOnlyBooleanProperty playerCanClaimRoute(Route route) {
