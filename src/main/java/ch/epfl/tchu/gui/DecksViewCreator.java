@@ -31,19 +31,30 @@ class DecksViewCreator {
     public static final String CLASS_FILLED = "filled";
     public static final String CLASS_TRAIN_IMAGE = "train-image";
     public static final String CLASS_COLOR_NEUTRAL = "NEUTRAL";
+    public static final String ID_CARD_PANE = "card-pane";
     private static final String ID_TICKETS = "tickets";
 
     // Not instantiable.
     private DecksViewCreator() {}
 
+    public static Node createCardsView(
+            ObservableGameState observableGameState,
+            ActionHandlers.DrawTicketsHandler drawTicketsHandler,
+            ActionHandlers.DrawCardHandler drawCardHandler) {
+
+        // Tickets pile.
+
+        VBox cardsView = new VBox();
+        cardsView.setId(ID_CARD_PANE);
+        cardsView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
+        return cardsView;
+    }
+
     public static Node createHandView(ObservableGameState gameState) {
 
         // TICKETS HAND VIEW
-        ObservableList<String> ticketsNames =
-                gameState.playersTicketsList().stream()
-                        .map(Ticket::text)
-                        .collect(Collectors.toCollection(FXCollections::observableArrayList));
-        ListView<String> ticketsListView = new ListView<>(ticketsNames);
+        ListView<Ticket> ticketsListView = new ListView<>();
+        ticketsListView.setItems(gameState.playersTicketsList());
         ticketsListView.setId(ID_TICKETS);
 
         //
@@ -53,6 +64,10 @@ class DecksViewCreator {
         for (Card card : Card.ALL) {
             // Count.
             Text count = new Text(gameState.playersNumberOfCards(card).getValue().toString());
+            gameState
+                    .playersNumberOfCards(card)
+                    .addListener((observableValue, oV, nV) -> count.setText(nV.toString()));
+            count.textProperty().bind(gameState.playersNumberOfCards(card).asString());
             count.getStyleClass().add(CLASS_COUNT);
 
             // Inner icon of cards. Sorted in an exterior fashion.
