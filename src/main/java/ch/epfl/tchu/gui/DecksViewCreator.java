@@ -63,10 +63,7 @@ class DecksViewCreator {
 
         for (Card card : Card.ALL) {
             // Count.
-            Text count = new Text(gameState.playersNumberOfCards(card).getValue().toString());
-            gameState
-                    .playersNumberOfCards(card)
-                    .addListener((observableValue, oV, nV) -> count.setText(nV.toString()));
+            Text count = new Text();
             count.textProperty().bind(gameState.playersNumberOfCards(card).asString());
             count.getStyleClass().add(CLASS_COUNT);
 
