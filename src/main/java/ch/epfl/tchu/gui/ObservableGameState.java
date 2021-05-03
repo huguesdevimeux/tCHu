@@ -7,7 +7,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
@@ -22,8 +24,7 @@ public class ObservableGameState {
     // 1st group of properties
     private final IntegerProperty percentageOfTicketsRemaining = new SimpleIntegerProperty(0);
     private final IntegerProperty percentageOfCardsRemaining = new SimpleIntegerProperty(0);
-    private final List<ObjectProperty<Card>> faceUpCards =
-            Collections.nCopies(FACE_UP_CARDS_COUNT, new SimpleObjectProperty<>(null));
+    private final List<ObjectProperty<Card>> faceUpCards = Stream.generate(() -> new SimpleObjectProperty<Card>(null)).limit(FACE_UP_CARDS_COUNT).collect(Collectors.<ObjectProperty<Card>>toList());
     private final Map<Route, ObjectProperty<PlayerId>> allRoutes = new HashMap<>(0);
     // 2nd group of properties
     // to stock the numbers of each players tickets, cards, etc, we use a map to
@@ -81,7 +82,7 @@ public class ObservableGameState {
         // setting the face up cards
         for (int slot : FACE_UP_CARD_SLOTS) {
             Card newCard = newGameState.cardState().faceUpCard(slot);
-            faceUpCards.get(slot).set(newCard);
+			faceUpCards.get(slot).set(newCard);
         }
 
         // for each player, we need to know the tickets, cards, cars count as well as their claim
