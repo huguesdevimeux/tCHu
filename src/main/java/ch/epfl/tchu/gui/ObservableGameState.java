@@ -22,8 +22,7 @@ public class ObservableGameState {
     // 1st group of properties
     private final IntegerProperty percentageOfTicketsRemaining = new SimpleIntegerProperty(0);
     private final IntegerProperty percentageOfCardsRemaining = new SimpleIntegerProperty(0);
-    private final List<ObjectProperty<Card>> faceUpCards =
-            Collections.nCopies(FACE_UP_CARDS_COUNT, new SimpleObjectProperty<>(null));
+    private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
     private final Map<Route, ObjectProperty<PlayerId>> allRoutes = new HashMap<>(0);
     // 2nd group of properties
     // to stock the numbers of each players tickets, cards, etc, we use a map to
@@ -83,6 +82,7 @@ public class ObservableGameState {
             Card newCard = newGameState.cardState().faceUpCard(slot);
             faceUpCards.get(slot).set(newCard);
         }
+        System.out.println(faceUpCards);
 
         // for each player, we need to know the tickets, cards, cars count as well as their claim
         // points we put these in lists of object properties of size 2
@@ -132,6 +132,14 @@ public class ObservableGameState {
         }
     }
 
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
+        List<ObjectProperty<Card>> faceUpCards = new ArrayList<>();
+        IntStream.range(0, FACE_UP_CARDS_COUNT)
+                .forEach(i -> faceUpCards.add(new SimpleObjectProperty<>()));
+        return faceUpCards;
+    }
+
+
     private static List<IntegerProperty> createPlayersCardsOfEachColor() {
         List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
         IntStream.range(0, Card.COUNT)
@@ -163,7 +171,7 @@ public class ObservableGameState {
     }
 
     public ReadOnlyIntegerProperty percentageCards() {
-        return percentageOfTicketsRemaining;
+        return percentageOfCardsRemaining;
     }
 
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
