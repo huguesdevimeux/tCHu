@@ -18,6 +18,7 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 import static ch.epfl.tchu.gui.MapViewCreator.createMapView;
 
+
 public final class Stage9Test extends Application {
     public static void main(String[] args) {
         launch(args);

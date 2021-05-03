@@ -57,14 +57,20 @@ class DecksViewCreator {
 
         // Tickets pile.
         // Button group
-		VBox cardsView = new VBox(itemPileWithGauge(observableGameState, "Billets"));
+		Button ticketsPile = itemPileWithGauge(observableGameState, "Billets");
+		ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
+		ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
+		VBox cardsView = new VBox(ticketsPile);
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
 
         for (int slot : Constants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
-			cardsView.getChildren().add(displayedCard);
-			observableGameState
+            cardsView.getChildren().add(displayedCard);
+            displayedCard.disableProperty().bind(drawCardHandler.isNull());
+            displayedCard.setOnMouseClicked(event -> drawCardHandler.get().onDrawCard(slot));
+
+            observableGameState
                     .faceUpCard(slot)
                     .addListener(
                             (observable, oldValue, newValue) -> {
@@ -77,32 +83,18 @@ class DecksViewCreator {
                                 displayedCard.getStyleClass().add(newColor);
                             });
         }
-        cardsView.getChildren().add(itemPileWithGauge(observableGameState, "Cartes"));
+		Button cardsPile = itemPileWithGauge(observableGameState, "Cartes");
+        cardsPile.disableProperty().bind(drawCardHandler.isNull());
+        cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
+		cardsView.getChildren().add(cardsPile);
         return cardsView;
     }
 
-    private static Button itemPileWithGauge(
-            ObservableGameState observableGameState, String itemName) {
-        Button ticketPile = new Button(itemName);
-        ticketPile.getStyleClass().add(CLASS_GAUGED);
-
-        Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
-        backgroundButtonGraphic.getStyleClass().add(CLASS_BACKGROUND);
-        Rectangle foregroundButtonGraphic = new Rectangle(50, 5);
-        foregroundButtonGraphic.getStyleClass().add(CLASS_FOREGROUND);
-        foregroundButtonGraphic
-                .widthProperty()
-                .bind(observableGameState.percentageTickets().divide(2));
-
-        ticketPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
-        return ticketPile;
-    }
-
-    public static Node createHandView(ObservableGameState gameState) {
+    public static Node createHandView(ObservableGameState observableGameState) {
 
         // TICKETS HAND VIEW
         ListView<Ticket> ticketsListView = new ListView<>();
-        ticketsListView.setItems(gameState.playersTicketsList());
+        ticketsListView.setItems(observableGameState.playersTicketsList());
         ticketsListView.setId(ID_TICKETS);
 
         //
@@ -113,9 +105,14 @@ class DecksViewCreator {
             StackPane cardOfHand = individualCard();
             String color = card.color() == null ? CLASS_COLOR_NEUTRAL : card.color().name();
             cardOfHand.getStyleClass().addAll(color);
+
+            cardOfHand
+                    .visibleProperty()
+                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
+
             // Count.
             Text count = new Text();
-            count.textProperty().bind(gameState.playersNumberOfCards(card).asString());
+            count.textProperty().bind(observableGameState.playersNumberOfCards(card).asString());
             count.getStyleClass().add(CLASS_COUNT);
             cardOfHand.getChildren().add(count);
 
@@ -139,7 +136,24 @@ class DecksViewCreator {
         // Outer layout.
         StackPane cardOfHand = new StackPane();
         cardOfHand.getChildren().addAll(inner1, inner2, inner3);
-        cardOfHand.getStyleClass(). add(CLASS_CARD);
+        cardOfHand.getStyleClass().add(CLASS_CARD);
         return cardOfHand;
+    }
+
+    private static Button itemPileWithGauge(
+            ObservableGameState observableGameState, String itemName) {
+        Button ticketPile = new Button(itemName);
+        ticketPile.getStyleClass().add(CLASS_GAUGED);
+
+        Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
+        backgroundButtonGraphic.getStyleClass().add(CLASS_BACKGROUND);
+        Rectangle foregroundButtonGraphic = new Rectangle(50, 5);
+        foregroundButtonGraphic.getStyleClass().add(CLASS_FOREGROUND);
+        foregroundButtonGraphic
+                .widthProperty()
+                .bind(observableGameState.percentageTickets().divide(2));
+
+        ticketPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
+        return ticketPile;
     }
 }
