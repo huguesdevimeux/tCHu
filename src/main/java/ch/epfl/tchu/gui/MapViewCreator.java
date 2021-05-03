@@ -3,6 +3,7 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.ChMap;
+import ch.epfl.tchu.game.PlayerState;
 import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.gui.ActionHandlers.ChooseCardsHandler;
 import ch.epfl.tchu.gui.ActionHandlers.ClaimRouteHandler;
@@ -24,12 +25,6 @@ class MapViewCreator {
     private static final String STYLE_CLASS_CAR = "car";
     private static final String STYLE_SHEET_MAP = "map.css";
     private static final String STYLE_SHEET_COLORS = "colors.css";
-    private static final int RECTANGLE_LENGTH = 36;
-    private static final int RECTANGLE_WIDTH = 12;
-    private static final int CIRCLE1_COORD_X = 12;
-    private static final int CIRCLE2_COORD_X = 24;
-    private static final int CIRCLE_COORD_Y = 6;
-    private static final int CIRCLE_RADIUS = 3;
 
     /**
      * Not instantiable.
@@ -37,6 +32,15 @@ class MapViewCreator {
     private MapViewCreator() {
     }
 
+    /**
+     * Method in charge of creating the whole view of the map.
+     * ie the routes, the map, the colors.
+     *
+     * @param obsGameState the observable part of the game.
+     * @param routeHandler responsible for an attempt to claim a route.
+     * @param cardChooser  responsible for choosing cards.
+     * @return the pane that contains all elements in the mapView.
+     */
     public static Node createMapView(
             ObservableGameState obsGameState,
             ObjectProperty<ClaimRouteHandler> routeHandler,
@@ -59,18 +63,18 @@ class MapViewCreator {
                 Group eachRoutesBlock = new Group();
                 eachRoutesBlock.setId(String.format("%s_%s", route.id(), i));
 
-                Rectangle rectForTracks = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
+                Rectangle rectForTracks = new Rectangle(36, 12);
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
                 eachRoutesBlock.getChildren().add(rectForTracks);
 
                 Group routesCarsGroup = new Group();
                 routesCarsGroup.getStyleClass().add(STYLE_CLASS_CAR);
 
-                Rectangle rectForCars = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
+                Rectangle rectForCars = new Rectangle(36, 12);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
 
-                Circle circle1 = new Circle(CIRCLE1_COORD_X, CIRCLE_COORD_Y, CIRCLE_RADIUS);
-                Circle circle2 = new Circle(CIRCLE2_COORD_X, CIRCLE_COORD_Y, CIRCLE_RADIUS);
+                Circle circle1 = new Circle(12, 6, 3);
+                Circle circle2 = new Circle(24, 6, 3);
 
                 // established hierarchy : cars group -> block group -> route group
                 routesCarsGroup.getChildren().addAll(rectForCars, circle1, circle2);
@@ -85,22 +89,23 @@ class MapViewCreator {
                             (observableValue, oldGS, newGS) -> {
                                 mainRouteGroup
                                         .disableProperty()
-                                        .bind(
-                                                routeHandler
-                                                        .isNull()
-                                                        .or(obsGameState.playerCanClaimRoute(route))
-                                                        .not());
+                                        .bind(routeHandler
+                                                .isNull()
+                                                .or(obsGameState.playerCanClaimRoute(route))
+                                                .not());
                             });
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
                         List<SortedBag<Card>> possibleClaimCards = route.possibleClaimCards();
                         ClaimRouteHandler claimRouteH =
-                                (claimedRoute, initialClaimCards) ->
-                                        obsGameState
-                                                .getPlayerState()
-                                                .get()
-                                                .withClaimedRoute(claimedRoute, initialClaimCards);
+                                (claimedRoute, initialClaimCards) -> {
+                                    PlayerState newPS = obsGameState.getPlayerState()
+                                            .getValue()
+                                            .withClaimedRoute(claimedRoute, initialClaimCards);
+                                    obsGameState
+                                            .setState(obsGameState.getGameState().getValue(), newPS);
+                                };
                         ChooseCardsHandler chooseCardsH =
                                 chosenCards -> claimRouteH.onClaimRoute(route, chosenCards);
                         cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
@@ -109,8 +114,19 @@ class MapViewCreator {
         return gameMapPane;
     }
 
+
+    /**
+     * Interface containing a method intended to be called
+     * when the player must choose the cards he wishes to use to seize a route.
+     */
     @FunctionalInterface
     public interface CardChooser {
+        /**
+         * Called so user chooses cards he wants to use to claim a route.
+         *
+         * @param options cards to choose from
+         * @param handler used when the player has made the choice
+         */
         void chooseCards(List<SortedBag<Card>> options, ChooseCardsHandler handler);
     }
 }
