@@ -1,6 +1,8 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Card;
+import ch.epfl.tchu.game.Color;
+import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
@@ -12,6 +14,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Creates Decks. Non instantiable
@@ -38,6 +44,8 @@ class DecksViewCreator {
 
     public static final String STYLE_COLORS = "colors.css";
     public static final String STYLE_DECKS = "decks.css";
+    public static final List<String> CLASSES_COLOR =
+            Color.ALL.stream().map(Objects::toString).collect(Collectors.toList());
 
     // Not instantiable.
     private DecksViewCreator() {}
@@ -49,7 +57,33 @@ class DecksViewCreator {
 
         // Tickets pile.
         // Button group
-        Button ticketPile = new Button("Billets");
+		VBox cardsView = new VBox(itemPileWithGauge(observableGameState, "Billets"));
+        cardsView.setId(ID_CARD_PANE);
+        cardsView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
+
+        for (int slot : Constants.FACE_UP_CARD_SLOTS) {
+            StackPane displayedCard = individualCard();
+			cardsView.getChildren().add(displayedCard);
+			observableGameState
+                    .faceUpCard(slot)
+                    .addListener(
+                            (observable, oldValue, newValue) -> {
+                                String newColor =
+                                        newValue.color() == null
+                                                ? CLASS_COLOR_NEUTRAL
+                                                : newValue.color().name();
+                                // Remove any Color css attribute and replace by the new color.
+                                displayedCard.getStyleClass().filtered(CLASSES_COLOR::contains);
+                                displayedCard.getStyleClass().add(newColor);
+                            });
+        }
+        cardsView.getChildren().add(itemPileWithGauge(observableGameState, "Cartes"));
+        return cardsView;
+    }
+
+    private static Button itemPileWithGauge(
+            ObservableGameState observableGameState, String itemName) {
+        Button ticketPile = new Button(itemName);
         ticketPile.getStyleClass().add(CLASS_GAUGED);
 
         Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
@@ -61,11 +95,7 @@ class DecksViewCreator {
                 .bind(observableGameState.percentageTickets().divide(2));
 
         ticketPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
-
-        VBox cardsView = new VBox(ticketPile);
-        cardsView.setId(ID_CARD_PANE);
-        cardsView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
-        return cardsView;
+        return ticketPile;
     }
 
     public static Node createHandView(ObservableGameState gameState) {
@@ -80,24 +110,14 @@ class DecksViewCreator {
         cardsHandPanel.setId(ID_HAND_PANE);
 
         for (Card card : Card.ALL) {
+            StackPane cardOfHand = individualCard();
+            String color = card.color() == null ? CLASS_COLOR_NEUTRAL : card.color().name();
+            cardOfHand.getStyleClass().addAll(color);
             // Count.
             Text count = new Text();
             count.textProperty().bind(gameState.playersNumberOfCards(card).asString());
             count.getStyleClass().add(CLASS_COUNT);
-
-            // Inner icon of cards. Sorted in an exterior fashion.
-            Rectangle inner1 = new Rectangle(60, 90);
-            inner1.getStyleClass().add(CLASS_OUTSIDE);
-            Rectangle inner2 = new Rectangle(40, 70);
-            inner2.getStyleClass().addAll(CLASS_FILLED, CLASS_INSIDE);
-            Rectangle inner3 = new Rectangle(40, 70);
-            inner3.getStyleClass().add(CLASS_TRAIN_IMAGE);
-
-            // Outer layout.
-            StackPane cardOfHand = new StackPane();
-            String color = card.color() == null ? CLASS_COLOR_NEUTRAL : card.color().name();
-            cardOfHand.getStyleClass().addAll(color, CLASS_CARD);
-            cardOfHand.getChildren().addAll(inner1, inner2, inner3, count);
+            cardOfHand.getChildren().add(count);
 
             cardsHandPanel.getChildren().add(cardOfHand);
         }
@@ -105,5 +125,21 @@ class DecksViewCreator {
         HBox handView = new HBox(ticketsListView, cardsHandPanel);
         handView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
         return handView;
+    }
+
+    private static StackPane individualCard() {
+        // Inner icon of cards. Sorted in an exterior fashion.
+        Rectangle inner1 = new Rectangle(60, 90);
+        inner1.getStyleClass().add(CLASS_OUTSIDE);
+        Rectangle inner2 = new Rectangle(40, 70);
+        inner2.getStyleClass().addAll(CLASS_FILLED, CLASS_INSIDE);
+        Rectangle inner3 = new Rectangle(40, 70);
+        inner3.getStyleClass().add(CLASS_TRAIN_IMAGE);
+
+        // Outer layout.
+        StackPane cardOfHand = new StackPane();
+        cardOfHand.getChildren().addAll(inner1, inner2, inner3);
+        cardOfHand.getStyleClass(). add(CLASS_CARD);
+        return cardOfHand;
     }
 }
