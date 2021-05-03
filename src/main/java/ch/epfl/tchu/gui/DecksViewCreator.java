@@ -2,49 +2,67 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Ticket;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.ObjectProperty;
+import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import java.util.stream.Collectors;
-
 /**
- * Creates Decks. Non instanciable
+ * Creates Decks. Non instantiable
  *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
 class DecksViewCreator {
 
-    public static final String STYLE_DECKS = "decks.css";
-    public static final String StYLE_COLORS = "colors.css";
-    public static final String ID_HAND_PANE = "hand-pane";
+    public static final String CLASS_BACKGROUND = "background";
+    public static final String CLASS_FOREGROUND = "foreground";
+    public static final String CLASS_GAUGED = "gauged";
     public static final String CLASS_CARD = "card";
-    public static final String CLASS_COUNT = "count";
-    public static final String CLASS_OUTSIDE = "outside";
-    public static final String CLASS_INSIDE = "inside";
-    public static final String CLASS_FILLED = "filled";
-    public static final String CLASS_TRAIN_IMAGE = "train-image";
     public static final String CLASS_COLOR_NEUTRAL = "NEUTRAL";
+    public static final String CLASS_COUNT = "count";
+    public static final String CLASS_FILLED = "filled";
+    public static final String CLASS_INSIDE = "inside";
+    public static final String CLASS_OUTSIDE = "outside";
+    public static final String CLASS_TRAIN_IMAGE = "train-image";
+
+    public static final String ID_TICKETS = "tickets";
     public static final String ID_CARD_PANE = "card-pane";
-    private static final String ID_TICKETS = "tickets";
+    public static final String ID_HAND_PANE = "hand-pane";
+
+    public static final String STYLE_COLORS = "colors.css";
+    public static final String STYLE_DECKS = "decks.css";
 
     // Not instantiable.
     private DecksViewCreator() {}
 
     public static Node createCardsView(
             ObservableGameState observableGameState,
-            ActionHandlers.DrawTicketsHandler drawTicketsHandler,
-            ActionHandlers.DrawCardHandler drawCardHandler) {
+            ObjectProperty<ActionHandlers.DrawTicketsHandler> drawTicketsHandler,
+            ObjectProperty<ActionHandlers.DrawCardHandler> drawCardHandler) {
 
         // Tickets pile.
+        // Button group
+        Button ticketPile = new Button("Billets");
+        ticketPile.getStyleClass().add(CLASS_GAUGED);
 
-        VBox cardsView = new VBox();
+        Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
+        backgroundButtonGraphic.getStyleClass().add(CLASS_BACKGROUND);
+        Rectangle foregroundButtonGraphic = new Rectangle(50, 5);
+        foregroundButtonGraphic.getStyleClass().add(CLASS_FOREGROUND);
+        foregroundButtonGraphic
+                .widthProperty()
+                .bind(observableGameState.percentageTickets().divide(2));
+
+        ticketPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
+
+        VBox cardsView = new VBox(ticketPile);
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
         return cardsView;
@@ -85,7 +103,7 @@ class DecksViewCreator {
         }
 
         HBox handView = new HBox(ticketsListView, cardsHandPanel);
-        handView.getStylesheets().addAll(STYLE_DECKS, StYLE_COLORS);
+        handView.getStylesheets().addAll(STYLE_DECKS, STYLE_COLORS);
         return handView;
     }
 }
