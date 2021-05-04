@@ -104,13 +104,16 @@ public final class Stage9Test extends Application {
                 SortedBag.of(1, Card.WHITE, 3, Card.YELLOW),
                 List.of(ChMap.routes().get(47)));
                 //new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
+                        ChMap.routes().subList(0, 3));
 
-        System.out.println(ChMap.routes().get(45).stations());
+        PublicPlayerState p2State = new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
+
         Map<PlayerId, PublicPlayerState> pubPlayerStates =
                 Map.of(PLAYER_1, p1State, PLAYER_2, p2State);
         PublicCardState cardState = new PublicCardState(Card.ALL.subList(0, 5), 110 - 2 * 4 - 5, 0);
         PublicGameState publicGameState =
                 new PublicGameState(36, cardState, PLAYER_1, pubPlayerStates, null);
-        gameState.setState(publicGameState,  p1State);
+        gameState.setState(publicGameState, p1State);
+
     }
 }

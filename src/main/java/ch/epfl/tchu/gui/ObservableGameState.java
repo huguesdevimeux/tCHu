@@ -82,7 +82,7 @@ public class ObservableGameState {
         // setting the face up cards
         for (int slot : FACE_UP_CARD_SLOTS) {
             Card newCard = newGameState.cardState().faceUpCard(slot);
-			faceUpCards.get(slot).set(newCard);
+            faceUpCards.get(slot).set(newCard);
         }
 
         // for each player, we need to know the tickets, cards, cars count as well as their claim
@@ -131,6 +131,20 @@ public class ObservableGameState {
                 playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(true);
             }
         }
+    }
+
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
+        List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
+        IntStream.range(0, Card.COUNT)
+                .forEach(i -> playersNumberOfEachCards.add(new SimpleIntegerProperty(0)));
+        return playersNumberOfEachCards;
+    }
+
+    private static List<BooleanProperty> playerCanClaimRoute() {
+        List<BooleanProperty> playerCanClaimRoute = new ArrayList<>();
+        IntStream.range(0, ChMap.routes().size())
+                .forEach(i -> playerCanClaimRoute.add(new SimpleBooleanProperty(false)));
+        return playerCanClaimRoute;
     }
 
     /**

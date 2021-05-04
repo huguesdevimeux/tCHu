@@ -16,7 +16,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
-public class MapViewCreator {
+class MapViewCreator {
     private static final String LOCOMOTIVE_COLOR = "NEUTRAL";
     private static final String STYLE_CLASS_ROUTE = "route";
     private static final String STYLE_CLASS_TRACK = "track";
@@ -25,8 +25,11 @@ public class MapViewCreator {
     private static final String STYLE_SHEET_MAP = "map.css";
     private static final String STYLE_SHEET_COLORS = "colors.css";
 
-    /** Not instantiable. */
-    private MapViewCreator() {}
+    /**
+     * Not instantiable.
+     */
+    private MapViewCreator() {
+    }
 
     /**
      * Method in charge of creating the whole view of the map.
@@ -110,10 +113,12 @@ public class MapViewCreator {
                             //to use for future purposes, ie a popup saying cant claim the route
                             // TODO 
                         }
+
                     });
         }
         return gameMapPane;
     }
+
 
     /**
      * Interface containing a method intended to be called
