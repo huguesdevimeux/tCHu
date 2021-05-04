@@ -108,6 +108,7 @@ public class MapViewCreator {
                             }
                         } catch (IndexOutOfBoundsException e) {
                             //to use for future purposes, ie a popup saying cant claim the route
+                            // TODO 
                         }
                     });
         }
@@ -129,4 +130,3 @@ public class MapViewCreator {
         void chooseCards(List<SortedBag<Card>> options, ChooseCardsHandler handler);
     }
 }
-
