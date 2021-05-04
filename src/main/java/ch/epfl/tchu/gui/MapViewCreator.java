@@ -28,6 +28,15 @@ public class MapViewCreator {
     /** Not instantiable. */
     private MapViewCreator() {}
 
+    /**
+     * Method in charge of creating the whole view of the map.
+     * ie the routes, the map, the colors.
+     *
+     * @param obsGameState the observable part of the game.
+     * @param routeHandler responsible for an attempt to claim a route.
+     * @param cardChooser  responsible for choosing cards.
+     * @return the pane that contains all elements in the mapView.
+     */
     public static Node createMapView(
             ObservableGameState obsGameState,
             ObjectProperty<ClaimRouteHandler> routeHandler,
@@ -59,7 +68,6 @@ public class MapViewCreator {
 
                 Rectangle rectForCars = new Rectangle(36, 12);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
-
                 Circle circle1 = new Circle(12, 6, 3);
                 Circle circle2 = new Circle(24, 6, 3);
 
@@ -70,18 +78,21 @@ public class MapViewCreator {
             }
             gameMapPane.getChildren().add(mainRouteGroup);
 
-            obsGameState
-                    .getGameState()
-                    .addListener(
-                            (observableValue, oldGS, newGS) -> {
-                                mainRouteGroup
-                                        .disableProperty()
-                                        .bind(
-                                                routeHandler
-                                                        .isNull()
-                                                        .or(obsGameState.playerCanClaimRoute(route))
-                                                        .not());
-                            });
+            //If the route handler is null or the player can't claim the route
+            //we disable the player's attempt to claim the route, ie pressing
+            //on a route will do nothing.
+            mainRouteGroup.disableProperty()
+                    .bind(routeHandler
+                            .isNull()
+                            .or(obsGameState.playerCanClaimRoute(route).not()));
+
+            //If the route is owned by a player, we fill the route's blocks
+            //with the corresponding player's color (light blue for PLAYER_1 for ex)
+            obsGameState.getRoutesOwner(route).addListener(
+                    (observableValue, oldValue, newValue) -> {
+                        mainRouteGroup.getStyleClass().add(newValue.name());
+                    }
+            );
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
@@ -95,7 +106,7 @@ public class MapViewCreator {
                                         chosenCards -> routeHandler.get().onClaimRoute(route, chosenCards);
                                 cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
                             }
-                        }catch (IndexOutOfBoundsException e){
+                        } catch (IndexOutOfBoundsException e) {
                             //to use for future purposes, ie a popup saying cant claim the route
                         }
                     });
@@ -103,8 +114,19 @@ public class MapViewCreator {
         return gameMapPane;
     }
 
+    /**
+     * Interface containing a method intended to be called
+     * when the player must choose the cards he wishes to use to seize a route.
+     */
     @FunctionalInterface
     public interface CardChooser {
+        /**
+         * Called so user chooses cards he wants to use to claim a route.
+         *
+         * @param options cards to choose from
+         * @param handler used when the player has made the choice
+         */
         void chooseCards(List<SortedBag<Card>> options, ChooseCardsHandler handler);
     }
 }
+
