@@ -21,7 +21,6 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
 import static ch.epfl.tchu.gui.MapViewCreator.createMapView;
 
-
 public final class Stage9Test extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -74,22 +73,19 @@ public final class Stage9Test extends Application {
         ObjectProperty<ActionHandlers.DrawCardHandler> drawCard =
                 new SimpleObjectProperty<>(Stage9Test::drawCard);
 
-        Map<PlayerId, String> playerNames =
-                Map.of(PLAYER_1, "Ada", PLAYER_2, "Charles");
-        ObservableList<Text> infos = FXCollections.observableArrayList(
-                new Text("Première information.\n"),
-                new Text("\nSeconde information.\n"));
+        Map<PlayerId, String> playerNames = Map.of(PLAYER_1, "Ada", PLAYER_2, "Charles");
+        ObservableList<Text> infos =
+                FXCollections.observableArrayList(
+                        new Text("Première information.\n"), new Text("\nSeconde information.\n"));
 
         Node mapView = createMapView(gameState, claimRoute, Stage9Test::chooseCards);
         Node cardsView = DecksViewCreator.createCardsView(gameState, drawTickets, drawCard);
         Node handView = DecksViewCreator.createHandView(gameState);
-        Node infoView = InfoViewCreator.createInfoView(PLAYER_1, playerNames, gameState, infos);
 
         BorderPane mainPane = new BorderPane(mapView, null, cardsView, handView, null);
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.show();
         setState(gameState);
-
     }
 
     private void setState(ObservableGameState gameState) {
@@ -99,14 +95,13 @@ public final class Stage9Test extends Application {
                         SortedBag.of(1, Card.WHITE, 3, Card.RED),
                         List.of(ChMap.routes().get(60)));
 
-        PlayerState p2State = new PlayerState(
-                SortedBag.of(ChMap.tickets().subList(0, 3)),
-                SortedBag.of(1, Card.WHITE, 3, Card.YELLOW),
-                List.of(ChMap.routes().get(47)));
-                //new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
-                        ChMap.routes().subList(0, 3));
-
-        PublicPlayerState p2State = new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
+        PlayerState p2State =
+                new PlayerState(
+                        SortedBag.of(ChMap.tickets().subList(0, 3)),
+                        SortedBag.of(1, Card.WHITE, 3, Card.YELLOW),
+                        List.of(ChMap.routes().get(47)));
+        // new PublicPlayerState(0, 0, ChMap.routes().subList(3, 6));
+        ChMap.routes().subList(0, 3);
 
         Map<PlayerId, PublicPlayerState> pubPlayerStates =
                 Map.of(PLAYER_1, p1State, PLAYER_2, p2State);
@@ -114,6 +109,5 @@ public final class Stage9Test extends Application {
         PublicGameState publicGameState =
                 new PublicGameState(36, cardState, PLAYER_1, pubPlayerStates, null);
         gameState.setState(publicGameState, p1State);
-
     }
 }
