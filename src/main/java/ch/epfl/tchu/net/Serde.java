@@ -5,6 +5,7 @@ import ch.epfl.tchu.SortedBag;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -37,9 +38,9 @@ public interface Serde<T> {
     /**
      * Creates a simple serde given the serializer dans the deserializer.
      *
-     * @param serializer Function to serialize an object of type <code>T</code>
+     * @param serializer   Function to serialize an object of type <code>T</code>
      * @param deserializer Function to deserialize a String into an object of type <code>T</code>
-     * @param <T> type of the object to (de)serialize
+     * @param <T>          type of the object to (de)serialize
      * @return Serde of type <code>T</code>
      */
     static <T> Serde<T> of(Function<T, String> serializer, Function<String, T> deserializer) {
@@ -72,9 +73,9 @@ public interface Serde<T> {
      * Given a list, returns the serializer of its elements.
      *
      * @param objList to (de)serialize its elements
-     * @param <T> type of the object to (de)serialize
-     * @throws IllegalArgumentException if the list in argument is empty
+     * @param <T>     type of the object to (de)serialize
      * @return Serde corresponding to a list
+     * @throws IllegalArgumentException if the list in argument is empty
      */
     static <T> Serde<T> oneOf(List<T> objList) {
         Preconditions.checkArgument(!objList.isEmpty());
@@ -87,14 +88,14 @@ public interface Serde<T> {
      * Returns a serde capable of (de)serializing lists of (de)serialized values given by parameter
      * <code>serde</code>
      *
-     * @param serde to use to (de)serialize
+     * @param serde     to use to (de)serialize
      * @param separator separating character between each element
-     * @param <T> type of the object to (de)serialize
-     * @throws IllegalArgumentException if the separator is null
+     * @param <T>       type of the object to (de)serialize
      * @return a serde capable of (de)serializing lists of (de)serialized values
+     * @throws NullPointerException if the separator is null
      */
     static <T> Serde<List<T>> listOf(Serde<T> serde, String separator) {
-        Preconditions.checkArgument(separator != null);
+        Objects.requireNonNull(separator);
         return new Serde<>() {
             /**
              * Returns a Serialized string where each element of the parameter is separated by
@@ -127,9 +128,9 @@ public interface Serde<T> {
      * Returns a serde capable of (de)serializing Bags of (de)serialized values given by parameter
      * <code>serde</code>
      *
-     * @param serde to use to (de)serialize
+     * @param serde     to use to (de)serialize
      * @param separator separating character between each element
-     * @param <T> type of the object to (de)serialize
+     * @param <T>       type of the object to (de)serialize
      * @return a serde capable of (de)serializing bags of (de)serialized values
      */
     static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> serde, String separator) {
@@ -164,10 +165,10 @@ public interface Serde<T> {
     /**
      * Private method in charge of serializing lists.
      *
-     * @param serde to use to (de)serialize
+     * @param serde           to use to (de)serialize
      * @param listToSerialize serialize each element and join them in a string
-     * @param separator character to separate each element of the list
-     * @param <T> type of the object to (de)serialize
+     * @param separator       character to separate each element of the list
+     * @param <T>             type of the object to (de)serialize
      * @return a String that's been serialized from the list
      */
     private static <T> String ToStringSerializer(

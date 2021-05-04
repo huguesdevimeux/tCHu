@@ -1,0 +1,17 @@
+/* Player information */
+
+#player-stats {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+}
+
+#player-stats Circle {
+    -fx-stroke: dimgrey;
+    -fx-stroke-width: 1;
+}
+
+#game-info {
+    -fx-padding: 10;
+    -fx-pref-width: 220;
+    -fx-line-spacing: 3;
+}

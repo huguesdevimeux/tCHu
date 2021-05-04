@@ -1,0 +1,65 @@
+/* Cards */
+
+.card .outside {
+    -fx-arc-width: 10;
+    -fx-arc-height: 10;
+    -fx-fill: white;
+    -fx-stroke: dimgrey;
+}
+
+.card .inside {
+    -fx-stroke: hsba(0, 0%, 0%, 0.3);
+    -fx-stroke-type: inside;
+}
+
+.card .train-image {
+    -fx-fill: url("train-car.png");
+    -fx-opacity: 0.3;
+}
+
+.card.NEUTRAL .train-image {
+    -fx-fill: url("locomotive.png");
+    -fx-opacity: 0.7;
+}
+
+.card.NEUTRAL .filled {
+    -fx-fill: mediumturquoise;
+}
+
+.card .count {
+    -fx-font-size: 24;
+    -fx-fill: white;
+    -fx-stroke: white;
+    -fx-effect: dropshadow(gaussian, black, 5, 0, 1, 1);
+}
+
+/* Tickets and cards pane (right) */
+
+#card-pane {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-padding: 5;
+}
+
+Button.gauged {
+    -fx-content-display: bottom;
+}
+Button.gauged .background {
+    -fx-fill: white;
+}
+Button.gauged .foreground {
+    -fx-fill: darkgray;
+}
+
+/* Hand pane (tickets and cards held) */
+
+#tickets {
+    -fx-pref-width: 400;
+    -fx-pref-height: 0;
+}
+
+#hand-pane {
+    -fx-alignment: center;
+    -fx-padding: 5 50 5 50;
+    -fx-spacing: 10;
+}

@@ -1,0 +1,14 @@
+/* Colors (for cards, tracks, cars, color patches, etc.) */
+
+.BLACK   .filled { -fx-fill: "#7f7f7f"; }
+.VIOLET  .filled { -fx-fill: "#eb93db"; }
+.BLUE    .filled { -fx-fill: "#86aaff"; }
+.GREEN   .filled { -fx-fill: "#92db98"; }
+.YELLOW  .filled { -fx-fill: "#eae853"; }
+.ORANGE  .filled { -fx-fill: "#e1a84f"; }
+.RED     .filled { -fx-fill: "#e9787d"; }
+.WHITE   .filled { -fx-fill: "#f5f5f5"; }
+.NEUTRAL .filled { -fx-fill: "#d3d3d3"; }
+
+.PLAYER_1 .filled { -fx-fill: lightblue; }
+.PLAYER_2 .filled { -fx-fill: lightpink; }
