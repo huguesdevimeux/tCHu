@@ -1,0 +1,11 @@
+VBox {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-padding: 20;
+    -fx-max-width: 450;
+}
+
+ListView {
+    -fx-pref-width: 400;
+    -fx-pref-height: 150;
+}

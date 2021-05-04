@@ -1,8 +1,5 @@
 package ch.epfl.tchu.net;
 
-import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
-import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
-
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
@@ -13,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
+import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+
 /**
  * Class with all the useful Serdes.
  *
@@ -20,12 +20,14 @@ import java.util.regex.Pattern;
  * @author Hugues Devimeux (327282)
  */
 public final class Serdes {
-    /* Comma separator used in the serialization process. */
+	// TODO public because of the handmade map deserializer of RemotepLayerTest. The deserde should be here.
     public static final String COMMA_SEPARATOR = ",";
-    /* Semi-colon separator used in the serialization process. */
     public static final String SEMI_COLON_SEPARATOR = ";";
-    /* Colon separator used in the serialization process. */
     public static final String COLON_SEPARATOR = ":";
+
+    /** Not instantiable. */
+    private Serdes() {}
+
     /** Serde for integers */
     public static final Serde<Integer> intSerde =
             Serde.of(i -> Integer.toString(i), Integer::parseInt);
@@ -37,6 +39,7 @@ public final class Serdes {
                             new String(
                                     Base64.getDecoder().decode(str.getBytes()),
                                     StandardCharsets.UTF_8));
+
     /** Serde for PlayerId */
     public static final Serde<PlayerId> playerIdSerde = Serde.oneOf(PlayerId.ALL);
     /** Serde for TurnKind */
@@ -81,10 +84,13 @@ public final class Serdes {
                         // ie index 0 -> attribute List<Cards>faceUpCards -> use of cardListSerde
                         String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PublicCardState(
+                                // we don't have to verify if elements[0] is empty
+                                // because the face up cards' size = 5
                                 cardListSerde.deserialize(elements[0]),
                                 intSerde.deserialize(elements[1]),
                                 intSerde.deserialize(elements[2]));
                     });
+
     /** Serde for public player states to separate with ";" */
     public static final Serde<PublicPlayerState> publicPlayerStateSerde =
             // same principle as the previous Serde, join each serialized item
@@ -113,6 +119,7 @@ public final class Serdes {
                                         ? Collections.emptyList()
                                         : routeListSerde.deserialize(elements[2]));
                     });
+
     /** Serde for PlayerStates to separate with ";" */
     public static final Serde<PlayerState> playerStateSerde =
             // functions in the same way as the previous Serdes.
@@ -126,17 +133,18 @@ public final class Serdes {
                     (str) -> {
                         String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PlayerState(
-                                ticketBagSerde.deserialize(elements[0]),
-                                cardBagSerde.deserialize(elements[1]),
+                                elements[0].isEmpty()
+                                        ? SortedBag.of()
+                                        : ticketBagSerde.deserialize(elements[0]),
+                                elements[1].isEmpty()
+                                        ? SortedBag.of()
+                                        : cardBagSerde.deserialize(elements[1]),
                                 // we also have to verify if we should use an empty list or
                                 // deserialize using routeListSerde
                                 elements[2].isEmpty()
                                         ? Collections.emptyList()
                                         : routeListSerde.deserialize(elements[2]));
                     });
-
-    /** Not instantiable. */
-    private Serdes() {}
 
     /** Serde for public game states to separate with ":" */
     public static final Serde<PublicGameState> publicGameStateSerde =
