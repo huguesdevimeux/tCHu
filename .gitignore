@@ -24,3 +24,4 @@ hs_err_pid*
 
 # Config stuff, not sure how it works
 .idea/
+/tCHu.iml

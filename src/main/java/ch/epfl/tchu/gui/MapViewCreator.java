@@ -3,7 +3,6 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.ChMap;
-import ch.epfl.tchu.game.PlayerState;
 import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.gui.ActionHandlers.ChooseCardsHandler;
 import ch.epfl.tchu.gui.ActionHandlers.ClaimRouteHandler;
@@ -72,7 +71,6 @@ class MapViewCreator {
 
                 Rectangle rectForCars = new Rectangle(36, 12);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
-
                 Circle circle1 = new Circle(12, 6, 3);
                 Circle circle2 = new Circle(24, 6, 3);
 
@@ -83,32 +81,39 @@ class MapViewCreator {
             }
             gameMapPane.getChildren().add(mainRouteGroup);
 
-            obsGameState
-                    .getGameState()
-                    .addListener(
-                            (observableValue, oldGS, newGS) -> {
-                                mainRouteGroup
-                                        .disableProperty()
-                                        .bind(routeHandler
-                                                .isNull()
-                                                .or(obsGameState.playerCanClaimRoute(route))
-                                                .not());
-                            });
+            //If the route handler is null or the player can't claim the route
+            //we disable the player's attempt to claim the route, ie pressing
+            //on a route will do nothing.
+            mainRouteGroup.disableProperty()
+                    .bind(routeHandler
+                            .isNull()
+                            .or(obsGameState.playerCanClaimRoute(route).not()));
+
+            //If the route is owned by a player, we fill the route's blocks
+            //with the corresponding player's color (light blue for PLAYER_1 for ex)
+            obsGameState.getRoutesOwner(route).addListener(
+                    (observableValue, oldValue, newValue) -> {
+                        mainRouteGroup.getStyleClass().add(newValue.name());
+                    }
+            );
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
-                        List<SortedBag<Card>> possibleClaimCards = route.possibleClaimCards();
-                        ClaimRouteHandler claimRouteH =
-                                (claimedRoute, initialClaimCards) -> {
-                                    PlayerState newPS = obsGameState.getPlayerState()
-                                            .getValue()
-                                            .withClaimedRoute(claimedRoute, initialClaimCards);
-                                    obsGameState
-                                            .setState(obsGameState.getGameState().getValue(), newPS);
-                                };
-                        ChooseCardsHandler chooseCardsH =
-                                chosenCards -> claimRouteH.onClaimRoute(route, chosenCards);
-                        cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
+                        try {
+                            List<SortedBag<Card>> possibleClaimCards =
+                                    obsGameState.getPlayerState().get().possibleClaimCards(route);
+                            if (possibleClaimCards.size() == 1)
+                                routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
+                            else {
+                                ChooseCardsHandler chooseCardsH =
+                                        chosenCards -> routeHandler.get().onClaimRoute(route, chosenCards);
+                                cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
+                            }
+                        } catch (IndexOutOfBoundsException e) {
+                            //to use for future purposes, ie a popup saying cant claim the route
+                            // TODO 
+                        }
+
                     });
         }
         return gameMapPane;
