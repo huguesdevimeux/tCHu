@@ -82,7 +82,6 @@ public class ObservableGameState {
             Card newCard = newGameState.cardState().faceUpCard(slot);
             faceUpCards.get(slot).set(newCard);
         }
-        System.out.println(faceUpCards);
 
         // for each player, we need to know the tickets, cards, cars count as well as their claim
         // points we put these in lists of object properties of size 2
@@ -138,8 +137,6 @@ public class ObservableGameState {
                 .forEach(i -> faceUpCards.add(new SimpleObjectProperty<>()));
         return faceUpCards;
     }
-
-
     private static List<IntegerProperty> createPlayersCardsOfEachColor() {
         List<IntegerProperty> playersNumberOfEachCards = new ArrayList<>();
         IntStream.range(0, Card.COUNT)
