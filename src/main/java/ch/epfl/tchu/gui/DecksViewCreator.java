@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.Color;
 import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -57,7 +58,7 @@ class DecksViewCreator {
 
         // Tickets pile.
         // Button group
-		Button ticketsPile = itemPileWithGauge(observableGameState, "Billets");
+		Button ticketsPile = itemPileWithGauge("Billets", observableGameState.percentageTickets());
 		ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
 		ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
 		VBox cardsView = new VBox(ticketsPile);
@@ -83,7 +84,7 @@ class DecksViewCreator {
                                 displayedCard.getStyleClass().add(newColor);
                             });
         }
-		Button cardsPile = itemPileWithGauge(observableGameState, "Cartes");
+		Button cardsPile = itemPileWithGauge("Cartes", observableGameState.percentageTickets());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
         cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
 		cardsView.getChildren().add(cardsPile);
@@ -141,7 +142,7 @@ class DecksViewCreator {
     }
 
     private static Button itemPileWithGauge(
-            ObservableGameState observableGameState, String itemName) {
+		String itemName, ReadOnlyIntegerProperty percentagePropertz) {
         Button ticketPile = new Button(itemName);
         ticketPile.getStyleClass().add(CLASS_GAUGED);
 
@@ -151,7 +152,7 @@ class DecksViewCreator {
         foregroundButtonGraphic.getStyleClass().add(CLASS_FOREGROUND);
         foregroundButtonGraphic
                 .widthProperty()
-                .bind(observableGameState.percentageTickets().divide(2));
+                .bind(percentagePropertz.divide(2));
 
         ticketPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
         return ticketPile;

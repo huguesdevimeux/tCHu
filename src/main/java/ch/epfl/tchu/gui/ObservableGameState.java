@@ -164,7 +164,7 @@ public class ObservableGameState {
     }
 
     public ReadOnlyIntegerProperty percentageCards() {
-        return percentageOfTicketsRemaining;
+        return percentageOfCardsRemaining;
     }
 
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
