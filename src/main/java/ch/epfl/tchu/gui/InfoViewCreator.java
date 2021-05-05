@@ -13,6 +13,8 @@ import javafx.scene.text.TextFlow;
 
 import java.util.Map;
 
+import static ch.epfl.tchu.gui.GuiConstants.*;
+
 /**
  * Representation of the information section in the game.
  * Not instantiable.
@@ -21,11 +23,6 @@ import java.util.Map;
  * @author Hugues Devimeux (327282)
  */
 class InfoViewCreator {
-    private static final String STYLE_SHEET_INFO = "info.css";
-    private static final String STYLE_SHEET_COLOR = "colors.css";
-    private static final String ID_PLAYER_STATS = "player-stats";
-    private static final String STYLE_CLASS_FILLED = "filled";
-    private static final String ID_GAME_INFO = "game-info";
 
     /** Not Instantiable. */
     private InfoViewCreator() {
@@ -48,7 +45,7 @@ class InfoViewCreator {
                                       ObservableGameState obsGameState,
                                       ObservableList<Text> infos) {
         VBox root = new VBox();
-        root.getStylesheets().addAll(STYLE_SHEET_INFO, STYLE_SHEET_COLOR);
+        root.getStylesheets().addAll(STYLE_SHEET_INFO, STYLE_SHEET_COLORS);
 
         VBox playerStats = new VBox();
         playerStats.setId(ID_PLAYER_STATS);
