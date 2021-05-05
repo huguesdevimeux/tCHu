@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 
 import java.util.Map;
 
+import static javafx.application.Platform.isFxApplicationThread;
+
 /**
  * Represents graphical interface of a tCHu's player.
  *
@@ -36,6 +38,7 @@ public class GraphicalPlayer {
      * @param playerNames The players playing.
      */
     public GraphicalPlayer(PlayerId correspondingPlayer, Map<PlayerId, String> playerNames) {
+        assert isFxApplicationThread();
         this.observableGameState = new ObservableGameState(correspondingPlayer);
         this.correspondingPlayer = correspondingPlayer;
         this.playerNames = playerNames;
@@ -54,10 +57,12 @@ public class GraphicalPlayer {
      * @param playerState The new {@link PlayerState}
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
+        assert isFxApplicationThread();
         this.observableGameState.setState(newGameState, playerState);
     }
 
     public void receiveInfo(String message) {
+        assert isFxApplicationThread();
         infoProperty.getValue().add(new Text(message));
     }
 
@@ -65,6 +70,7 @@ public class GraphicalPlayer {
             ActionHandlers.DrawTicketsHandler drawTicketsH,
             ActionHandlers.DrawCardHandler drawCardH,
             ActionHandlers.ClaimRouteHandler claimRouteH) {
+        assert isFxApplicationThread();
 
         if (this.observableGameState.canDrawCards().getValue()) {
             this.drawCardHandler.setValue(drawCardH);
