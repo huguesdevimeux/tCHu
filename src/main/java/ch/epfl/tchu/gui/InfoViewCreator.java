@@ -25,6 +25,7 @@ class InfoViewCreator {
     private static final String STYLE_SHEET_COLOR = "colors.css";
     private static final String ID_PLAYER_STATS = "player-stats";
     private static final String STYLE_CLASS_FILLED = "filled";
+    private static final String ID_GAME_INFO = "game-info";
 
     /** Not Instantiable. */
     private InfoViewCreator() {
@@ -77,11 +78,10 @@ class InfoViewCreator {
         }
 
         TextFlow gameInfoTextFlow = new TextFlow();
-        gameInfoTextFlow.setId("game-info");
+        gameInfoTextFlow.setId(ID_GAME_INFO);
         //limit to 4 because there are maximum 5 messages
         for (int i = 0; i <= 4; i++) {
-            Text message = new Text();
-            gameInfoTextFlow.getChildren().add(message);
+            gameInfoTextFlow.getChildren().add(new Text());
         }
         Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
         root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
