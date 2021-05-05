@@ -227,12 +227,12 @@ public class ObservableGameState {
         return playerCanClaimRoute.get(ChMap.routes().indexOf(route));
     }
 
-    public ReadOnlyBooleanProperty canDrawTickets(PublicGameState publicGameState) {
-        return new SimpleBooleanProperty(publicGameState.canDrawTickets());
+    public ReadOnlyBooleanProperty canDrawTickets() {
+        return new SimpleBooleanProperty(this.newGameState.canDrawTickets());
     }
 
-    public ReadOnlyBooleanProperty canDrawCards(PublicGameState publicGameState) {
-        return new SimpleBooleanProperty(publicGameState.canDrawCards());
+    public ReadOnlyBooleanProperty canDrawCards() {
+        return new SimpleBooleanProperty(this.newGameState.canDrawCards());
     }
 
     public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(
