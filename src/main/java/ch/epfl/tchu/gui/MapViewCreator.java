@@ -99,7 +99,6 @@ class MapViewCreator {
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
-                        try {
                             List<SortedBag<Card>> possibleClaimCards =
                                     obsGameState.getPlayerState().get().possibleClaimCards(route);
                             if (possibleClaimCards.size() == 1)
@@ -109,11 +108,6 @@ class MapViewCreator {
                                         chosenCards -> routeHandler.get().onClaimRoute(route, chosenCards);
                                 cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
                             }
-                        } catch (IndexOutOfBoundsException e) {
-                            //to use for future purposes, ie a popup saying cant claim the route
-                            // TODO 
-                        }
-
                     });
         }
         return gameMapPane;

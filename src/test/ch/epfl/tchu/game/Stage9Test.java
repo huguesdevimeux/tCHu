@@ -1,7 +1,9 @@
-package ch.epfl.tchu.gui;
+package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.SortedBag;
-import ch.epfl.tchu.game.*;
+import ch.epfl.tchu.gui.ActionHandlers;
+import ch.epfl.tchu.gui.DecksViewCreator;
+import ch.epfl.tchu.gui.ObservableGameState;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -19,6 +21,7 @@ import java.util.Map;
 
 import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+import static ch.epfl.tchu.gui.DecksViewCreator.createCardsView;
 import static ch.epfl.tchu.gui.MapViewCreator.createMapView;
 
 public final class Stage9Test extends Application {
@@ -79,7 +82,7 @@ public final class Stage9Test extends Application {
                         new Text("Première information.\n"), new Text("\nSeconde information.\n"));
 
         Node mapView = createMapView(gameState, claimRoute, Stage9Test::chooseCards);
-        Node cardsView = DecksViewCreator.createCardsView(gameState, drawTickets, drawCard);
+        Node cardsView = createCardsView(gameState, drawTickets, drawCard);
         Node handView = DecksViewCreator.createHandView(gameState);
 
         BorderPane mainPane = new BorderPane(mapView, null, cardsView, handView, null);

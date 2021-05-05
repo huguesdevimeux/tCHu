@@ -142,14 +142,6 @@ public class ObservableGameState {
             }
         }
     }
-
-    private static List<BooleanProperty> playerCanClaimRoute() {
-        List<BooleanProperty> playerCanClaimRoute = new ArrayList<>();
-        IntStream.range(0, ChMap.routes().size())
-                .forEach(i -> playerCanClaimRoute.add(new SimpleBooleanProperty(false)));
-        return playerCanClaimRoute;
-    }
-
     /**
      * Boolean method to evaluate if the {@code route} has a neighbour.
      *
@@ -164,6 +156,8 @@ public class ObservableGameState {
                                         && routeTemp.stations().equals(route.stations()));
     }
 
+    //Private methods to create lists or maps comprised of n elements of
+    //either false if property requires a boolean, 0 or null.
     private List<ObjectProperty<Card>> createFaceUpCards() {
         return Stream.generate(() -> new SimpleObjectProperty<Card>(null))
                 .limit(FACE_UP_CARDS_COUNT)
