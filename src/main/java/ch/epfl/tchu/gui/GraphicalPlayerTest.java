@@ -39,13 +39,13 @@ public class GraphicalPlayerTest extends Application {
         GraphicalPlayer p = new GraphicalPlayer(PLAYER_1, playerNames);
         setState(p);
 
-        ActionHandlers.DrawTicketsHandler drawTicketsH = () -> p.receiveInfo("Je tire des billets !");
+        ActionHandlers.DrawTicketsHandler drawTicketsH = () -> p.receiveInfo("Je tire des billets \n\n");
         ActionHandlers.DrawCardHandler drawCardH =
-                s -> p.receiveInfo(String.format("Je tire une carte de %s !", s));
+                s -> p.receiveInfo(String.format("Je tire une carte de %s !\n\n", s));
         ActionHandlers.ClaimRouteHandler claimRouteH =
                 (r, cs) -> {
                     String rn = r.station1() + " - " + r.station2();
-                    p.receiveInfo(String.format("Je m'empare de %s avec %s", rn, cs));
+                    p.receiveInfo(String.format("Je m'empare de %s avec %s\n", rn, cs));
                 };
 
         p.startTurn(drawTicketsH, drawCardH, claimRouteH);

@@ -5,8 +5,11 @@ import ch.epfl.tchu.game.PlayerState;
 import ch.epfl.tchu.game.PublicGameState;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Map;
@@ -22,6 +25,10 @@ public class GraphicalPlayer {
     private final ObservableGameState observableGameState;
     private final PlayerId correspondingPlayer;
     private final Map<PlayerId, String> playerNames;
+    private final SimpleListProperty<Text> infoProperty;
+    private final SimpleObjectProperty<ActionHandlers.DrawTicketsHandler> drawTicketsHandler;
+    private final SimpleObjectProperty<ActionHandlers.DrawCardHandler> drawCardHandler;
+    private final SimpleObjectProperty<ActionHandlers.ClaimRouteHandler> takeRouteH;
 
     /**
      * Constructor that builds graphical interface designed for the player.
@@ -33,6 +40,10 @@ public class GraphicalPlayer {
         this.observableGameState = new ObservableGameState(correspondingPlayer);
         this.correspondingPlayer = correspondingPlayer;
         this.playerNames = playerNames;
+        this.drawTicketsHandler = new SimpleObjectProperty<>(null);
+        this.drawCardHandler = new SimpleObjectProperty<>(null);
+        this.infoProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.takeRouteH = new SimpleObjectProperty<>();
 
         this.generateStage().show();
     }
@@ -48,13 +59,22 @@ public class GraphicalPlayer {
     }
 
     public void receiveInfo(String message) {
-        // update infos (do a queue size)
+        infoProperty.getValue().add(new Text(message));
     }
 
     public void startTurn(
             ActionHandlers.DrawTicketsHandler drawTicketsH,
             ActionHandlers.DrawCardHandler drawCardH,
-            ActionHandlers.ClaimRouteHandler claimRouteH) {}
+            ActionHandlers.ClaimRouteHandler claimRouteH) {
+
+        if (this.observableGameState.canDrawCards().getValue()) {
+            this.drawCardHandler.setValue(drawCardH);
+        }
+        if (this.observableGameState.canDrawTickets().getValue()) {
+            this.drawTicketsHandler.setValue(drawTicketsH);
+        }
+        this.takeRouteH.setValue(claimRouteH);
+    }
 
     private Stage generateStage() {
         Stage root = new Stage();
@@ -62,18 +82,18 @@ public class GraphicalPlayer {
         BorderPane mainPane =
                 new BorderPane(
                         MapViewCreator.createMapView( // Center.
-                                this.observableGameState, new SimpleObjectProperty<>(null), null),
+                                this.observableGameState, this.takeRouteH, null),
                         null, // Top.
                         DecksViewCreator.createCardsView(
                                 this.observableGameState,
-                                new SimpleObjectProperty<>(null),
-                                new SimpleObjectProperty<>(null)), // Right.
+                                this.drawTicketsHandler,
+                                this.drawCardHandler), // Right.
                         DecksViewCreator.createHandView(this.observableGameState), // Bottom.
                         InfoViewCreator.createInfoView(
-                                correspondingPlayer,
-                                playerNames,
+                                this.correspondingPlayer,
+                                this.playerNames,
                                 this.observableGameState,
-                                new SimpleListProperty<>()));
+                                infoProperty));
         Scene innerScene = new Scene(mainPane);
         root.setScene(innerScene);
         return root;
