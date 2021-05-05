@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
@@ -29,10 +28,10 @@ public class ObservableGameState {
     // 2nd group of properties
     // to stock the numbers of each players tickets, cards, etc, we use a map to
     // relate each player to the attribute
-    private final Map<PlayerId, IntegerProperty> eachPlayersTicketsCount = new HashMap<>();
-    private final Map<PlayerId, IntegerProperty> eachPlayersCardsCount = new HashMap<>();
-    private final Map<PlayerId, IntegerProperty> eachPlayersCarsCount = new HashMap<>();
-    private final Map<PlayerId, IntegerProperty> eachPlayersClaimPoints = new HashMap<>();
+    private final Map<PlayerId, IntegerProperty> eachPlayersTicketsCount = createMapWithSingleIntProperty();
+    private final Map<PlayerId, IntegerProperty> eachPlayersCardsCount = createMapWithSingleIntProperty();
+    private final Map<PlayerId, IntegerProperty> eachPlayersCarsCount = createMapWithSingleIntProperty();
+    private final Map<PlayerId, IntegerProperty> eachPlayersClaimPoints = createMapWithSingleIntProperty();
     // 3rd group of properties
     private final ObservableList<Ticket> playersTickets = FXCollections.observableArrayList();
     // we stock the number of each type of card in a list such that the numbers in the list
@@ -56,15 +55,13 @@ public class ObservableGameState {
      */
     public ObservableGameState(PlayerId correspondingPlayer) {
         this.correspondingPlayer = correspondingPlayer;
-        this.playerState = null;
-        this.newGameState = null;
     }
 
     /**
      * Updates all of the attributes.
      *
      * @param newGameState the new gameState
-     * @param playerState the player state
+     * @param playerState  the player state
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
         this.newGameState = newGameState;
@@ -90,18 +87,14 @@ public class ObservableGameState {
         // for each player, we need to know the tickets, cards, cars count as well as their claim
         // points we put these in lists of object properties of size 2
         for (PlayerId playerId : PlayerId.ALL) {
-            eachPlayersTicketsCount.put(
-                    playerId,
-                    new SimpleIntegerProperty(newGameState.playerState(playerId).ticketCount()));
-            eachPlayersCardsCount.put(
-                    playerId,
-                    new SimpleIntegerProperty(newGameState.playerState(playerId).cardCount()));
-            eachPlayersCarsCount.put(
-                    playerId,
-                    new SimpleIntegerProperty(newGameState.playerState(playerId).carCount()));
-            eachPlayersClaimPoints.put(
-                    playerId,
-                    new SimpleIntegerProperty(newGameState.playerState(playerId).claimPoints()));
+            eachPlayersTicketsCount.get(playerId)
+                    .set(newGameState.playerState(playerId).ticketCount());
+            eachPlayersCardsCount.get(playerId)
+                    .set(newGameState.playerState(playerId).cardCount());
+            eachPlayersCarsCount.get(playerId)
+                    .set((newGameState.playerState(playerId).carCount()));
+            eachPlayersClaimPoints.get(playerId)
+                    .set((newGameState.playerState(playerId).claimPoints()));
         }
 
         // simply setting the object property as the tickets of the player
@@ -169,6 +162,12 @@ public class ObservableGameState {
         for (Route route : ChMap.routes())
             mapRouteToOwner.put(route, new SimpleObjectProperty<>(null));
         return mapRouteToOwner;
+    }
+
+    private Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
+        Map<PlayerId, IntegerProperty> map = new HashMap<>();
+        PlayerId.ALL.forEach(playerId -> map.put(playerId, new SimpleIntegerProperty()));
+        return map;
     }
 
     private List<IntegerProperty> createPlayersCardsOfEachColor() {

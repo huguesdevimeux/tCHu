@@ -15,7 +15,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
-
+/**
+ * Representation of the map and the routes in the game.
+ *
+ * @author Luca Mouchel (324748)
+ * @author Hugues Devimeux (327282)
+ */
 class MapViewCreator {
     private static final String LOCOMOTIVE_COLOR = "NEUTRAL";
     private static final String STYLE_CLASS_ROUTE = "route";
