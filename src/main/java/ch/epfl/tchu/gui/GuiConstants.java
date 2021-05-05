@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Constants used for the GUI part of the project.
+ * Includes .css files, style classes and IDs and
+ * other Constants in general.
+ */
 public class GuiConstants {
     //style sheets constants
     public static final String STYLE_SHEET_MAP = "map.css";
