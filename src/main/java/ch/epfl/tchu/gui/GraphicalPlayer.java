@@ -6,7 +6,6 @@ import ch.epfl.tchu.game.PublicGameState;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
@@ -78,6 +77,8 @@ public class GraphicalPlayer {
 
     private Stage generateStage() {
         Stage root = new Stage();
+        root.setTitle(
+                String.format("tCHu \u2014 %s", this.playerNames.get(this.correspondingPlayer)));
 
         BorderPane mainPane =
                 new BorderPane(
