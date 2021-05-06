@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -19,6 +20,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.StringConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,6 +155,7 @@ public class GraphicalPlayer {
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
                 .setMinimumChoices(1)
+                .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
     }
@@ -169,6 +172,7 @@ public class GraphicalPlayer {
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
                 .setMinimumChoices(1)
+                .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
     }
@@ -288,6 +292,17 @@ public class GraphicalPlayer {
         }
 
         /**
+         * Sets the string converter for the cells of the choices.
+         *
+         * @param converter The converter.
+         * @return The object (for chaining).
+         */
+        public PopupChoiceBuilder<T> setCellStringBuilder(StringConverter<T> converter) {
+            this.choicesDisplayed.setCellFactory(tListView -> new TextFieldListCell<>(converter));
+            return this;
+        }
+
+        /**
          * Builds the popup.
          *
          * @return The popup.
@@ -333,6 +348,18 @@ public class GraphicalPlayer {
             popup.setOnCloseRequest(Event::consume);
             popup.setScene(innerScene);
             return popup;
+        }
+    }
+
+    class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+        @Override
+        public String toString(SortedBag<Card> cards) {
+            return Info.displaySortedBagOfCards(cards);
+        }
+
+        @Override
+        public SortedBag<Card> fromString(String s) {
+            throw new UnsupportedOperationException();
         }
     }
 }
