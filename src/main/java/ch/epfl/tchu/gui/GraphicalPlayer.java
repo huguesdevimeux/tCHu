@@ -29,7 +29,7 @@ public class GraphicalPlayer {
     private final SimpleListProperty<Text> infoProperty;
     private final SimpleObjectProperty<ActionHandlers.DrawTicketsHandler> drawTicketsHandler;
     private final SimpleObjectProperty<ActionHandlers.DrawCardHandler> drawCardHandler;
-    private final SimpleObjectProperty<ActionHandlers.ClaimRouteHandler> takeRouteH;
+    private final SimpleObjectProperty<ActionHandlers.ClaimRouteHandler> takeRouteHandler;
 
     /**
      * Constructor that builds graphical interface designed for the player.
@@ -45,7 +45,7 @@ public class GraphicalPlayer {
         this.drawTicketsHandler = new SimpleObjectProperty<>(null);
         this.drawCardHandler = new SimpleObjectProperty<>(null);
         this.infoProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.takeRouteH = new SimpleObjectProperty<>();
+        this.takeRouteHandler = new SimpleObjectProperty<>();
 
         this.generateStage().show();
     }
@@ -73,12 +73,24 @@ public class GraphicalPlayer {
         assert isFxApplicationThread();
 
         if (this.observableGameState.canDrawCards().getValue()) {
-            this.drawCardHandler.setValue(drawCardH);
+            this.drawCardHandler.setValue(
+                    indexOfChosenCard -> {
+                        drawCardH.onDrawCard(indexOfChosenCard);
+                        emptyHandlers();
+                    });
         }
         if (this.observableGameState.canDrawTickets().getValue()) {
-            this.drawTicketsHandler.setValue(drawTicketsH);
+            this.drawTicketsHandler.setValue(
+                    () -> {
+                        drawTicketsH.onDrawTickets();
+                        emptyHandlers();
+                    });
         }
-        this.takeRouteH.setValue(claimRouteH);
+        this.takeRouteHandler.setValue(
+                (claimedRoute, initialClaimCards) -> {
+                    emptyHandlers();
+                    claimRouteH.onClaimRoute(claimedRoute, initialClaimCards);
+                });
     }
 
     private Stage generateStage() {
@@ -89,7 +101,7 @@ public class GraphicalPlayer {
         BorderPane mainPane =
                 new BorderPane(
                         MapViewCreator.createMapView( // Center.
-                                this.observableGameState, this.takeRouteH, null),
+                                this.observableGameState, this.takeRouteHandler, null),
                         null, // Top.
                         DecksViewCreator.createCardsView(
                                 this.observableGameState,
@@ -104,5 +116,11 @@ public class GraphicalPlayer {
         Scene innerScene = new Scene(mainPane);
         root.setScene(innerScene);
         return root;
+    }
+
+    private void emptyHandlers() {
+        this.drawCardHandler.set(null);
+        this.drawTicketsHandler.set(null);
+        this.drawTicketsHandler.set(null);
     }
 }
