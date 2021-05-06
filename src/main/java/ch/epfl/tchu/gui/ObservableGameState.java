@@ -124,12 +124,12 @@ public class ObservableGameState {
 
             // Setting the last property
             // We create 3 booleans which are conditions to be met in order to claim a route.
-            boolean pStateIsCurrentPState = playerState.equals(newGameState.currentPlayerState());
+            boolean playerIsCurrentPlayer = newGameState.currentPlayerId().equals(correspondingPlayer);
             boolean routeIsNotClaimed =
                     !newGameState.claimedRoutes().contains(route)
                             && !neighbouringRoutes.contains(route.stations());
             boolean canClaimRoute = playerState.canClaimRoute(route);
-            if (pStateIsCurrentPState && routeIsNotClaimed && canClaimRoute) {
+            if (playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute) {
                 // set true if all conditions are met
                 playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(true);
             }
