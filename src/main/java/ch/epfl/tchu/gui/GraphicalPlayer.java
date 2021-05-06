@@ -120,6 +120,7 @@ public class GraphicalPlayer {
     public void chooseTickets(
             SortedBag<Ticket> choosableTickets,
             ActionHandlers.ChooseTicketsHandler chooseTicketsHandler) {
+        assert isFxApplicationThread();
         Preconditions.checkArgument(choosableTickets.size() == 3 || choosableTickets.size() == 5);
         // TODO combien de billets il peut piocher ? (CHoose tickets se format)
         new PopupChoiceBuilder<Ticket>(StringsFr.CHOOSE_TICKETS, choosableTickets.toList())
@@ -136,6 +137,7 @@ public class GraphicalPlayer {
      * @param handler The handler of the cards.
      */
     public void drawCards(ActionHandlers.DrawCardHandler handler) {
+        assert isFxApplicationThread();
         drawCardHandler.set(
                 indexOfChosenCard -> {
                     handler.onDrawCard(indexOfChosenCard);
@@ -151,6 +153,7 @@ public class GraphicalPlayer {
      */
     public void chooseClaimCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
+        assert isFxApplicationThread();
         new PopupChoiceBuilder<SortedBag<Card>>(StringsFr.CHOOSE_CARDS, choosableCards)
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
@@ -168,6 +171,7 @@ public class GraphicalPlayer {
      */
     public void chooseAdditionalCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
+        assert isFxApplicationThread();
         new PopupChoiceBuilder<SortedBag<Card>>(StringsFr.CHOOSE_ADDITIONAL_CARDS, choosableCards)
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
@@ -351,7 +355,7 @@ public class GraphicalPlayer {
         }
     }
 
-    class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+    static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
         @Override
         public String toString(SortedBag<Card> cards) {
             return Info.displaySortedBagOfCards(cards);
