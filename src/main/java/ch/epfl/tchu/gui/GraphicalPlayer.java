@@ -79,6 +79,7 @@ public class GraphicalPlayer {
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
         infoProperty.getValue().add(new Text(message));
+        if (infoProperty.size() > 4) infoProperty.remove(0);
     }
 
     public void startTurn(
@@ -112,8 +113,8 @@ public class GraphicalPlayer {
      * Opens a pop-up allowing the player to choose the tickets. Call chooseTicketsHandler upon
      * confirming the choice.
      *
-     * @param choosableTickets The ticket the player can chose. Must be either 3 (start game) or 5
-     *     (during the game)
+     * @param choosableTickets     The ticket the player can chose. Must be either 3 (start game) or 5
+     *                             (during the game)
      * @param chooseTicketsHandler The handler called upon choosing tickets.
      * @throws IllegalArgumentException If there is an invalid number of tickets.
      */
@@ -149,7 +150,7 @@ public class GraphicalPlayer {
      * Opens a pop-up allowing the user to choose which cards to claim.
      *
      * @param choosableCards The card the player can choose.
-     * @param handler The handler for the cards.
+     * @param handler        The handler for the cards.
      */
     public void chooseClaimCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
@@ -167,7 +168,7 @@ public class GraphicalPlayer {
      * Opens a pop up allowing the player to choose which additional cards.
      *
      * @param choosableCards THe cards the player can choose.
-     * @param handler The handler.
+     * @param handler        The handler.
      */
     public void chooseAdditionalCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
@@ -211,11 +212,25 @@ public class GraphicalPlayer {
         return root;
     }
 
-    /** Empties the handlers. */
+    /**
+     * Empties the handlers.
+     */
     private void emptyHandlers() {
         this.drawCardHandler.set(null);
         this.drawTicketsHandler.set(null);
         this.drawTicketsHandler.set(null);
+    }
+
+    static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+        @Override
+        public String toString(SortedBag<Card> cards) {
+            return Info.displaySortedBagOfCards(cards);
+        }
+
+        @Override
+        public SortedBag<Card> fromString(String s) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     /**
@@ -234,7 +249,7 @@ public class GraphicalPlayer {
         /**
          * Constructor.
          *
-         * @param description The description of the popups.
+         * @param description     The description of the popups.
          * @param possibleChoices The choices possible.
          */
         public PopupChoiceBuilder(String description, List<T> possibleChoices) {
@@ -265,9 +280,9 @@ public class GraphicalPlayer {
                     .disableProperty()
                     .bind(
                             Bindings.size(
-                                            this.choicesDisplayed
-                                                    .getSelectionModel()
-                                                    .getSelectedItems())
+                                    this.choicesDisplayed
+                                            .getSelectionModel()
+                                            .getSelectedItems())
                                     .lessThan(threshold));
             return this;
         }
@@ -352,18 +367,6 @@ public class GraphicalPlayer {
             popup.setOnCloseRequest(Event::consume);
             popup.setScene(innerScene);
             return popup;
-        }
-    }
-
-    static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
-        @Override
-        public String toString(SortedBag<Card> cards) {
-            return Info.displaySortedBagOfCards(cards);
-        }
-
-        @Override
-        public SortedBag<Card> fromString(String s) {
-            throw new UnsupportedOperationException();
         }
     }
 }
