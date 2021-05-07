@@ -11,6 +11,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +29,9 @@ class InfoViewCreator {
     private static final String STYLE_CLASS_FILLED = "filled";
     private static final String ID_GAME_INFO = "game-info";
 
-    /** Not Instantiable. */
+    /**
+     * Not Instantiable.
+     */
     private InfoViewCreator() {
     }
 
@@ -76,14 +80,10 @@ class InfoViewCreator {
             playerN.getChildren().addAll(circle, playerStatsText);
             playerStats.getChildren().add(playerN);
         }
-
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
-        //limit to 4 because there are maximum 5 messages
-        for (int i = 0; i <= 4; i++) {
-            gameInfoTextFlow.getChildren().add(new Text());
-        }
         Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
+
         root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
         return root;
     }
