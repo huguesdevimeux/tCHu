@@ -48,8 +48,7 @@ public class ObservableGameState {
     private PlayerState playerState;
 
     /**
-     * Instantiable constructor. Sets by default all attributes to null, 0, or false, depending on
-     * their types.
+     * Instantiable constructor.
      *
      * @param correspondingPlayer identity of the player
      */
@@ -183,69 +182,124 @@ public class ObservableGameState {
     }
 
     // simple getters as Read Only properties
+    /**
+     * Returns the percentage of tickets remaining.
+     * @return percentage of tickets remaining
+     */
     public ReadOnlyIntegerProperty percentageTickets() {
         return percentageOfTicketsRemaining;
     }
 
+    /**
+     * Returns the percentage of cards remaining.
+     * @return percentage of cards remaining
+     */
     public ReadOnlyIntegerProperty percentageCards() {
         return percentageOfCardsRemaining;
     }
 
+    /**
+     * Returns the face up card at index slot.
+     * @param slot index of the face up card
+     * @return face up card at index slot
+     */
     public ReadOnlyObjectProperty<Card> faceUpCard(int slot) {
         return faceUpCards.get(slot);
     }
 
+    /**
+     * Returns the owner of the route. (either PLAYER_1 or 2 or null if nobody "owns" it)
+     * @param route route's owner
+     * @return the route's owner, or null if it does not have any
+     */
     public ReadOnlyObjectProperty<PlayerId> getRoutesOwner(Route route) {
         return allRoutes.get(route);
     }
 
+    /**
+     * Returns the player's ticket count.
+     * @param playerId specified player
+     * @return the specified player's ticket count
+     */
     public ReadOnlyIntegerProperty playerTicketCount(PlayerId playerId) {
         return eachPlayersTicketsCount.get(playerId);
     }
 
+    /**
+     * Returns the player's card count.
+     * @param playerId specified player
+     * @return the specified player's card count
+     */
     public ReadOnlyIntegerProperty playerCardCount(PlayerId playerId) {
         return eachPlayersCardsCount.get(playerId);
     }
 
+    /**
+     * Returns the player's car count.
+     * @param playerId specified player
+     * @return the specified player's car count
+     */
     public ReadOnlyIntegerProperty playerCarCount(PlayerId playerId) {
         return eachPlayersCarsCount.get(playerId);
     }
 
+    /**
+     * Returns the player's claim points.
+     * @param playerId specified player
+     * @return the specified player's claim points
+     */
     public ReadOnlyIntegerProperty playerClaimPoints(PlayerId playerId) {
         return eachPlayersClaimPoints.get(playerId);
     }
 
+    /**
+     * Returns the current player's list of tickets.
+     * @return the current player's list of tickets
+     */
     public ObservableList<Ticket> playersTicketsList() {
         return FXCollections.unmodifiableObservableList(playersTickets);
     }
 
+    /**
+     * Returns the current player's amount of cards of type {@code card}.
+     * @param card the card to evaluate it's total amount in the player's cards
+     * @return the amount of cards of type {@code card}
+     */
     public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
         return currentPlayersNumberOfEachCards.get(Card.ALL.indexOf(card));
     }
 
+    /**
+     * Returns whether the player can claim the route.
+     * @param route to evaluate whether the player can claim it
+     * @return true if the player can claim the route, else false
+     */
     public ReadOnlyBooleanProperty playerCanClaimRoute(Route route) {
         return playerCanClaimRoute.get(ChMap.routes().indexOf(route));
     }
 
-    public ReadOnlyBooleanProperty canDrawTickets(PublicGameState publicGameState) {
-        return new SimpleBooleanProperty(publicGameState.canDrawTickets());
+    /**
+     * Returns a boolean from a method in {@code PublicGameState}.
+     * @return true if the player can draw tickets, else false
+     */
+    public ReadOnlyBooleanProperty canDrawTickets() {
+        return new SimpleBooleanProperty(newGameState.canDrawTickets());
     }
 
-    public ReadOnlyBooleanProperty canDrawCards(PublicGameState publicGameState) {
-        return new SimpleBooleanProperty(publicGameState.canDrawCards());
+    /**
+     * Returns a boolean from a method in {@code PublicGameState}.
+     * @return true whether the player can draw cards, else false
+     */
+    public ReadOnlyBooleanProperty canDrawCards() {
+        return new SimpleBooleanProperty(newGameState.canDrawCards());
     }
 
-    public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(
-            PlayerState playerState, Route route) {
+    /**
+     * Returns the player's possible claim cards for the given route.
+     * @param route to extract the possible claim cards from
+     * @return the possible claim cards to claim the route
+     */
+    public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(Route route) {
         return new SimpleObjectProperty<>(playerState.possibleClaimCards(route));
-    }
-
-    // Simple getters for the gameState and the PlayerState.
-    public ReadOnlyObjectProperty<PublicGameState> getGameState() {
-        return new SimpleObjectProperty<>(newGameState);
-    }
-
-    public ReadOnlyObjectProperty<PlayerState> getPlayerState() {
-        return new SimpleObjectProperty<>(playerState);
     }
 }
