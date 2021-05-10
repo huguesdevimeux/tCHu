@@ -40,7 +40,7 @@ class DecksViewCreator {
 
         // Tickets pile.
         // Button group
-		Button ticketsPile = itemPileWithGauge("Billets", observableGameState.percentageTickets());
+		Button ticketsPile = itemPileWithGauge(StringsFr.TICKETS, observableGameState.percentageTickets());
 		ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
 		ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
 		VBox cardsView = new VBox(ticketsPile);
@@ -66,7 +66,7 @@ class DecksViewCreator {
                                 displayedCard.getStyleClass().add(newColor);
                             });
         }
-		Button cardsPile = itemPileWithGauge("Cartes", observableGameState.percentageTickets());
+		Button cardsPile = itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageTickets());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
         cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
 		cardsView.getChildren().add(cardsPile);

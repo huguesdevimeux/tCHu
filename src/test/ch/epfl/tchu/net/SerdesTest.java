@@ -253,7 +253,6 @@ class SerdesTest {
                                 intSerde.serialize(p.ticketCount()),
                                 intSerde.serialize(p.cardCount()),
                                 routeListSerde.serialize(p.routes())));
-        // This test fails. TODO
         testSerdeWithValues(publicPlayerStateSerde, p, target, publicPlayerStateEqualityAsserter);
 
         for (int i = 0; i < TESTS_ITERATIONS; i++) {

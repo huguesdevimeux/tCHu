@@ -114,8 +114,8 @@ public class GraphicalPlayer {
      * Opens a pop-up allowing the player to choose the tickets. Call chooseTicketsHandler upon
      * confirming the choice.
      *
-     * @param choosableTickets     The ticket the player can chose. Must be either 3 (start game) or 5
-     *                             (during the game)
+     * @param choosableTickets The ticket the player can chose. Must be either 3 (start game) or 5
+     *     (during the game)
      * @param chooseTicketsHandler The handler called upon choosing tickets.
      * @throws IllegalArgumentException If there is an invalid number of tickets.
      */
@@ -125,7 +125,9 @@ public class GraphicalPlayer {
         assert isFxApplicationThread();
         Preconditions.checkArgument(choosableTickets.size() == 3 || choosableTickets.size() == 5);
         // TODO combien de billets il peut piocher ? (CHoose tickets se format)
+
         new PopupChoiceBuilder<Ticket>(StringsFr.CHOOSE_TICKETS, choosableTickets.toList())
+				.setTitle(StringsFr.TICKETS_CHOICE)
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setMultipleItemsChosenHandler(
                         tickets -> chooseTicketsHandler.onChooseTickets(SortedBag.of(tickets)))
@@ -151,12 +153,13 @@ public class GraphicalPlayer {
      * Opens a pop-up allowing the user to choose which cards to claim.
      *
      * @param choosableCards The card the player can choose.
-     * @param handler        The handler for the cards.
+     * @param handler The handler for the cards.
      */
     public void chooseClaimCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
         assert isFxApplicationThread();
         new PopupChoiceBuilder<SortedBag<Card>>(StringsFr.CHOOSE_CARDS, choosableCards)
+                .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
                 .setMinimumChoices(1)
@@ -169,12 +172,13 @@ public class GraphicalPlayer {
      * Opens a pop up allowing the player to choose which additional cards.
      *
      * @param choosableCards THe cards the player can choose.
-     * @param handler        The handler.
+     * @param handler The handler.
      */
     public void chooseAdditionalCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
         assert isFxApplicationThread();
         new PopupChoiceBuilder<SortedBag<Card>>(StringsFr.CHOOSE_ADDITIONAL_CARDS, choosableCards)
+                .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
                 .setMinimumChoices(1)
@@ -213,9 +217,7 @@ public class GraphicalPlayer {
         return root;
     }
 
-    /**
-     * Empties the handlers.
-     */
+    /** Empties the handlers. */
     private void emptyHandlers() {
         this.drawCardHandler.set(null);
         this.drawTicketsHandler.set(null);
@@ -241,16 +243,17 @@ public class GraphicalPlayer {
      */
     private class PopupChoiceBuilder<T> {
 
-		private final TextFlow description;
+        private final TextFlow description;
         private final ListView<T> choicesDisplayed = new ListView<>();
         private final Button confirm = new Button(StringsFr.CHOOSE);
         private Consumer<T> singleItemActionHandlerWrapper;
         private Consumer<List<T>> multipleItemsActionHandlerWrapper;
+        private String title;
 
         /**
          * Constructor.
          *
-         * @param description     The description of the popups.
+         * @param description The description of the popups.
          * @param possibleChoices The choices possible.
          */
         public PopupChoiceBuilder(String description, List<T> possibleChoices) {
@@ -270,6 +273,16 @@ public class GraphicalPlayer {
         }
 
         /**
+         * Sets the title of the popup.
+         *
+         * @param title The title.
+         * @return The same object, for chaining.
+         */
+        public PopupChoiceBuilder<T> setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+        /**
          * Sets the number (included) required of choice.
          *
          * @param threshold The minimum number of choice.
@@ -280,9 +293,9 @@ public class GraphicalPlayer {
                     .disableProperty()
                     .bind(
                             Bindings.size(
-                                    this.choicesDisplayed
-                                            .getSelectionModel()
-                                            .getSelectedItems())
+                                            this.choicesDisplayed
+                                                    .getSelectionModel()
+                                                    .getSelectedItems())
                                     .lessThan(threshold));
             return this;
         }
@@ -329,11 +342,10 @@ public class GraphicalPlayer {
         public Stage build() {
             Scene innerScene =
                     new Scene(new VBox(this.description, this.choicesDisplayed, this.confirm));
-            // TODO move this to constant
             innerScene.getStylesheets().add(STYLE_CLASS_CHOOSER);
 
             Stage popup = new Stage(StageStyle.UTILITY);
-
+            popup.setTitle(this.title);
             // This monstrosity adds to the current sets action handler an action that hides the
             // popup after pressing
             // the button.
