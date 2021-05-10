@@ -99,15 +99,15 @@ class MapViewCreator {
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
-                            List<SortedBag<Card>> possibleClaimCards =
-                                    obsGameState.getPlayerState().get().possibleClaimCards(route);
-                            if (possibleClaimCards.size() == 1)
-                                routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
-                            else {
-                                ChooseCardsHandler chooseCardsH =
-                                        chosenCards -> routeHandler.get().onClaimRoute(route, chosenCards);
-                                cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
-                            }
+                        List<SortedBag<Card>> possibleClaimCards =
+                                obsGameState.possibleClaimCards(route).get();
+                        if (possibleClaimCards.size() == 1)
+                            routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
+                        else {
+                            ChooseCardsHandler chooseCardsH =
+                                    chosenCards -> routeHandler.get().onClaimRoute(route, chosenCards);
+                            cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
+                        }
                     });
         }
         return gameMapPane;
