@@ -56,7 +56,7 @@ public class GraphicalPlayer {
         assert isFxApplicationThread();
         this.observableGameState = new ObservableGameState(correspondingPlayer);
         this.correspondingPlayer = correspondingPlayer;
-        this.playerNames = playerNames;
+        this.playerNames = Map.copyOf(playerNames);
         this.drawTicketsHandler = new SimpleObjectProperty<>(null);
         this.drawCardHandler = new SimpleObjectProperty<>(null);
         this.infoProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
