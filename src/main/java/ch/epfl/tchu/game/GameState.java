@@ -228,8 +228,6 @@ public final class GameState extends PublicGameState {
      *     returns false.
      */
     public GameState withDrawnFaceUpCard(int slot) {
-        Preconditions.checkArgument(this.canDrawCards());
-
         EnumMap<PlayerId, PlayerState> tempPlayerState = new EnumMap<>(this.playerStates);
         // Add a card to the playerState corresponding to the current player.
         tempPlayerState.computeIfPresent(
@@ -248,8 +246,6 @@ public final class GameState extends PublicGameState {
      *     returns false.
      */
     public GameState withBlindlyDrawnCard() {
-        Preconditions.checkArgument(this.canDrawCards());
-
         EnumMap<PlayerId, PlayerState> tempPlayerState = new EnumMap<>(this.playerStates);
         // Add a card to the playerState corresponding to the current player.
         tempPlayerState.computeIfPresent(
