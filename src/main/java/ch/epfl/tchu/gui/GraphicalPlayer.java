@@ -221,7 +221,7 @@ public class GraphicalPlayer {
         this.drawTicketsHandler.set(null);
     }
 
-    static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+    private static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
         @Override
         public String toString(SortedBag<Card> cards) {
             return Info.displaySortedBagOfCards(cards);
