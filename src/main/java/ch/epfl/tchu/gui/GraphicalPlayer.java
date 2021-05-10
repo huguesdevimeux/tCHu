@@ -124,11 +124,12 @@ public class GraphicalPlayer {
             ActionHandlers.ChooseTicketsHandler chooseTicketsHandler) {
         assert isFxApplicationThread();
         Preconditions.checkArgument(choosableTickets.size() == 3 || choosableTickets.size() == 5);
-        // TODO combien de billets il peut piocher ? (CHoose tickets se format)
-
-        new PopupChoiceBuilder<Ticket>(StringsFr.CHOOSE_TICKETS, choosableTickets.toList())
+        int minTickets = choosableTickets.size() - Constants.DISCARDABLE_TICKETS_COUNT;
+		String title = String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));
+        new PopupChoiceBuilder<Ticket>(title, choosableTickets.toList())
 				.setTitle(StringsFr.TICKETS_CHOICE)
                 .setSelectionMode(SelectionMode.MULTIPLE)
+				.setMinimumChoices(minTickets)
                 .setMultipleItemsChosenHandler(
                         tickets -> chooseTicketsHandler.onChooseTickets(SortedBag.of(tickets)))
                 .build()
