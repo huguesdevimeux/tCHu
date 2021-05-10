@@ -59,10 +59,7 @@ class InfoViewCreator {
 
         for (PlayerId playerId : PlayerId.ALL) {
             TextFlow playerN = new TextFlow();
-            playerN.getStyleClass().add(
-                    String.format("PLAYER_%s", PlayerId.ALL.indexOf(playerId) + 1));
-            //We add +1 because PLAYER_1 for example is at index 0 in PlayerId.ALL but
-            //we need the 1.
+            playerN.getStyleClass().add(playerId.name());
 
             Circle circle = new Circle(5);
             circle.getStyleClass().add(STYLE_CLASS_FILLED);
