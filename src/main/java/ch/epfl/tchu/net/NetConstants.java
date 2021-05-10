@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public final class NetConst {
+public final class NetConstants {
     /* Encoding used in CharSet message */
     public static final Charset ENCODING = US_ASCII;
     /* Endile char used in networkd messages.*/

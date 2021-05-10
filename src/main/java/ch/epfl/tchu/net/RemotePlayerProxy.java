@@ -33,10 +33,10 @@ public class RemotePlayerProxy implements Player {
         try {
             this.outRedirect =
                     new BufferedWriter(
-                            new OutputStreamWriter(socket.getOutputStream(), NetConst.ENCODING));
+                            new OutputStreamWriter(socket.getOutputStream(), NetConstants.ENCODING));
             this.inRedirect =
                     new BufferedReader(
-                            new InputStreamReader(socket.getInputStream(), NetConst.ENCODING));
+                            new InputStreamReader(socket.getInputStream(), NetConstants.ENCODING));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -150,10 +150,10 @@ public class RemotePlayerProxy implements Player {
             MessageId messageId, List<String> serializedArgs) {
         Objects.requireNonNull(serializedArgs);
         try {
-            this.outRedirect.write(messageId.name() + NetConst.SPACE);
+            this.outRedirect.write(messageId.name() + NetConstants.SPACE);
             if (serializedArgs.size() > 0)
-                this.outRedirect.write(String.join(NetConst.SPACE, serializedArgs));
-            this.outRedirect.write(NetConst.SPACE + NetConst.ENDLINE);
+                this.outRedirect.write(String.join(NetConstants.SPACE, serializedArgs));
+            this.outRedirect.write(NetConstants.SPACE + NetConstants.ENDLINE);
             this.outRedirect.flush();
             // The Optional will be empty if readLine returns null.
             return Optional.ofNullable(this.inRedirect.readLine());

@@ -11,7 +11,11 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import static ch.epfl.tchu.gui.GuiConstants.*;
 
 /**
  * Representation of the information section in the game.
@@ -21,13 +25,10 @@ import java.util.Map;
  * @author Hugues Devimeux (327282)
  */
 class InfoViewCreator {
-    private static final String STYLE_SHEET_INFO = "info.css";
-    private static final String STYLE_SHEET_COLOR = "colors.css";
-    private static final String ID_PLAYER_STATS = "player-stats";
-    private static final String STYLE_CLASS_FILLED = "filled";
-    private static final String ID_GAME_INFO = "game-info";
 
-    /** Not Instantiable. */
+    /**
+     * Not Instantiable.
+     */
     private InfoViewCreator() {
     }
 
@@ -48,17 +49,14 @@ class InfoViewCreator {
                                       ObservableGameState obsGameState,
                                       ObservableList<Text> infos) {
         VBox root = new VBox();
-        root.getStylesheets().addAll(STYLE_SHEET_INFO, STYLE_SHEET_COLOR);
+        root.getStylesheets().addAll(STYLE_SHEET_INFO, STYLE_SHEET_COLORS);
 
         VBox playerStats = new VBox();
         playerStats.setId(ID_PLAYER_STATS);
 
         for (PlayerId playerId : PlayerId.ALL) {
             TextFlow playerN = new TextFlow();
-            playerN.getStyleClass().add(
-                    String.format("PLAYER_%s", PlayerId.ALL.indexOf(playerId) + 1));
-            //We add +1 because PLAYER_1 for example is at index 0 in PlayerId.ALL but
-            //we need the 1.
+            playerN.getStyleClass().add(playerId.name());
 
             Circle circle = new Circle(5);
             circle.getStyleClass().add(STYLE_CLASS_FILLED);
@@ -76,14 +74,10 @@ class InfoViewCreator {
             playerN.getChildren().addAll(circle, playerStatsText);
             playerStats.getChildren().add(playerN);
         }
-
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
-        //limit to 4 because there are maximum 5 messages
-        for (int i = 0; i <= 4; i++) {
-            gameInfoTextFlow.getChildren().add(new Text());
-        }
         Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
+
         root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
         return root;
     }

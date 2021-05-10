@@ -32,12 +32,12 @@ public class RemotePlayerClient {
     /** Run the client. Handles the game process through the network. */
     public void run() {
         try (Socket s = new Socket(host, port);
-                BufferedReader inReader =
+             BufferedReader inReader =
                         new BufferedReader(
-                                new InputStreamReader(s.getInputStream(), NetConst.ENCODING));
-                BufferedWriter outWriter =
+                                new InputStreamReader(s.getInputStream(), NetConstants.ENCODING));
+             BufferedWriter outWriter =
                         new BufferedWriter(
-                                new OutputStreamWriter(s.getOutputStream(), NetConst.ENCODING))) {
+                                new OutputStreamWriter(s.getOutputStream(), NetConstants.ENCODING))) {
 
             String respFromNetwork = inReader.readLine();
 
@@ -45,7 +45,7 @@ public class RemotePlayerClient {
                 List<String> splitResp =
                         new ArrayList<>(
                                 Arrays.asList(
-                                        respFromNetwork.split(Pattern.quote(NetConst.SPACE), -1)));
+                                        respFromNetwork.split(Pattern.quote(NetConstants.SPACE), -1)));
                 MessageId messageId = MessageId.valueOf(splitResp.get(0));
                 splitResp.remove(0);
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
@@ -57,7 +57,7 @@ public class RemotePlayerClient {
                                 throw new UncheckedIOException(e);
                             }
                         });
-                outWriter.write(NetConst.ENDLINE);
+                outWriter.write(NetConstants.ENDLINE);
                 outWriter.flush();
                 // Response for the next iteration.
                 respFromNetwork = inReader.readLine();

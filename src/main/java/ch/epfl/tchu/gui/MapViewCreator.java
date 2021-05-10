@@ -15,6 +15,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.List;
+
+import static ch.epfl.tchu.gui.GuiConstants.*;
+
 /**
  * Representation of the map and the routes in the game.
  *
@@ -22,14 +25,6 @@ import java.util.List;
  * @author Hugues Devimeux (327282)
  */
 class MapViewCreator {
-    private static final String LOCOMOTIVE_COLOR = "NEUTRAL";
-    private static final String STYLE_CLASS_ROUTE = "route";
-    private static final String STYLE_CLASS_TRACK = "track";
-    private static final String STYLE_CLASS_FILLED = "filled";
-    private static final String STYLE_CLASS_CAR = "car";
-    private static final String STYLE_SHEET_MAP = "map.css";
-    private static final String STYLE_SHEET_COLORS = "colors.css";
-
     /**
      * Not instantiable.
      */
