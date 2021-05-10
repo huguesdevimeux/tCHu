@@ -45,6 +45,7 @@ public class GuiConstants {
 
     //Neutral color matching Locomotive color
     public static final String LOCOMOTIVE_COLOR = "NEUTRAL";
+    public static final int VISIBLE_INFOS = 5;
 
 
 }

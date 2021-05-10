@@ -10,8 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARDS_COUNT;
-import static ch.epfl.tchu.game.Constants.FACE_UP_CARD_SLOTS;
+import static ch.epfl.tchu.game.Constants.*;
 
 /**
  * Representation of the observable state/part of the game.
@@ -74,8 +73,8 @@ public class ObservableGameState {
                 (int) ((1 - (double) numOfTicketsUsed / ChMap.tickets().size()) * 100));
 
         double cardQuotient =
-                (double) newGameState.cardState().deckSize() / Constants.ALL_CARDS.size();
-        percentageOfCardsRemaining.set((int) ((1 - cardQuotient) * 100));
+                (double) newGameState.cardState().deckSize() / TOTAL_CARDS_COUNT;
+        percentageOfCardsRemaining.set((int) (cardQuotient) * 100);
 
         // setting the face up cards
         for (int slot : FACE_UP_CARD_SLOTS) {
