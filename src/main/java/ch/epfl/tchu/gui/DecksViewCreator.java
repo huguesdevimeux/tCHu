@@ -125,8 +125,8 @@ class DecksViewCreator {
 
     private static Button itemPileWithGauge(
 		String itemName, ReadOnlyIntegerProperty percentageProperty) {
-        Button ticketPile = new Button(itemName);
-        ticketPile.getStyleClass().add(STYLE_CLASS_GAUGED);
+        Button itemPile = new Button(itemName);
+        itemPile.getStyleClass().add(STYLE_CLASS_GAUGED);
 
         Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
         backgroundButtonGraphic.getStyleClass().add(STYLE_CLASS_BACKGROUND);
@@ -136,7 +136,7 @@ class DecksViewCreator {
                 .widthProperty()
                 .bind(percentageProperty.divide(2));
 
-        ticketPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
-        return ticketPile;
+        itemPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
+        return itemPile;
     }
 }
