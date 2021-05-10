@@ -289,7 +289,7 @@ public class GraphicalPlayer {
          * @return The same object, for chaining.
          */
         public PopupChoiceBuilder<T> setTitle(String title) {
-            title = title;
+            this.title = title;
             return this;
         }
         /**
@@ -329,7 +329,7 @@ public class GraphicalPlayer {
          * @return The object (for chaining).
          */
         public PopupChoiceBuilder<T> setSingleItemChosenHandler(Consumer<T> actionHandlerWrapper) {
-            singleItemActionHandlerWrapper = actionHandlerWrapper;
+            this.singleItemActionHandlerWrapper = actionHandlerWrapper;
             return this;
         }
 
