@@ -88,7 +88,7 @@ public class GraphicalPlayer {
             //the element of the 5th position
             for (int i = 0; i < VISIBLE_INFOS - 1; i++)
                 infoProperty.get(i).setText(infoProperty.get(i + 1).getText());
-            infoProperty.get(4).setText(message);
+            infoProperty.get(VISIBLE_INFOS - 1).setText(message);
         }
     }
 
