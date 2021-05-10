@@ -66,7 +66,7 @@ class DecksViewCreator {
                                 displayedCard.getStyleClass().add(newColor);
                             });
         }
-		Button cardsPile = itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageTickets());
+		Button cardsPile = itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
         cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
 		cardsView.getChildren().add(cardsPile);
