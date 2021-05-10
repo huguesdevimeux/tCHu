@@ -64,7 +64,7 @@ public class GraphicalPlayer {
         this.infoProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.takeRouteHandler = new SimpleObjectProperty<>();
 
-        this.generateStage().show();
+        generateStage().show();
     }
 
     /**
@@ -75,7 +75,7 @@ public class GraphicalPlayer {
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
         assert isFxApplicationThread();
-        this.observableGameState.setState(newGameState, playerState);
+        observableGameState.setState(newGameState, playerState);
     }
 
     public void receiveInfo(String message) {
@@ -98,21 +98,21 @@ public class GraphicalPlayer {
             ActionHandlers.ClaimRouteHandler claimRouteH) {
         assert isFxApplicationThread();
 
-        if (this.observableGameState.canDrawCards().getValue()) {
-            this.drawCardHandler.setValue(
+        if (observableGameState.canDrawCards().getValue()) {
+            drawCardHandler.setValue(
                     indexOfChosenCard -> {
                         drawCardH.onDrawCard(indexOfChosenCard);
                         emptyHandlers();
                     });
         }
-        if (this.observableGameState.canDrawTickets().getValue()) {
-            this.drawTicketsHandler.setValue(
+        if (observableGameState.canDrawTickets().getValue()) {
+            drawTicketsHandler.setValue(
                     () -> {
                         drawTicketsH.onDrawTickets();
                         emptyHandlers();
                     });
         }
-        this.takeRouteHandler.setValue(
+        takeRouteHandler.setValue(
                 (claimedRoute, initialClaimCards) -> {
                     claimRouteH.onClaimRoute(claimedRoute, initialClaimCards);
                     emptyHandlers();
@@ -205,22 +205,22 @@ public class GraphicalPlayer {
     private Stage generateStage() {
         root = new Stage();
         root.setTitle(
-                String.format("tCHu \u2014 %s", this.playerNames.get(this.correspondingPlayer)));
+                String.format("tCHu \u2014 %s", playerNames.get(correspondingPlayer)));
 
         BorderPane mainPane =
                 new BorderPane(
                         MapViewCreator.createMapView( // Center.
-                                this.observableGameState, this.takeRouteHandler, null),
+                                observableGameState, takeRouteHandler, null),
                         null, // Top.
                         DecksViewCreator.createCardsView(
-                                this.observableGameState,
-                                this.drawTicketsHandler,
-                                this.drawCardHandler), // Right.
-                        DecksViewCreator.createHandView(this.observableGameState), // Bottom.
+                                observableGameState,
+                                drawTicketsHandler,
+                                drawCardHandler), // Right.
+                        DecksViewCreator.createHandView(observableGameState), // Bottom.
                         InfoViewCreator.createInfoView(
-                                this.correspondingPlayer,
-                                this.playerNames,
-                                this.observableGameState,
+                                correspondingPlayer,
+                                playerNames,
+                                observableGameState,
                                 infoProperty));
         Scene innerScene = new Scene(mainPane);
         root.setScene(innerScene);
@@ -229,9 +229,9 @@ public class GraphicalPlayer {
 
     /** Empties the handlers. */
     private void emptyHandlers() {
-        this.drawCardHandler.set(null);
-        this.drawTicketsHandler.set(null);
-        this.drawTicketsHandler.set(null);
+        drawCardHandler.set(null);
+        drawTicketsHandler.set(null);
+        drawTicketsHandler.set(null);
     }
 
     private static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
@@ -278,7 +278,7 @@ public class GraphicalPlayer {
          * @return The same object (for chaining).
          */
         public PopupChoiceBuilder<T> setSelectionMode(SelectionMode mode) {
-            this.choicesDisplayed.getSelectionModel().setSelectionMode(mode);
+            choicesDisplayed.getSelectionModel().setSelectionMode(mode);
             return this;
         }
 
@@ -289,7 +289,7 @@ public class GraphicalPlayer {
          * @return The same object, for chaining.
          */
         public PopupChoiceBuilder<T> setTitle(String title) {
-            this.title = title;
+            title = title;
             return this;
         }
         /**
@@ -299,11 +299,11 @@ public class GraphicalPlayer {
          * @return The object (for chaining).
          */
         public PopupChoiceBuilder<T> setMinimumChoices(int threshold) {
-            this.confirm
+            confirm
                     .disableProperty()
                     .bind(
                             Bindings.size(
-                                    this.choicesDisplayed
+                                    choicesDisplayed
                                             .getSelectionModel()
                                             .getSelectedItems())
                                     .lessThan(threshold));
@@ -318,7 +318,7 @@ public class GraphicalPlayer {
          */
         public PopupChoiceBuilder<T> setMultipleItemsChosenHandler(
                 Consumer<List<T>> actionHandlerWrapper) {
-            this.multipleItemsActionHandlerWrapper = actionHandlerWrapper;
+            multipleItemsActionHandlerWrapper = actionHandlerWrapper;
             return this;
         }
 
@@ -329,7 +329,7 @@ public class GraphicalPlayer {
          * @return The object (for chaining).
          */
         public PopupChoiceBuilder<T> setSingleItemChosenHandler(Consumer<T> actionHandlerWrapper) {
-            this.singleItemActionHandlerWrapper = actionHandlerWrapper;
+            singleItemActionHandlerWrapper = actionHandlerWrapper;
             return this;
         }
 
@@ -340,7 +340,7 @@ public class GraphicalPlayer {
          * @return The object (for chaining).
          */
         public PopupChoiceBuilder<T> setCellStringBuilder(StringConverter<T> converter) {
-            this.choicesDisplayed.setCellFactory(tListView -> new TextFieldListCell<>(converter));
+            choicesDisplayed.setCellFactory(tListView -> new TextFieldListCell<>(converter));
             return this;
         }
 
@@ -351,32 +351,32 @@ public class GraphicalPlayer {
          */
         public Stage build() {
             Scene innerScene =
-                    new Scene(new VBox(this.description, this.choicesDisplayed, this.confirm));
+                    new Scene(new VBox(description, choicesDisplayed, confirm));
             innerScene.getStylesheets().add(STYLE_CLASS_CHOOSER);
 
             Stage popup = new Stage(StageStyle.UTILITY);
-            popup.setTitle(this.title);
+            popup.setTitle(title);
             // This monstrosity adds to the current sets action handler an action that hides the
             // popup after pressing
             // the button.
             // The switch case differs the case when only one item needs to be selected vs multiple.
-            this.confirm.setOnAction(
+            confirm.setOnAction(
                     actionEvent -> {
-                        switch (this.choicesDisplayed.getSelectionModel().getSelectionMode()) {
+                        switch (choicesDisplayed.getSelectionModel().getSelectionMode()) {
                             case MULTIPLE:
-                                this.multipleItemsActionHandlerWrapper
+                                multipleItemsActionHandlerWrapper
                                         .andThen(ts -> popup.hide())
                                         .accept(
                                                 new ArrayList<>(
-                                                        this.choicesDisplayed
+                                                        choicesDisplayed
                                                                 .getSelectionModel()
                                                                 .getSelectedItems()));
                                 break;
                             case SINGLE:
-                                this.singleItemActionHandlerWrapper
+                                singleItemActionHandlerWrapper
                                         .andThen(ts -> popup.hide())
                                         .accept(
-                                                this.choicesDisplayed
+                                                choicesDisplayed
                                                         .getSelectionModel()
                                                         .getSelectedItem());
                                 break;
