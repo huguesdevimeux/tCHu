@@ -72,9 +72,8 @@ public class ObservableGameState {
         percentageOfTicketsRemaining.set(
                 (int) ((1 - (double) numOfTicketsUsed / ChMap.tickets().size()) * 100));
 
-        double cardQuotient =
-                (double) newGameState.cardState().deckSize() / TOTAL_CARDS_COUNT;
-        percentageOfCardsRemaining.set((int) (cardQuotient) * 100);
+        percentageOfCardsRemaining.set(
+                (int) ((newGameState.cardState().deckSize() / (double) TOTAL_CARDS_COUNT) * 100));
 
         // setting the face up cards
         for (int slot : FACE_UP_CARD_SLOTS) {
@@ -133,6 +132,7 @@ public class ObservableGameState {
             }
         }
     }
+
     /**
      * Boolean method to evaluate if the {@code route} has a neighbour.
      *
@@ -181,8 +181,10 @@ public class ObservableGameState {
     }
 
     // simple getters as Read Only properties
+
     /**
      * Returns the percentage of tickets remaining.
+     *
      * @return percentage of tickets remaining
      */
     public ReadOnlyIntegerProperty percentageTickets() {
@@ -191,6 +193,7 @@ public class ObservableGameState {
 
     /**
      * Returns the percentage of cards remaining.
+     *
      * @return percentage of cards remaining
      */
     public ReadOnlyIntegerProperty percentageCards() {
@@ -199,6 +202,7 @@ public class ObservableGameState {
 
     /**
      * Returns the face up card at index slot.
+     *
      * @param slot index of the face up card
      * @return face up card at index slot
      */
@@ -208,6 +212,7 @@ public class ObservableGameState {
 
     /**
      * Returns the owner of the route. (either PLAYER_1 or 2 or null if nobody "owns" it)
+     *
      * @param route route's owner
      * @return the route's owner, or null if it does not have any
      */
@@ -217,6 +222,7 @@ public class ObservableGameState {
 
     /**
      * Returns the player's ticket count.
+     *
      * @param playerId specified player
      * @return the specified player's ticket count
      */
@@ -226,6 +232,7 @@ public class ObservableGameState {
 
     /**
      * Returns the player's card count.
+     *
      * @param playerId specified player
      * @return the specified player's card count
      */
@@ -235,6 +242,7 @@ public class ObservableGameState {
 
     /**
      * Returns the player's car count.
+     *
      * @param playerId specified player
      * @return the specified player's car count
      */
@@ -244,6 +252,7 @@ public class ObservableGameState {
 
     /**
      * Returns the player's claim points.
+     *
      * @param playerId specified player
      * @return the specified player's claim points
      */
@@ -253,6 +262,7 @@ public class ObservableGameState {
 
     /**
      * Returns the current player's list of tickets.
+     *
      * @return the current player's list of tickets
      */
     public ObservableList<Ticket> playersTicketsList() {
@@ -261,6 +271,7 @@ public class ObservableGameState {
 
     /**
      * Returns the current player's amount of cards of type {@code card}.
+     *
      * @param card the card to evaluate it's total amount in the player's cards
      * @return the amount of cards of type {@code card}
      */
@@ -270,6 +281,7 @@ public class ObservableGameState {
 
     /**
      * Returns whether the player can claim the route.
+     *
      * @param route to evaluate whether the player can claim it
      * @return true if the player can claim the route, else false
      */
@@ -280,6 +292,7 @@ public class ObservableGameState {
 
     /**
      * Returns a boolean from a method in {@code PublicGameState}.
+     *
      * @return true if the player can draw tickets, else false
      */
     public ReadOnlyBooleanProperty canDrawTickets() {
@@ -288,6 +301,7 @@ public class ObservableGameState {
 
     /**
      * Returns a boolean from a method in {@code PublicGameState}.
+     *
      * @return true whether the player can draw cards, else false
      */
     public ReadOnlyBooleanProperty canDrawCards() {
@@ -296,6 +310,7 @@ public class ObservableGameState {
 
     /**
      * Returns the player's possible claim cards for the given route.
+     *
      * @param route to extract the possible claim cards from
      * @return the possible claim cards to claim the route
      */
