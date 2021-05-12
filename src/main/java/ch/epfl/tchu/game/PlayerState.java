@@ -21,8 +21,8 @@ public final class PlayerState extends PublicPlayerState {
      * Constructs the state of a player having tickets, cards and routes.
      *
      * @param tickets The tickets of the player.
-     * @param cards The cards of the player.
-     * @param routes The routes of the player.
+     * @param cards   The cards of the player.
+     * @param routes  The routes of the player.
      */
     public PlayerState(SortedBag<Ticket> tickets, SortedBag<Card> cards, List<Route> routes) {
         super(tickets.size(), cards.size(), routes);
@@ -79,17 +79,7 @@ public final class PlayerState extends PublicPlayerState {
      * @return The state.
      */
     public PlayerState withAddedCard(Card card) {
-        return withAddedCards(SortedBag.of(card));
-    }
-
-    /**
-     * Returns an identical state to the receiver, except that the player also has the given cards.
-     *
-     * @param additionalCards The cards to add.
-     * @return the new state.
-     */
-    public PlayerState withAddedCards(SortedBag<Card> additionalCards) {
-        return new PlayerState(this.tickets(), this.cards.union(additionalCards), this.routes());
+        return new PlayerState(this.tickets(), this.cards.union(SortedBag.of(card)), this.routes());
     }
 
     /**
@@ -126,17 +116,16 @@ public final class PlayerState extends PublicPlayerState {
      * force the player to lay down additionalCardsCount cards;
      *
      * @param additionalCardsCount The additional cards the player needs to play.
-     * @param initialCards The initialCards the player has played for the tunnel.
-     * @param drawnCards The three cards the have been drawn for the tunnel.
+     * @param initialCards         The initialCards the player has played for the tunnel.
      * @return All the possibilities, sorted by the number of locomotives.
      * @throws IllegalArgumentException if the number of additional cards is not between 1 and 3
-     *     (inclusive)
+     *                                  (inclusive)
      * @throws IllegalArgumentException if the set of initial cards is empty or contains more than 2
-     *     different card types
+     *                                  different card types
      * @throws IllegalArgumentException if the set of drawn cards does not contain exactly 3 cards.
      */
     public List<SortedBag<Card>> possibleAdditionalCards(
-            int additionalCardsCount, SortedBag<Card> initialCards, SortedBag<Card> drawnCards) {
+            int additionalCardsCount, SortedBag<Card> initialCards) {
         // WARNING drawnCards is useless for the logic. See Piazza @613
         Preconditions.checkArgument(1 <= additionalCardsCount && additionalCardsCount <= 3);
         // To check that the number of **different** cards is less than two,
@@ -144,8 +133,6 @@ public final class PlayerState extends PublicPlayerState {
         // of the SortedBag.
         Preconditions.checkArgument(
                 (!initialCards.isEmpty()) && (initialCards.toSet().size() <= 2));
-        Preconditions.checkArgument(drawnCards.size() == 3);
-
         // Removes the initial cards from the cards to get the additional cards the player can add.
         SortedBag<Card> cardsToPlay = this.cards.difference(initialCards);
         // The set gets every different type of cards that has initialCards.
@@ -174,7 +161,7 @@ public final class PlayerState extends PublicPlayerState {
      * the given route with the given cards. It means that the player sees the route ADDED and the
      * claimCard SUBTRACTED from them.
      *
-     * @param route The route the player is taking.
+     * @param route      The route the player is taking.
      * @param claimCards The cards used to seize the route.
      * @return The new PlayerState.
      */
