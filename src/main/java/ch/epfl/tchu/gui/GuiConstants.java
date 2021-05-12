@@ -32,6 +32,8 @@ public class GuiConstants {
     public static final String STYLE_CLASS_INSIDE = "inside";
     public static final String STYLE_CLASS_OUTSIDE = "outside";
     public static final String STYLE_CLASS_TRAIN_IMAGE = "train-image";
+	public static final String STYLE_CLASS_CHOOSER = "chooser.css";
+
     public static final List<String> STYLE_CLASSES_COLOR =
             Color.ALL.stream().map(Objects::toString).collect(Collectors.toList());
     //ID constants
@@ -43,6 +45,7 @@ public class GuiConstants {
 
     //Neutral color matching Locomotive color
     public static final String LOCOMOTIVE_COLOR = "NEUTRAL";
+    public static final int VISIBLE_INFOS = 5;
 
 
 }
