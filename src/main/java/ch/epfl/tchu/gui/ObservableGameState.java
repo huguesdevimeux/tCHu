@@ -6,10 +6,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,7 +19,7 @@ import static ch.epfl.tchu.game.Constants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-public class ObservableGameState {
+public final class ObservableGameState {
     // 1st group of properties
     private final IntegerProperty percentageOfTicketsRemaining = new SimpleIntegerProperty();
     private final IntegerProperty percentageOfCardsRemaining = new SimpleIntegerProperty();
@@ -66,8 +63,8 @@ public class ObservableGameState {
      * @param playerState  the player state
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
-        this.newGameState = newGameState;
-        this.playerState = playerState;
+        this.newGameState = Objects.requireNonNull(newGameState);
+        this.playerState = Objects.requireNonNull(playerState);
         // counting the number of each players' tickets and calculates the percentage remaining
         int numOfTicketsUsed =
                 PlayerId.ALL.stream()

@@ -60,7 +60,7 @@ public final class Stage9Test extends Application {
     private void setState(ObservableGameState gameState) {
         PlayerState p1State =
                 new PlayerState(SortedBag.of(ChMap.tickets().subList(0, 3)),
-                        SortedBag.of(1, Card.WHITE, 3, Card.RED),
+                        SortedBag.of(1, Card.LOCOMOTIVE, 3, Card.RED),
                         ChMap.routes().subList(0, 3));
 
         PublicPlayerState p2State =

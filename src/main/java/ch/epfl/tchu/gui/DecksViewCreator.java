@@ -1,7 +1,6 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Card;
-import ch.epfl.tchu.game.Color;
 import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
 import javafx.beans.property.ObjectProperty;
@@ -16,10 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import static ch.epfl.tchu.gui.GuiConstants.*;
 
 /**
@@ -28,7 +23,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-class DecksViewCreator {
+final class DecksViewCreator {
 
     // Not instantiable.
     private DecksViewCreator() {}
@@ -45,7 +40,7 @@ class DecksViewCreator {
 		ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
 		VBox cardsView = new VBox(ticketsPile);
         cardsView.setId(ID_CARD_PANE);
-        cardsView.getStylesheets().addAll(STYLE_SHEET_DECKS, STYLE_SHEET_COLORS);
+        cardsView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
 
         for (int slot : Constants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
@@ -59,7 +54,7 @@ class DecksViewCreator {
                             (observable, oldValue, newValue) -> {
                                 String newColor =
                                         newValue.color() == null
-                                                ? STYLE_CLASS_COLOR_NEUTRAL
+                                                ? NEUTRAL
                                                 : newValue.color().name();
                                 // Remove any Color css attribute and replace by the new color.
                                 displayedCard.getStyleClass().filtered(STYLE_CLASSES_COLOR::contains);
@@ -86,9 +81,8 @@ class DecksViewCreator {
 
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
-            String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();
+            String color = card.color() == null ? NEUTRAL : card.color().name();
             cardOfHand.getStyleClass().addAll(color);
-
             cardOfHand
                     .visibleProperty()
                     .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
@@ -98,12 +92,11 @@ class DecksViewCreator {
             count.textProperty().bind(observableGameState.playersNumberOfCards(card).asString());
             count.getStyleClass().add(STYLE_CLASS_COUNT);
             cardOfHand.getChildren().add(count);
-
             cardsHandPanel.getChildren().add(cardOfHand);
         }
 
         HBox handView = new HBox(ticketsListView, cardsHandPanel);
-        handView.getStylesheets().addAll(STYLE_SHEET_DECKS, STYLE_SHEET_COLORS);
+        handView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
         return handView;
     }
 

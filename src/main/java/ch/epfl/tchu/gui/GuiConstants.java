@@ -11,12 +11,13 @@ import java.util.stream.Collectors;
  * Includes .css files, style classes and IDs and
  * other Constants in general.
  */
-public class GuiConstants {
+public final class GuiConstants {
     //style sheets constants
-    public static final String STYLE_SHEET_MAP = "map.css";
-    public static final String STYLE_SHEET_COLORS = "colors.css";
-    public static final String STYLE_SHEET_DECKS = "decks.css";
-    public static final String STYLE_SHEET_INFO = "info.css";
+    public static final String MAP_CSS = "map.css";
+    public static final String COLORS_CSS = "colors.css";
+    public static final String DECKS_CSS = "decks.css";
+    public static final String INFO_CSS = "info.css";
+    public static final String CHOOSER_CSS = "chooser.css";
 
     //style class constants
     public static final String STYLE_CLASS_ROUTE = "route";
@@ -27,12 +28,10 @@ public class GuiConstants {
     public static final String STYLE_CLASS_FOREGROUND = "foreground";
     public static final String STYLE_CLASS_GAUGED = "gauged";
     public static final String STYLE_CLASS_CARD = "card";
-    public static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
     public static final String STYLE_CLASS_COUNT = "count";
     public static final String STYLE_CLASS_INSIDE = "inside";
     public static final String STYLE_CLASS_OUTSIDE = "outside";
     public static final String STYLE_CLASS_TRAIN_IMAGE = "train-image";
-	public static final String STYLE_CLASS_CHOOSER = "chooser.css";
 
     public static final List<String> STYLE_CLASSES_COLOR =
             Color.ALL.stream().map(Objects::toString).collect(Collectors.toList());
@@ -44,8 +43,6 @@ public class GuiConstants {
     public static final String ID_GAME_INFO = "game-info";
 
     //Neutral color matching Locomotive color
-    public static final String LOCOMOTIVE_COLOR = "NEUTRAL";
+    public static final String NEUTRAL = "NEUTRAL";
     public static final int VISIBLE_INFOS = 5;
-
-
 }
