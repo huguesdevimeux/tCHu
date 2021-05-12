@@ -1,5 +1,6 @@
 package ch.epfl.tchu.net;
 
+import static ch.epfl.tchu.net.NetConstants.COMMA_SEPARATOR;
 import static ch.epfl.tchu.net.Serdes.*;
 
 import ch.epfl.tchu.game.Player;
@@ -57,7 +58,7 @@ public class RemotePlayerClient {
                                 throw new UncheckedIOException(e);
                             }
                         });
-                outWriter.write(NetConstants.ENDLINE);
+                outWriter.write(NetConstants.END_LINE);
                 outWriter.flush();
                 // Response for the next iteration.
                 respFromNetwork = inReader.readLine();

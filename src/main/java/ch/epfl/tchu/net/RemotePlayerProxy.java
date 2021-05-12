@@ -1,5 +1,6 @@
 package ch.epfl.tchu.net;
 
+import static ch.epfl.tchu.net.NetConstants.COMMA_SEPARATOR;
 import static ch.epfl.tchu.net.Serdes.*;
 
 import ch.epfl.tchu.SortedBag;
@@ -153,7 +154,7 @@ public class RemotePlayerProxy implements Player {
             this.outRedirect.write(messageId.name() + NetConstants.SPACE);
             if (serializedArgs.size() > 0)
                 this.outRedirect.write(String.join(NetConstants.SPACE, serializedArgs));
-            this.outRedirect.write(NetConstants.SPACE + NetConstants.ENDLINE);
+            this.outRedirect.write(NetConstants.SPACE + NetConstants.END_LINE);
             this.outRedirect.flush();
             // The Optional will be empty if readLine returns null.
             return Optional.ofNullable(this.inRedirect.readLine());
