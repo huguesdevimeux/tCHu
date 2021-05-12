@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class RemotePlayerClient {
+public final class RemotePlayerClient {
 
     private final Player player;
     private final String host;
@@ -70,7 +70,7 @@ public class RemotePlayerClient {
     }
 
     /**
-     * Handles the communication through the network and return an Optional that depicts wether the
+     * Handles the communication through the network and return an Optional that depicts whether the
      * client should send back something to the server.
      *
      * @param messageId The type of message.
