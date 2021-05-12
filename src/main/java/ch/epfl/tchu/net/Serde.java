@@ -3,12 +3,16 @@ package ch.epfl.tchu.net;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Representation of a Serde (serialized or deserialized object).
@@ -118,8 +122,7 @@ public interface Serde<T> {
             @Override
             public List<T> deserialize(String s) {
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
-                        .map(serde::deserialize)
-                        .collect(Collectors.toList());
+                        .map(serde::deserialize).collect(Collectors.toUnmodifiableList());
             }
         };
     }

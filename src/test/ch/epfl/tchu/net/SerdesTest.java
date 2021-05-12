@@ -1,4 +1,4 @@
-package tchu.net;
+package ch.epfl.tchu.net;
 
 import static ch.epfl.tchu.game.Card.*;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
