@@ -16,8 +16,11 @@ public final class Game {
     private static final Map<PlayerId, Info> playersInfo = new HashMap<>();
     private static GameState gameState;
 
-    /** Not instantiable. */
-    private Game() {}
+    /**
+     * Not instantiable.
+     */
+    private Game() {
+    }
 
     /**
      * Method that makes the two <code>players</code> play the game.
@@ -73,9 +76,7 @@ public final class Game {
             }
             gameState = nextTurn(players);
         }
-        endGame(players, playerNames,
-                new Info(playerNames.get(gameState.currentPlayerId())),
-                new Info(playerNames.get(gameState.currentPlayerId().next())));
+        endGame(players, playerNames);
     }
 
     /**
@@ -120,8 +121,6 @@ public final class Game {
                     gameState
                             .withInitiallyChosenTickets(playerId, chosenInitialTickets)
                             .withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
-        }
-        for (PlayerId playerId : PlayerId.ALL) {
             ReceiveInfoHandler.chosenTicketsInfo(
                     players,
                     playersInfo.get(playerId),
@@ -157,20 +156,18 @@ public final class Game {
     }
 
     private static void endGame(Map<PlayerId, Player> players,
-                                Map<PlayerId, String> playerNames,
-                                Info currentPlayerInfo,
-                                Info nextPlayerInfo) {
+                                Map<PlayerId, String> playerNames) {
         Trail trailPlayer1 = Trail.longest(gameState.playerState(gameState.currentPlayerId()).routes());
         Trail trailPlayer2 = Trail.longest(gameState.playerState(gameState.currentPlayerId().next()).routes());
         int winnerPoints, loserPoints;
 
-        if(trailPlayer1.length() > trailPlayer2.length()) {
-            ReceiveInfoHandler.longestTrail(players, currentPlayerInfo, trailPlayer1);
+        if (trailPlayer1.length() > trailPlayer2.length()) {
+            ReceiveInfoHandler.longestTrail(players, playersInfo.get(gameState.currentPlayerId()), trailPlayer1);
             winnerPoints = gameState.currentPlayerState().finalPoints() + Constants.LONGEST_TRAIL_BONUS_POINTS;
             loserPoints = gameState.playerState(gameState.currentPlayerId().next()).finalPoints();
 
         } else if (trailPlayer1.length() < trailPlayer2.length()) {
-            ReceiveInfoHandler.longestTrail(players, nextPlayerInfo, trailPlayer2);
+            ReceiveInfoHandler.longestTrail(players, playersInfo.get(gameState.currentPlayerId().next()), trailPlayer2);
             winnerPoints = gameState.currentPlayerState().finalPoints();
             loserPoints =
                     gameState.playerState(gameState.currentPlayerId().next()).finalPoints()
@@ -180,7 +177,8 @@ public final class Game {
             loserPoints = gameState.playerState(gameState.currentPlayerId().next()).finalPoints();
         }
         updatePlayerStates(players, gameState);
-        if(winnerPoints > loserPoints) ReceiveInfoHandler.playerWon(players, currentPlayerInfo, winnerPoints, loserPoints);
+        if (winnerPoints > loserPoints)
+            ReceiveInfoHandler.playerWon(players, playersInfo.get(gameState.currentPlayerId()), winnerPoints, loserPoints);
         else if (winnerPoints == loserPoints)
             ReceiveInfoHandler.playersHaveDrawn(players, new ArrayList<>(playerNames.values()), winnerPoints);
     }
