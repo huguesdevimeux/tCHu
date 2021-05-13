@@ -1,6 +1,7 @@
 package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.SortedBag;
+import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

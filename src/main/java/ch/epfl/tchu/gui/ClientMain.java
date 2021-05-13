@@ -19,14 +19,23 @@ public class ClientMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> params = getParameters().getRaw();
         // Default values.
-        String ipTarget = "localhost";
-        int port = 5108;
+        String ipTarget = GuiConstants.DEFAULT_IP;
+        int port = GuiConstants.DEFAULT_PORT;
         if (params.size() == 2) {
             ipTarget = params.get(0);
             port = Integer.parseInt(params.get(1));
         } else if (params.size() != 0)
             throw new Exception("Wrong number of parameters given to the programme. Exiting.");
 
-        new RemotePlayerClient(new GraphicalPlayerAdapter(), ipTarget, port).run();
+        String finalIpTarget = ipTarget;
+        int finalPort = port;
+        new Thread(
+                        () ->
+                                new RemotePlayerClient(
+                                                new GraphicalPlayerAdapter(),
+                                                finalIpTarget,
+                                                finalPort)
+                                        .run())
+                .start();
     }
 }
