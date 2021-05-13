@@ -32,12 +32,9 @@ public class GraphicalPlayerAdapter implements Player {
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
         BlockingQueue<GraphicalPlayer> queue = new ArrayBlockingQueue<>(1);
-        System.out.println("init player outer");
         runLater(
                 () -> {
-                    System.out.println("caa");
                     try {
-                        System.out.println("init player");
                         queue.put(new GraphicalPlayer(ownId, playerNames));
                     } catch (InterruptedException e) {
                         throw new Error(e);
