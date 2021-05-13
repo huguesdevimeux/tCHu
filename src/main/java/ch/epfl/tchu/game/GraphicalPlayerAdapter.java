@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import static com.sun.javafx.application.PlatformImpl.runLater;
+import static javafx.application.Platform.runLater;
 
 /**
  * Adapter for Player.
