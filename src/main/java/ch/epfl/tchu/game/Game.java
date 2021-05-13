@@ -47,7 +47,6 @@ public final class Game {
 
         // the following part represents the "mid-game" (ie each turn until the last round begins)
         while ((gameState.lastPlayer() != gameState.currentPlayerId())) {
-            gameState = nextTurn(players);
             Player currentPlayer = players.get(gameState.currentPlayerId());
             updatePlayerStates(players, gameState);
             Player.TurnKind turnKindChosenByCurrentPlayer = currentPlayer.nextTurn();
@@ -72,6 +71,7 @@ public final class Game {
                             rng);
                     break;
             }
+            gameState = nextTurn(players);
         }
         endGame(players, playerNames,
                 new Info(playerNames.get(gameState.currentPlayerId())),
@@ -124,7 +124,7 @@ public final class Game {
         for (PlayerId playerId : PlayerId.ALL) {
             ReceiveInfoHandler.chosenTicketsInfo(
                     players,
-                    playersInfo.get(gameState.currentPlayerId()),
+                    playersInfo.get(playerId),
                     gameState.playerState(playerId).ticketCount());
         }
     }
