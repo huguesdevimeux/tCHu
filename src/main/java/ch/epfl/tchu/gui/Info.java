@@ -6,7 +6,6 @@ import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.game.Trail;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
