@@ -64,7 +64,7 @@ public final class Info {
      * @return The string representation.
      */
     public static String displaySortedBagOfCards(SortedBag<Card> cards) {
-        List<String> displayed = new java.util.ArrayList<>(Collections.emptyList());
+        List<String> displayed = new java.util.ArrayList<>();
         // Create a list of string with alternated each pieceCard and a comma.
         cards.toMap()
                 .forEach(
