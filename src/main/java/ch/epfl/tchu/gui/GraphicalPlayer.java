@@ -231,7 +231,7 @@ public class GraphicalPlayer {
     private void emptyHandlers() {
         drawCardHandler.set(null);
         drawTicketsHandler.set(null);
-        drawTicketsHandler.set(null);
+        takeRouteHandler.set(null);
     }
 
     private static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
