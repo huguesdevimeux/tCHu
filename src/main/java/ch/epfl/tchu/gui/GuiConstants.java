@@ -44,7 +44,6 @@ public class GuiConstants {
 
     // Neutral color matching Locomotive color
     public static final String LOCOMOTIVE_COLOR = "NEUTRAL";
-    public static final int VISIBLE_INFOS = 5;
 
     /* The default port used for conne	ction */
     public static final int DEFAULT_PORT = 5108;
@@ -52,4 +51,8 @@ public class GuiConstants {
     public static final String DEFAULT_IP = "localhost";
     /* Default names for the players.*/
     public static final List<String> DEFAULT_NAMES = List.of("Ada", "Charles");
+
+    public static final int VISIBLE_INFOS = 5;
+    public static final int MIN_CARDS_NUMBER_DISPLAYED = 1;
+
 }

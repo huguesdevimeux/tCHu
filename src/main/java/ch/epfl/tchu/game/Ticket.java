@@ -31,7 +31,7 @@ public final class Ticket implements Comparable<Ticket> {
         // station.
         Preconditions.checkArgument(
                 trips.stream().allMatch(trip -> trip.from().name().equals(stationName)));
-        this.trips = trips;
+        this.trips = List.copyOf(trips);
         this.textRepresentation = computeTextRepresentation();
     }
 

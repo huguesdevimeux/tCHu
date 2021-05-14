@@ -91,7 +91,7 @@ class DecksViewCreator {
 
             cardOfHand
                     .visibleProperty()
-                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
+                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(MIN_CARDS_NUMBER_DISPLAYED));
 
             // Count.
             Text count = new Text();

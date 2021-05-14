@@ -80,12 +80,11 @@ public class GraphicalPlayer {
 
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
-        //VISIBLE_INFOS = 5 because there are 5 maximum visible messages
         if (infoProperty.size() < VISIBLE_INFOS)
             infoProperty.add(new Text(message));
         else {
-            //we limit the number to 5 - 1 because we have to set the text to
-            //the element of the 5th position
+            //we limit the number to VISIBLE_INFOS - 1 because we have to set the text to
+            //the element of the VISIBLE_INFOS th position
             for (int i = 0; i < VISIBLE_INFOS - 1; i++)
                 infoProperty.get(i).setText(infoProperty.get(i + 1).getText());
             infoProperty.get(VISIBLE_INFOS - 1).setText(message);
@@ -231,7 +230,7 @@ public class GraphicalPlayer {
     private void emptyHandlers() {
         drawCardHandler.set(null);
         drawTicketsHandler.set(null);
-        drawTicketsHandler.set(null);
+        takeRouteHandler.set(null);
     }
 
     private static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
