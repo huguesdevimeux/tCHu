@@ -52,7 +52,7 @@ public class GraphicalPlayer {
      * Constructor that builds graphical interface designed for the player.
      *
      * @param correspondingPlayer The player associated.
-     * @param playerNames         The players playing.
+     * @param playerNames The players playing.
      */
     public GraphicalPlayer(PlayerId correspondingPlayer, Map<PlayerId, String> playerNames) {
         assert isFxApplicationThread();
@@ -71,7 +71,7 @@ public class GraphicalPlayer {
      * Sets a new state of the game.
      *
      * @param newGameState The new {@link ch.epfl.tchu.game.GameState}.
-     * @param playerState  The new {@link PlayerState}
+     * @param playerState The new {@link PlayerState}
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
         assert isFxApplicationThread();
@@ -80,11 +80,10 @@ public class GraphicalPlayer {
 
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
-        if (infoProperty.size() < VISIBLE_INFOS)
-            infoProperty.add(new Text(message));
+        if (infoProperty.size() < VISIBLE_INFOS) infoProperty.add(new Text(message));
         else {
-            //we limit the number to VISIBLE_INFOS - 1 because we have to set the text to
-            //the element of the VISIBLE_INFOS th position
+            // we limit the number to VISIBLE_INFOS - 1 because we have to set the text to
+            // the element of the VISIBLE_INFOS th position
             for (int i = 0; i < VISIBLE_INFOS - 1; i++)
                 infoProperty.get(i).setText(infoProperty.get(i + 1).getText());
             infoProperty.get(VISIBLE_INFOS - 1).setText(message);
@@ -122,8 +121,8 @@ public class GraphicalPlayer {
      * Opens a pop-up allowing the player to choose the tickets. Call chooseTicketsHandler upon
      * confirming the choice.
      *
-     * @param choosableTickets     The ticket the player can chose. Must be either 3 (start game) or 5
-     *                             (during the game)
+     * @param choosableTickets The ticket the player can chose. Must be either 3 (start game) or 5
+     *     (during the game)
      * @param chooseTicketsHandler The handler called upon choosing tickets.
      * @throws IllegalArgumentException If there is an invalid number of tickets.
      */
@@ -133,7 +132,8 @@ public class GraphicalPlayer {
         assert isFxApplicationThread();
         Preconditions.checkArgument(choosableTickets.size() == 3 || choosableTickets.size() == 5);
         int minTickets = choosableTickets.size() - Constants.DISCARDABLE_TICKETS_COUNT;
-        String title = String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));
+        String title =
+                String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));
         new PopupChoiceBuilder<Ticket>(title, choosableTickets.toList())
                 .setTitle(StringsFr.TICKETS_CHOICE)
                 .setSelectionMode(SelectionMode.MULTIPLE)
@@ -162,14 +162,14 @@ public class GraphicalPlayer {
      * Opens a pop-up allowing the user to choose which cards to claim.
      *
      * @param choosableCards The card the player can choose.
-     * @param handler        The handler for the cards.
+     * @param handler The handler for the cards.
      */
     public void chooseClaimCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
         assert isFxApplicationThread();
         new PopupChoiceBuilder<SortedBag<Card>>(StringsFr.CHOOSE_CARDS, choosableCards)
                 .setTitle(StringsFr.CARDS_CHOICE)
-                .setSelectionMode(SelectionMode.MULTIPLE)
+                .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
                 .setMinimumChoices(1)
                 .setCellStringBuilder(new CardBagStringConverter())
@@ -181,7 +181,7 @@ public class GraphicalPlayer {
      * Opens a pop up allowing the player to choose which additional cards.
      *
      * @param choosableCards THe cards the player can choose.
-     * @param handler        The handler.
+     * @param handler The handler.
      */
     public void chooseAdditionalCards(
             List<SortedBag<Card>> choosableCards, ActionHandlers.ChooseCardsHandler handler) {
@@ -203,18 +203,15 @@ public class GraphicalPlayer {
      */
     private Stage generateStage() {
         root = new Stage();
-        root.setTitle(
-                String.format("tCHu \u2014 %s", playerNames.get(correspondingPlayer)));
+        root.setTitle(String.format("tCHu \u2014 %s", playerNames.get(correspondingPlayer)));
 
         BorderPane mainPane =
                 new BorderPane(
                         MapViewCreator.createMapView( // Center.
-                                observableGameState, takeRouteHandler, null),
+                                observableGameState, takeRouteHandler, this::chooseClaimCards),
                         null, // Top.
                         DecksViewCreator.createCardsView(
-                                observableGameState,
-                                drawTicketsHandler,
-                                drawCardHandler), // Right.
+                                observableGameState, drawTicketsHandler, drawCardHandler), // Right.
                         DecksViewCreator.createHandView(observableGameState), // Bottom.
                         InfoViewCreator.createInfoView(
                                 correspondingPlayer,
@@ -262,7 +259,7 @@ public class GraphicalPlayer {
         /**
          * Constructor.
          *
-         * @param description     The description of the popups.
+         * @param description The description of the popups.
          * @param possibleChoices The choices possible.
          */
         public PopupChoiceBuilder(String description, List<T> possibleChoices) {
@@ -298,13 +295,9 @@ public class GraphicalPlayer {
          * @return The object (for chaining).
          */
         public PopupChoiceBuilder<T> setMinimumChoices(int threshold) {
-            confirm
-                    .disableProperty()
+            confirm.disableProperty()
                     .bind(
-                            Bindings.size(
-                                    choicesDisplayed
-                                            .getSelectionModel()
-                                            .getSelectedItems())
+                            Bindings.size(choicesDisplayed.getSelectionModel().getSelectedItems())
                                     .lessThan(threshold));
             return this;
         }
@@ -349,8 +342,7 @@ public class GraphicalPlayer {
          * @return The popup.
          */
         public Stage build() {
-            Scene innerScene =
-                    new Scene(new VBox(description, choicesDisplayed, confirm));
+            Scene innerScene = new Scene(new VBox(description, choicesDisplayed, confirm));
             innerScene.getStylesheets().add(STYLE_CLASS_CHOOSER);
 
             Stage popup = new Stage(StageStyle.UTILITY);
