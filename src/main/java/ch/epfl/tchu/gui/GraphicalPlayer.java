@@ -171,7 +171,7 @@ public class GraphicalPlayer {
                 .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
-                .setMinimumChoices(1)
+                .setMinimumChoices(GuiConstants.MINIMUM_CHOICES_CLAIM_CARDS)
                 .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
@@ -190,7 +190,7 @@ public class GraphicalPlayer {
                 .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.MULTIPLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
-                .setMinimumChoices(1)
+                .setMinimumChoices(GuiConstants.MINIMUM_CHOICES_ADDITIONAL_CARDS)
                 .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
@@ -203,7 +203,7 @@ public class GraphicalPlayer {
      */
     private Stage generateStage() {
         root = new Stage();
-        root.setTitle(String.format("tCHu \u2014 %s", playerNames.get(correspondingPlayer)));
+        root.setTitle(String.format(GuiConstants.TCHU_TITLE, playerNames.get(correspondingPlayer)));
 
         BorderPane mainPane =
                 new BorderPane(
