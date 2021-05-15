@@ -188,7 +188,7 @@ public class GraphicalPlayer {
         assert isFxApplicationThread();
         new PopupChoiceBuilder<SortedBag<Card>>(StringsFr.CHOOSE_ADDITIONAL_CARDS, choosableCards)
                 .setTitle(StringsFr.CARDS_CHOICE)
-                .setSelectionMode(SelectionMode.MULTIPLE)
+                .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
                 .setMinimumChoices(GuiConstants.MINIMUM_CHOICES_ADDITIONAL_CARDS)
                 .setCellStringBuilder(new CardBagStringConverter())
