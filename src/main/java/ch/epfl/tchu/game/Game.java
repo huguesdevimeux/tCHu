@@ -230,7 +230,8 @@ public final class Game {
                         ReceiveInfoHandler.drewBlindCard(players, currentPlayerInfo);
                         gameState = gameState.withBlindlyDrawnCard();
                     } else {
-                        ReceiveInfoHandler.drewVisibleCard(players, currentPlayerInfo);
+                        ReceiveInfoHandler.drewVisibleCard(
+                                players, currentPlayerInfo, indexOfChosenCard);
                         gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
                     }
                     gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
@@ -291,8 +292,7 @@ public final class Game {
                             gameState
                                     .currentPlayerState()
                                     .possibleAdditionalCards(
-                                            amountOfCardsToPlay,
-                                            initialClaimCards);
+                                            amountOfCardsToPlay, initialClaimCards);
                     // possibleAdditionalCardsToPlay empty -> can't take the route
                     if (possibleAdditionalCardsToPlay.isEmpty()) {
                         ReceiveInfoHandler.didNotClaimRoute(
@@ -357,11 +357,13 @@ public final class Game {
                             allPlayers.receiveInfo(currentPlayer.drewBlindCard()));
         }
 
-        public static void drewVisibleCard(Map<PlayerId, Player> players, Info currentPlayer) {
+        public static void drewVisibleCard(
+                Map<PlayerId, Player> players, Info currentPlayer, int indexOfChosenCard) {
             players.forEach(
                     (playerId, allPlayers) ->
                             allPlayers.receiveInfo(
-                                    currentPlayer.drewVisibleCard(gameState.topCard())));
+                                    currentPlayer.drewVisibleCard(
+                                            gameState.cardState().faceUpCard(indexOfChosenCard))));
         }
 
         public static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
