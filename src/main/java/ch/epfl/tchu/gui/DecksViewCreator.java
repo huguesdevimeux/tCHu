@@ -60,7 +60,11 @@ class DecksViewCreator {
                                 // Remove any Color css attribute and replace by the new color.
                                 displayedCard
                                         .getStyleClass()
-                                        .filtered(STYLE_CLASSES_COLOR::contains);
+                                        .removeIf(
+                                                (s) ->
+                                                        STYLE_CLASSES_COLOR.contains(s)
+                                                                || s.equals(
+                                                                        STYLE_CLASS_COLOR_NEUTRAL));
                                 displayedCard.getStyleClass().add(newColor);
                             });
         }
