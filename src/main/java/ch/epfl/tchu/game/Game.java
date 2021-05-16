@@ -107,15 +107,19 @@ public final class Game {
             SortedBag<Ticket> initialTicketsChoice =
                     gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
             players.get(playerId).setInitialTicketChoice(initialTicketsChoice);
-            // we update the states before the player can pick desired tickets
-            updatePlayerStates(players, gameState);
+            gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+        }
+        // we update the states before the player can pick desired tickets
+        updatePlayerStates(players, gameState);
+
+        for (PlayerId playerId : players.keySet()) {
             SortedBag<Ticket> chosenInitialTickets = players.get(playerId).chooseInitialTickets();
             // the player then chooses the tickets they want to keep and we have to remove the top
             // tickets from the deck of tickets
-            gameState =
-                    gameState
-                            .withInitiallyChosenTickets(playerId, chosenInitialTickets)
-                            .withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+            gameState = gameState.withInitiallyChosenTickets(playerId, chosenInitialTickets);
+        }
+
+        for (PlayerId playerId : players.keySet()) {
             ReceiveInfoHandler.chosenTicketsInfo(
                     players,
                     playersInfo.get(gameState.currentPlayerId()),
