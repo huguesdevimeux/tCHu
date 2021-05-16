@@ -32,15 +32,7 @@ public class GraphicalPlayerAdapter implements Player {
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
         BlockingQueue<GraphicalPlayer> queue = new ArrayBlockingQueue<>(1);
-        runLater(
-                () -> {
-                    try {
-                        queue.put(new GraphicalPlayer(ownId, playerNames));
-                    } catch (InterruptedException e) {
-                        throw new Error(e);
-                    }
-                });
-
+        runLater(() -> queue.add(new GraphicalPlayer(ownId, playerNames)));
         this.graphicalPlayer = retrieveFromQueue(queue);
     }
 
@@ -51,6 +43,7 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
+        System.out.println("### I get to update");
         runLater(() -> graphicalPlayer.setState(newState, ownState));
     }
 
