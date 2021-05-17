@@ -11,6 +11,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static ch.epfl.tchu.gui.GuiConstants.*;
@@ -24,7 +26,9 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  */
 class InfoViewCreator {
 
-    /** Not Instantiable. */
+    /**
+     * Not Instantiable.
+     */
     private InfoViewCreator() {
     }
 
@@ -52,10 +56,7 @@ class InfoViewCreator {
 
         for (PlayerId playerId : PlayerId.ALL) {
             TextFlow playerN = new TextFlow();
-            playerN.getStyleClass().add(
-                    String.format("PLAYER_%s", PlayerId.ALL.indexOf(playerId) + 1));
-            //We add +1 because PLAYER_1 for example is at index 0 in PlayerId.ALL but
-            //we need the 1.
+            playerN.getStyleClass().add(playerId.name());
 
             Circle circle = new Circle(5);
             circle.getStyleClass().add(STYLE_CLASS_FILLED);
@@ -73,14 +74,10 @@ class InfoViewCreator {
             playerN.getChildren().addAll(circle, playerStatsText);
             playerStats.getChildren().add(playerN);
         }
-
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
-        //limit to 4 because there are maximum 5 messages
-        for (int i = 0; i <= 4; i++) {
-            gameInfoTextFlow.getChildren().add(new Text());
-        }
         Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
+
         root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
         return root;
     }

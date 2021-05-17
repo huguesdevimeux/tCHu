@@ -324,9 +324,7 @@ public final class Game {
                             gameState
                                     .currentPlayerState()
                                     .possibleAdditionalCards(
-                                            amountOfCardsToPlay,
-                                            initialClaimCards,
-                                            SortedBag.of(drawnCards));
+                                            amountOfCardsToPlay, initialClaimCards);
                     // possibleAdditionalCardsToPlay empty -> can't take the route
                     if (possibleAdditionalCardsToPlay.isEmpty()) {
                         ReceiveInfoHandler.didNotClaimRoute(

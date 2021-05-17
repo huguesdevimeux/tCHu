@@ -6,7 +6,6 @@ import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.game.Trail;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,8 +57,14 @@ public final class Info {
                 StringsFr.DRAW, String.join(StringsFr.AND_SEPARATOR, playerNames), points);
     }
 
-    private static String displaySortedBagOfCards(SortedBag<Card> cards) {
-        List<String> displayed = new java.util.ArrayList<>(Collections.emptyList());
+    /**
+     * Return a beautiful string representation of a sortedBag of cards.
+     *
+     * @param cards The sorted bag to display.
+     * @return The string representation.
+     */
+    public static String displaySortedBagOfCards(SortedBag<Card> cards) {
+        List<String> displayed = new java.util.ArrayList<>();
         // Create a list of string with alternated each pieceCard and a comma.
         cards.toMap()
                 .forEach(
