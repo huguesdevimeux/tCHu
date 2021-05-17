@@ -3,6 +3,7 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
+import javafx.animation.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Group;
@@ -12,8 +13,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
+
+import java.awt.*;
 
 import static ch.epfl.tchu.gui.GuiConstants.*;
 
@@ -128,6 +134,39 @@ class DecksViewCreator {
         StackPane cardOfHand = new StackPane();
         cardOfHand.getChildren().addAll(inner1, inner2, inner3);
         cardOfHand.getStyleClass().add(STYLE_CLASS_CARD);
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(500), cardOfHand);
+        tt.setInterpolator(new Interpolator() {
+			@Override
+			protected double curve(double x) {
+				float n1 = 7.5625f;
+				float d1 = 2.75f;
+
+				if (x < 1 / d1) {
+					return n1 * x * x;
+				} else if (x < 2 / d1) {
+					return n1 * (x -= 1.5 / d1) * x + 0.75;
+				} else if (x < 2.5 / d1) {
+					return n1 * (x -= 2.25 / d1) * x + 0.9375;
+				} else {
+					return n1 * (x -= 2.625 / d1) * x + 0.984375;
+				}
+			}
+		});
+
+        cardOfHand.setOnMouseEntered(
+			event -> {
+				tt.stop();
+				tt.setByY(- 20 - cardOfHand.getTranslateY());
+				tt.play();
+                });
+        cardOfHand.setOnMouseExited(
+                event -> {
+                    tt.stop();
+                    System.out.println(cardOfHand.getTranslateY());
+                    tt.setByY(- cardOfHand.getTranslateY());
+                    tt.play();
+                });
         return cardOfHand;
     }
 
