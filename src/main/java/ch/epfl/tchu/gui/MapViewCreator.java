@@ -24,29 +24,24 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-final class MapViewCreator {
-    /**
-     * Not instantiable.
-     */
-    private MapViewCreator() {
-    }
+class MapViewCreator {
+    /** Not instantiable. */
+    private MapViewCreator() {}
 
     /**
-     * Method in charge of creating the whole view of the map.
-     * ie the routes, the map, the colors.
+     * Method in charge of creating the whole view of the map. ie the routes, the map, the colors.
      *
      * @param obsGameState the observable part of the game.
      * @param routeHandler responsible for an attempt to claim a route.
-     * @param cardChooser  responsible for choosing cards.
-     * @return the node that contains all elements in the mapView -
-     * an instance of Pane in this case.
+     * @param cardChooser responsible for choosing cards.
+     * @return the pane that contains all elements in the mapView.
      */
     public static Node createMapView(
             ObservableGameState obsGameState,
             ObjectProperty<ClaimRouteHandler> routeHandler,
             CardChooser cardChooser) {
         Pane gameMapPane = new Pane();
-        gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
+        gameMapPane.getStylesheets().addAll(STYLE_SHEET_MAP, STYLE_SHEET_COLORS);
         gameMapPane.getChildren().add(new ImageView());
 
         for (Route route : ChMap.routes()) {
@@ -57,7 +52,9 @@ final class MapViewCreator {
                     .addAll(
                             STYLE_CLASS_ROUTE,
                             route.level().name(),
-                            route.color() == null ? NEUTRAL : route.color().name());
+                            route.color() == null
+                                    ? STYLE_CLASS_COLOR_NEUTRAL
+                                    : route.color().name());
 
             for (int i = 1; i <= route.length(); i++) {
                 Group eachRoutesBlock = new Group();
@@ -67,36 +64,35 @@ final class MapViewCreator {
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
                 eachRoutesBlock.getChildren().add(rectForTracks);
 
-                Group routesCars = new Group();
-                routesCars.getStyleClass().add(STYLE_CLASS_CAR);
+                Group routesCarsGroup = new Group();
+                routesCarsGroup.getStyleClass().add(STYLE_CLASS_CAR);
 
                 Rectangle rectForCars = new Rectangle(36, 12);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
                 Circle circle1 = new Circle(12, 6, 3);
                 Circle circle2 = new Circle(24, 6, 3);
-                routesCars.getChildren().addAll(rectForCars, circle1, circle2);
 
                 // established hierarchy : cars group -> block group -> route group
-                eachRoutesBlock.getChildren().add(routesCars);
+                routesCarsGroup.getChildren().addAll(rectForCars, circle1, circle2);
+                eachRoutesBlock.getChildren().add(routesCarsGroup);
                 mainRouteGroup.getChildren().add(eachRoutesBlock);
             }
             gameMapPane.getChildren().add(mainRouteGroup);
 
-            //If the route handler is null or the player can't claim the route
-            //we disable the player's attempt to claim the route, ie pressing
-            //on a route will do nothing.
-            mainRouteGroup.disableProperty()
-                    .bind(routeHandler
-                            .isNull()
-                            .or(obsGameState.playerCanClaimRoute(route).not()));
+            // If the route handler is null or the player can't claim the route
+            // we disable the player's attempt to claim the route, ie pressing
+            // on a route will do nothing.
+            mainRouteGroup
+                    .disableProperty()
+                    .bind(routeHandler.isNull().or(obsGameState.playerCanClaimRoute(route).not()));
 
-            //If the route is owned by a player, we fill the route's blocks
-            //with the corresponding player's color (light blue for PLAYER_1 for ex)
-            obsGameState.getRoutesOwner(route).addListener(
-                    (observableValue, oldValue, newValue) -> {
-                        mainRouteGroup.getStyleClass().add(newValue.name());
-                    }
-            );
+            // If the route is owned by a player, we fill the route's blocks
+            // with the corresponding player's color (light blue for PLAYER_1 for ex)
+            obsGameState
+                    .getRoutesOwner(route)
+                    .addListener(
+                            (observableValue, oldValue, newValue) ->
+                                    mainRouteGroup.getStyleClass().add(newValue.name()));
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
@@ -106,7 +102,8 @@ final class MapViewCreator {
                             routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
                         else {
                             ChooseCardsHandler chooseCardsH =
-                                    chosenCards -> routeHandler.get().onClaimRoute(route, chosenCards);
+                                    chosenCards ->
+                                            routeHandler.get().onClaimRoute(route, chosenCards);
                             cardChooser.chooseCards(possibleClaimCards, chooseCardsH);
                         }
                     });
@@ -114,10 +111,9 @@ final class MapViewCreator {
         return gameMapPane;
     }
 
-
     /**
-     * Interface containing a method intended to be called
-     * when the player must choose the cards he wishes to use to seize a route.
+     * Interface containing a method intended to be called when the player must choose the cards he
+     * wishes to use to seize a route.
      */
     @FunctionalInterface
     public interface CardChooser {

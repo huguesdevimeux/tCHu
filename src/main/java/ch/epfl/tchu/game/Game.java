@@ -5,8 +5,6 @@ import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.gui.Info;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Represents a game of tCHu (aka les Aventuriers du Rail but shhh).
@@ -24,10 +22,10 @@ public final class Game {
     /**
      * Method that makes the two <code>players</code> play the game.
      *
-     * @param players     the two players in the game
+     * @param players the two players in the game
      * @param playerNames name of the two players
-     * @param tickets     bag of tickets
-     * @param rng         random element
+     * @param tickets bag of tickets
+     * @param rng random element
      */
     public static void play(
             Map<PlayerId, Player> players,
@@ -49,6 +47,7 @@ public final class Game {
 
         // the following part represents the "mid-game" (ie each turn until the last round begins)
         while ((gameState.lastPlayer() != gameState.currentPlayerId())) {
+            gameState = nextTurn(players);
             Player currentPlayer = players.get(gameState.currentPlayerId());
             updatePlayerStates(players, gameState);
             Player.TurnKind turnKindChosenByCurrentPlayer = currentPlayer.nextTurn();
@@ -73,7 +72,6 @@ public final class Game {
                             rng);
                     break;
             }
-            gameState = nextTurn(players);
         }
         endGame(players, playerNames);
     }
@@ -82,7 +80,7 @@ public final class Game {
      * Deals with the beginning of the game. Initialises the players and deals with the ticket
      * management at the beginning of the game
      *
-     * @param players     players in the game
+     * @param players players in the game
      * @param playerNames names of <code>players</code>
      */
     private static void beginGame(
@@ -101,6 +99,7 @@ public final class Game {
      * (5 top tickets) and must pick at least three.
      *
      * @param players use it to <code>setInitialTicketChoice</code> to the player in question
+     *     //@param playerId the player in question
      */
     private static void initialTicketsManagement(Map<PlayerId, Player> players) {
         for (PlayerId playerId : players.keySet()) {
@@ -108,20 +107,22 @@ public final class Game {
             SortedBag<Ticket> initialTicketsChoice =
                     gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
             players.get(playerId).setInitialTicketChoice(initialTicketsChoice);
+            gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
         }
+        // we update the states before the player can pick desired tickets
+        updatePlayerStates(players, gameState);
+
         for (PlayerId playerId : players.keySet()) {
-            // we update the states before the player can pick desired tickets
-            updatePlayerStates(players, gameState);
             SortedBag<Ticket> chosenInitialTickets = players.get(playerId).chooseInitialTickets();
             // the player then chooses the tickets they want to keep and we have to remove the top
             // tickets from the deck of tickets
-            gameState =
-                    gameState
-                            .withInitiallyChosenTickets(playerId, chosenInitialTickets)
-                            .withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+            gameState = gameState.withInitiallyChosenTickets(playerId, chosenInitialTickets);
+        }
+
+        for (PlayerId playerId : players.keySet()) {
             ReceiveInfoHandler.chosenTicketsInfo(
                     players,
-                    playersInfo.get(playerId),
+                    playersInfo.get(gameState.currentPlayerId()),
                     gameState.playerState(playerId).ticketCount());
         }
     }
@@ -154,68 +155,44 @@ public final class Game {
     }
 
     private static void endGame(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames) {
+        Map.Entry<PlayerId, Trail> longestTrail =
+                players.keySet().stream()
+                        .map(
+                                player ->
+                                        Map.entry(
+                                                player,
+                                                Trail.longest(
+                                                        gameState.playerState(player).routes())))
+                        .max(Comparator.comparingInt(o -> o.getValue().length()))
+                        .orElse(null);
+
+        List<Map.Entry<PlayerId, Integer>> sortedPoints = new ArrayList<>();
+        for (PlayerId player : players.keySet()) {
+            int amountOfPoints = gameState.playerState(player).finalPoints();
+            if (player.equals(longestTrail.getKey())) {
+                amountOfPoints += Constants.LONGEST_TRAIL_BONUS_POINTS;
+            }
+            sortedPoints.add(Map.entry(player, amountOfPoints));
+        }
+        sortedPoints.sort(Map.Entry.comparingByValue());
+
+        if (longestTrail != null) {
+            // NOTE : longestTrail shouldn't in theory be null. This is mostly to suppress IDE's
+            // warning and prevent any NullPointer exception to be thrown
+            ReceiveInfoHandler.longestTrail(
+                    players, playersInfo.get(longestTrail.getKey()), longestTrail.getValue());
+        }
         updatePlayerStates(players, gameState);
 
-        Map<PlayerId, Integer> points = new HashMap<>();
-        for (PlayerId playerId : PlayerId.ALL) {
-            points.put(playerId, gameState.playerState(playerId).finalPoints());
-        }
-
-        Map<PlayerId, Trail> longestTrails =
-                PlayerId.ALL.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        Function.identity(),
-                                        playerId ->
-                                                Trail.longest(
-                                                        gameState.playerState(playerId).routes())));
-
-        Map.Entry<PlayerId, Trail> maxTrail =
-                Collections.max(
-                        longestTrails.entrySet(),
-                        Comparator.comparingInt(value -> value.getValue().length()));
-        boolean isMaxTrailUnique =
-                Collections.frequency(
-                        longestTrails.values().stream()
-                                .map(Trail::length)
-                                .collect(Collectors.toList()),
-                        maxTrail.getValue().length())
-                        == 1;
-        if (isMaxTrailUnique) {
-            points.computeIfPresent(
-                    maxTrail.getKey(),
-                    (playerId, integer) -> integer + Constants.LONGEST_TRAIL_BONUS_POINTS);
-            ReceiveInfoHandler.longestTrail(
-                    players,
-                    playersInfo.get(maxTrail.getKey()),
-                    Trail.longest(gameState.playerState(maxTrail.getKey()).routes()));
-        }
-
-        int maxPoints = Collections.max(points.values());
-        Map<PlayerId, Integer> playersWithMaxPoints =
-                points.entrySet().stream()
-                        .filter(
-                                playerIdIntegerEntry ->
-                                        playerIdIntegerEntry.getValue() == maxPoints)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        // Unique winner.
-        if (playersWithMaxPoints.size() == 1) {
-            Map.Entry<PlayerId, Integer> winner = playersWithMaxPoints.entrySet().iterator().next();
-            int loserPoints = Collections.min(points.values());
+        int winnerPoints = sortedPoints.get(sortedPoints.size() - 1).getValue();
+        PlayerId winnerId = sortedPoints.get(sortedPoints.size() - 1).getKey();
+        int loserPoints = sortedPoints.get(0).getValue();
+        if (winnerPoints != loserPoints)
             ReceiveInfoHandler.playerWon(
-                    players, playersInfo.get(winner.getKey()), maxPoints, loserPoints);
-            // Several players have the same points => draw.
-        } else if (playersWithMaxPoints.size() > 1) {
-            List<String> playersWithSamePointsNames =
-                    playersWithMaxPoints.keySet().stream()
-                            .map(playerNames::get)
-                            .collect(Collectors.toList());
+                    players, playersInfo.get(winnerId), winnerPoints, loserPoints);
+        else
             ReceiveInfoHandler.playersHaveDrawn(
-                    players,
-                    playersWithSamePointsNames,
-                    maxPoints);
-        }
+                    players, new LinkedList<>(playerNames.values()), winnerPoints);
     }
 
     /** Handles the different turns logic. */
@@ -258,9 +235,7 @@ public final class Game {
                         gameState = gameState.withBlindlyDrawnCard();
                     } else {
                         ReceiveInfoHandler.drewVisibleCard(
-                                players,
-                                currentPlayerInfo,
-                                gameState.cardState().faceUpCard(indexOfChosenCard));
+                                players, currentPlayerInfo, indexOfChosenCard);
                         gameState = gameState.withDrawnFaceUpCard(indexOfChosenCard);
                     }
                     gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
@@ -309,10 +284,7 @@ public final class Game {
                     ReceiveInfoHandler.additionalCardsWereDrawnInfo(
                             players, currentPlayerInfo, drawnCards, 0);
                     // no additional cards to play-> player claims the tunnel directly
-                    gameState =
-                            gameState
-                                    .withClaimedRoute(claimedRoute, initialClaimCards)
-                                    .withMoreDiscardedCards(SortedBag.of(drawnCards));
+                    gameState = gameState.withClaimedRoute(claimedRoute, initialClaimCards);
                     ReceiveInfoHandler.claimedRoute(
                             players, currentPlayerInfo, claimedRoute, initialClaimCards);
                 } else {
@@ -390,10 +362,12 @@ public final class Game {
         }
 
         public static void drewVisibleCard(
-                Map<PlayerId, Player> players, Info currentPlayer, Card card) {
+                Map<PlayerId, Player> players, Info currentPlayer, int indexOfChosenCard) {
             players.forEach(
                     (playerId, allPlayers) ->
-                            allPlayers.receiveInfo(currentPlayer.drewVisibleCard(card)));
+                            allPlayers.receiveInfo(
+                                    currentPlayer.drewVisibleCard(
+                                            gameState.cardState().faceUpCard(indexOfChosenCard))));
         }
 
         public static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
@@ -422,7 +396,8 @@ public final class Game {
             players.forEach(
                     (playerId, allPlayers) ->
                             allPlayers.receiveInfo(
-                                    currentPlayer.attemptsTunnelClaim(claimedRoute, cards)));
+                                    currentPlayer.attemptsTunnelClaim(
+                                            claimedRoute, SortedBag.of(cards))));
         }
 
         public static void additionalCardsWereDrawnInfo(
