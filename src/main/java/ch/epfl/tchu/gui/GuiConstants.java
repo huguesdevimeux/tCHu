@@ -44,5 +44,8 @@ public final class GuiConstants {
 
     //Neutral color matching Locomotive color
     public static final String NEUTRAL = "NEUTRAL";
+    //total number of visible messages in the info view section
     public static final int VISIBLE_INFOS = 5;
+    //minimum number of cards displayed
+    public static final int MIN_CARDS_NUMBER_DISPLAYED = 1;
 }

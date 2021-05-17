@@ -35,10 +35,11 @@ final class DecksViewCreator {
 
         // Tickets pile.
         // Button group
-		Button ticketsPile = itemPileWithGauge(StringsFr.TICKETS, observableGameState.percentageTickets());
-		ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
-		ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
-		VBox cardsView = new VBox(ticketsPile);
+        Button ticketsPile =
+                itemPileWithGauge(StringsFr.TICKETS, observableGameState.percentageTickets());
+        ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
+        ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
+        VBox cardsView = new VBox(ticketsPile);
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
 
@@ -57,14 +58,17 @@ final class DecksViewCreator {
                                                 ? NEUTRAL
                                                 : newValue.color().name();
                                 // Remove any Color css attribute and replace by the new color.
-                                displayedCard.getStyleClass().filtered(STYLE_CLASSES_COLOR::contains);
+                                displayedCard
+                                        .getStyleClass()
+                                        .filtered(STYLE_CLASSES_COLOR::contains);
                                 displayedCard.getStyleClass().add(newColor);
                             });
         }
-		Button cardsPile = itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
+        Button cardsPile =
+                itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
         cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
-		cardsView.getChildren().add(cardsPile);
+        cardsView.getChildren().add(cardsPile);
         return cardsView;
     }
 
@@ -90,6 +94,11 @@ final class DecksViewCreator {
             // Count.
             Text count = new Text();
             count.textProperty().bind(observableGameState.playersNumberOfCards(card).asString());
+            count.visibleProperty()
+                    .bind(
+                            observableGameState
+                                    .playersNumberOfCards(card)
+                                    .greaterThan(MIN_CARDS_NUMBER_DISPLAYED));
             count.getStyleClass().add(STYLE_CLASS_COUNT);
             cardOfHand.getChildren().add(count);
             cardsHandPanel.getChildren().add(cardOfHand);
@@ -117,7 +126,7 @@ final class DecksViewCreator {
     }
 
     private static Button itemPileWithGauge(
-		String itemName, ReadOnlyIntegerProperty percentageProperty) {
+            String itemName, ReadOnlyIntegerProperty percentageProperty) {
         Button itemPile = new Button(itemName);
         itemPile.getStyleClass().add(STYLE_CLASS_GAUGED);
 
@@ -125,9 +134,7 @@ final class DecksViewCreator {
         backgroundButtonGraphic.getStyleClass().add(STYLE_CLASS_BACKGROUND);
         Rectangle foregroundButtonGraphic = new Rectangle(50, 5);
         foregroundButtonGraphic.getStyleClass().add(STYLE_CLASS_FOREGROUND);
-        foregroundButtonGraphic
-                .widthProperty()
-                .bind(percentageProperty.divide(2));
+        foregroundButtonGraphic.widthProperty().bind(percentageProperty.divide(2));
 
         itemPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
         return itemPile;
