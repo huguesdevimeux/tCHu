@@ -24,7 +24,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-class MapViewCreator {
+final class MapViewCreator {
     /** Not instantiable. */
     private MapViewCreator() {}
 
@@ -34,14 +34,15 @@ class MapViewCreator {
      * @param obsGameState the observable part of the game.
      * @param routeHandler responsible for an attempt to claim a route.
      * @param cardChooser responsible for choosing cards.
-     * @return the pane that contains all elements in the mapView.
+     * @return the node that contains all elements in the mapView -
+     * an instance of Pane in this case.
      */
     public static Node createMapView(
             ObservableGameState obsGameState,
             ObjectProperty<ClaimRouteHandler> routeHandler,
             CardChooser cardChooser) {
         Pane gameMapPane = new Pane();
-        gameMapPane.getStylesheets().addAll(STYLE_SHEET_MAP, STYLE_SHEET_COLORS);
+        gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
         gameMapPane.getChildren().add(new ImageView());
 
         for (Route route : ChMap.routes()) {
@@ -64,17 +65,17 @@ class MapViewCreator {
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
                 eachRoutesBlock.getChildren().add(rectForTracks);
 
-                Group routesCarsGroup = new Group();
-                routesCarsGroup.getStyleClass().add(STYLE_CLASS_CAR);
+                Group routesCars = new Group();
+                routesCars.getStyleClass().add(STYLE_CLASS_CAR);
 
                 Rectangle rectForCars = new Rectangle(36, 12);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
                 Circle circle1 = new Circle(12, 6, 3);
                 Circle circle2 = new Circle(24, 6, 3);
+                routesCars.getChildren().addAll(rectForCars, circle1, circle2);
 
                 // established hierarchy : cars group -> block group -> route group
-                routesCarsGroup.getChildren().addAll(rectForCars, circle1, circle2);
-                eachRoutesBlock.getChildren().add(routesCarsGroup);
+                eachRoutesBlock.getChildren().add(routesCars);
                 mainRouteGroup.getChildren().add(eachRoutesBlock);
             }
             gameMapPane.getChildren().add(mainRouteGroup);

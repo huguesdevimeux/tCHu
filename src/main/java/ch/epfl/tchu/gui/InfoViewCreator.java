@@ -24,7 +24,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-class InfoViewCreator {
+final class InfoViewCreator {
 
     /**
      * Not Instantiable.
@@ -49,7 +49,7 @@ class InfoViewCreator {
                                       ObservableGameState obsGameState,
                                       ObservableList<Text> infos) {
         VBox root = new VBox();
-        root.getStylesheets().addAll(STYLE_SHEET_INFO, STYLE_SHEET_COLORS);
+        root.getStylesheets().addAll(INFO_CSS, COLORS_CSS);
 
         VBox playerStats = new VBox();
         playerStats.setId(ID_PLAYER_STATS);

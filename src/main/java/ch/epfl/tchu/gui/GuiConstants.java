@@ -10,12 +10,14 @@ import java.util.stream.Collectors;
  * Constants used for the GUI part of the project. Includes .css files, style classes and IDs and
  * other Constants in general.
  */
-public class GuiConstants {
-    // style sheets constants
-    public static final String STYLE_SHEET_MAP = "map.css";
-    public static final String STYLE_SHEET_COLORS = "colors.css";
-    public static final String STYLE_SHEET_DECKS = "decks.css";
-    public static final String STYLE_SHEET_INFO = "info.css";
+
+public final class GuiConstants {
+    //style sheets constants
+    public static final String MAP_CSS = "map.css";
+    public static final String COLORS_CSS = "colors.css";
+    public static final String DECKS_CSS = "decks.css";
+    public static final String INFO_CSS = "info.css";
+    public static final String CHOOSER_CSS = "chooser.css";
 
     // style class constants
     public static final String STYLE_CLASS_ROUTE = "route";

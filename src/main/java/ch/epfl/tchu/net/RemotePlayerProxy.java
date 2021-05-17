@@ -15,7 +15,7 @@ import static ch.epfl.tchu.net.Serdes.*;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class RemotePlayerProxy implements Player {
+public final class RemotePlayerProxy implements Player {
 
     // NOTE : these are never closed, and this is intended since this class will in theory be run
     // during the WHOLE programme.
@@ -93,7 +93,7 @@ public class RemotePlayerProxy implements Player {
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
         return networkInteractionHandler(
-                        MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)), true)
+                MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)), true)
                 .map(ticketBagSerde::deserialize)
                 .orElseThrow(() -> new IllegalStateException("Expected response from network."));
     }
@@ -122,8 +122,8 @@ public class RemotePlayerProxy implements Player {
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
         return networkInteractionHandler(
-                        MessageId.CHOOSE_ADDITIONAL_CARDS,
-                        List.of(listOfCardBagSerde.serialize(options)),
+                MessageId.CHOOSE_ADDITIONAL_CARDS,
+                List.of(listOfCardBagSerde.serialize(options)),
                         true)
                 .map(cardBagSerde::deserialize)
                 .orElseThrow(() -> new IllegalStateException("Expected response from network."));
@@ -143,7 +143,7 @@ public class RemotePlayerProxy implements Player {
     /**
      * Handles the sending of method's corresponding message over the network.
      *
-     * @param messageId The messageId of the message that will be sent.
+     * @param messageId      The messageId of the message that will be sent.
      * @param serializedArgs The arguments of the methods to be communicate.
      * @param awaitsResponse Wethet there is a need to wait a respsonse.
      * @return An eventual response of the network. Not deserialized.
@@ -167,5 +167,5 @@ public class RemotePlayerProxy implements Player {
     }
 }
 
-// TODO update doc with @throws
+// TODO update doc with @throws - update pls
 // TODO replace IllegalStateException by IO expections

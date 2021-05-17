@@ -43,7 +43,6 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
-        System.out.println("### I get to update");
         runLater(() -> graphicalPlayer.setState(newState, ownState));
     }
 

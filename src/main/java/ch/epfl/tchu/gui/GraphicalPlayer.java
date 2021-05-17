@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static ch.epfl.tchu.gui.GuiConstants.STYLE_CLASS_CHOOSER;
+import static ch.epfl.tchu.gui.GuiConstants.CHOOSER_CSS;
 import static ch.epfl.tchu.gui.GuiConstants.VISIBLE_INFOS;
 import static javafx.application.Platform.isFxApplicationThread;
 
@@ -247,7 +247,7 @@ public class GraphicalPlayer {
      *
      * @param <T> The type of the items to make a choice from.
      */
-    private class PopupChoiceBuilder<T> {
+    private final class PopupChoiceBuilder<T> {
 
         private final TextFlow description;
         private final ListView<T> choicesDisplayed = new ListView<>();
@@ -343,7 +343,7 @@ public class GraphicalPlayer {
          */
         public Stage build() {
             Scene innerScene = new Scene(new VBox(description, choicesDisplayed, confirm));
-            innerScene.getStylesheets().add(STYLE_CLASS_CHOOSER);
+            innerScene.getStylesheets().add(CHOOSER_CSS);
 
             Stage popup = new Stage(StageStyle.UTILITY);
             popup.setTitle(title);
