@@ -24,10 +24,10 @@ public final class Game {
     /**
      * Method that makes the two <code>players</code> play the game.
      *
-     * @param players the two players in the game
+     * @param players     the two players in the game
      * @param playerNames name of the two players
-     * @param tickets bag of tickets
-     * @param rng random element
+     * @param tickets     bag of tickets
+     * @param rng         random element
      */
     public static void play(
             Map<PlayerId, Player> players,
@@ -82,7 +82,7 @@ public final class Game {
      * Deals with the beginning of the game. Initialises the players and deals with the ticket
      * management at the beginning of the game
      *
-     * @param players players in the game
+     * @param players     players in the game
      * @param playerNames names of <code>players</code>
      */
     private static void beginGame(
@@ -157,7 +157,7 @@ public final class Game {
         updatePlayerStates(players, gameState);
 
         Map<PlayerId, Integer> points = new HashMap<>();
-        for (var playerId : PlayerId.ALL) {
+        for (PlayerId playerId : PlayerId.ALL) {
             points.put(playerId, gameState.playerState(playerId).finalPoints());
         }
 
@@ -176,10 +176,10 @@ public final class Game {
                         Comparator.comparingInt(value -> value.getValue().length()));
         boolean isMaxTrailUnique =
                 Collections.frequency(
-                                longestTrails.values().stream()
-                                        .map(Trail::length)
-                                        .collect(Collectors.toList()),
-                                maxTrail.getValue().length())
+                        longestTrails.values().stream()
+                                .map(Trail::length)
+                                .collect(Collectors.toList()),
+                        maxTrail.getValue().length())
                         == 1;
         if (isMaxTrailUnique) {
             points.computeIfPresent(
@@ -205,7 +205,7 @@ public final class Game {
             int loserPoints = Collections.min(points.values());
             ReceiveInfoHandler.playerWon(
                     players, playersInfo.get(winner.getKey()), maxPoints, loserPoints);
-        // Several players have the same points => draw.
+            // Several players have the same points => draw.
         } else if (playersWithMaxPoints.size() > 1) {
             List<String> playersWithSamePointsNames =
                     playersWithMaxPoints.keySet().stream()
@@ -214,7 +214,7 @@ public final class Game {
             ReceiveInfoHandler.playersHaveDrawn(
                     players,
                     playersWithSamePointsNames,
-					maxPoints);
+                    maxPoints);
         }
     }
 
