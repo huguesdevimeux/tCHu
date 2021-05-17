@@ -122,7 +122,7 @@ public interface Serde<T> {
             @Override
             public List<T> deserialize(String s) {
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
-                        .map(serde::deserialize).collect(Collectors.toUnmodifiableList());
+                        .map(serde::deserialize).collect(Collectors.toList());
             }
         };
     }

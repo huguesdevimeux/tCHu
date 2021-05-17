@@ -61,6 +61,8 @@ public final class ObservableGameState {
      *
      * @param newGameState the new gameState
      * @param playerState  the player state
+     * @throws NullPointerException if the public game state is null
+     * @throws NullPointerException if the player state is null
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
         this.newGameState = Objects.requireNonNull(newGameState);
@@ -144,7 +146,7 @@ public final class ObservableGameState {
     //Private methods to create lists or maps comprised of n elements of
     //either false if property requires a boolean, 0 or null.
     private List<ObjectProperty<Card>> createFaceUpCards() {
-        return Stream.generate((Supplier<SimpleObjectProperty<Card>>) SimpleObjectProperty::new)
+        return Stream.generate(() -> new SimpleObjectProperty<Card>())
                 .limit(FACE_UP_CARDS_COUNT)
                 .collect(Collectors.toList());
     }
