@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import static ch.epfl.tchu.game.PlayerId.PLAYER_1;
 import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
+import static ch.epfl.tchu.net.NetConstants.*;
 
 /**
  * Class with all the useful Serdes.
@@ -20,10 +21,6 @@ import static ch.epfl.tchu.game.PlayerId.PLAYER_2;
  * @author Hugues Devimeux (327282)
  */
 public final class Serdes {
-	// TODO public because of the handmade map deserializer of RemotepLayerTest. The deserde should be here.
-    public static final String COMMA_SEPARATOR = ",";
-    public static final String SEMI_COLON_SEPARATOR = ";";
-    public static final String COLON_SEPARATOR = ":";
 
     /** Not instantiable. */
     private Serdes() {}
@@ -132,6 +129,8 @@ public final class Serdes {
                                     routeListSerde.serialize(playerState.routes())),
                     (str) -> {
                         String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
+                        //We need to verify if the the elements in the array are empty or not. In case
+                        //yes, return an empty bag or list and if not, deserialize the element
                         return new PlayerState(
                                 elements[0].isEmpty()
                                         ? SortedBag.of()
@@ -139,8 +138,6 @@ public final class Serdes {
                                 elements[1].isEmpty()
                                         ? SortedBag.of()
                                         : cardBagSerde.deserialize(elements[1]),
-                                // we also have to verify if we should use an empty list or
-                                // deserialize using routeListSerde
                                 elements[2].isEmpty()
                                         ? Collections.emptyList()
                                         : routeListSerde.deserialize(elements[2]));

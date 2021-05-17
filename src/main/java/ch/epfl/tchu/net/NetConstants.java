@@ -13,8 +13,18 @@ import java.nio.charset.Charset;
 public final class NetConstants {
     /* Encoding used in CharSet message */
     public static final Charset ENCODING = US_ASCII;
-    /* Endile char used in networkd messages.*/
-    public static final String ENDLINE = "\n";
+    /* End line char used in networkd messages.*/
+    public static final String END_LINE = "\n";
     /* Space used in network messages.*/
     public static final String SPACE = " ";
+    /* Comma used in network to separate elements. */
+    public static final String COMMA_SEPARATOR = ",";
+    /* Semi-colon used in network to separate elements. */
+    public static final String SEMI_COLON_SEPARATOR = ";";
+    /* Colon used in network to separate elements. */
+    public static final String COLON_SEPARATOR = ":";
+    /* Host used in the game. */
+    public static final String SERVER_HOST = "localhost";
+    /* Port number on which the server listens. */
+    public static final int PORT_NUMBER = 5108;
 }
