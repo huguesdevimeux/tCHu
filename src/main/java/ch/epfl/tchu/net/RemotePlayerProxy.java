@@ -145,6 +145,7 @@ public class RemotePlayerProxy implements Player {
      *
      * @param messageId The messageId of the message that will be sent.
      * @param serializedArgs The arguments of the methods to be communicate.
+     * @param awaitsResponse Wethet there is a need to wait a respsonse.
      * @return An eventual response of the network. Not deserialized.
      * @throws UncheckedIOException in case of {@link IOException}.
      */
@@ -159,7 +160,6 @@ public class RemotePlayerProxy implements Player {
             this.outRedirect.flush();
             // The Optional will be empty if readLine returns null.
             String value = awaitsResponse ? this.inRedirect.readLine() : null;
-            System.out.println(value);
             return Optional.ofNullable(value);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

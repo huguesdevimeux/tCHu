@@ -35,7 +35,7 @@ public class ServerMain extends Application {
 
         Map<PlayerId, String> playersNames = new HashMap<>();
 
-        for (int i = 0; i < PlayerId.ALL.size(); i++) {
+        for (int i = 0; i < PlayerId.COUNT; i++) {
             playersNames.put(PlayerId.ALL.get(i), names.get(i));
         }
 
@@ -43,7 +43,7 @@ public class ServerMain extends Application {
         try (ServerSocket serverSocket = new ServerSocket(GuiConstants.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-            for (int i = 1; i < PlayerId.ALL.size(); i++) {
+            for (int i = 1; i < PlayerId.COUNT; i++) {
                 players.put(PlayerId.ALL.get(i), new RemotePlayerProxy(serverSocket.accept()));
             }
         }
