@@ -61,4 +61,17 @@ public class GuiConstants {
     public static final int MINIMUM_CHOICES_ADDITIONAL_CARDS = 1;
     /* The title of the holy tCHu window. */
     public static final String TCHU_TITLE = "tCHu \u2014 %s";
+
+    /* Offset Y of the hand's cards animations */
+    public static final int OFFSET_Y_HAND_CARDS = -40;
+    /* Offset X of the hand's cards animations */
+    public static final int OFFSET_X_HAND_CARDS = 0;
+    /* Duration of the translation animation of teh hand's cards. */
+    public static final int DURATION_ANIMATION_HAND_CARDS = 400;
+    /* Offset X of the deck's cards animations */
+    public static final int OFFSET_X_DECK_CARDS = -20;
+    /* Offset Y of the deck's cards animations */
+    public static final int OFFSET_Y_CARDS_DECK = 0;
+    /* Duration of the translation animation of deck's cards. */
+    public static final int DURATION_ANIMATION_DECK_CARDS = 400;
 }

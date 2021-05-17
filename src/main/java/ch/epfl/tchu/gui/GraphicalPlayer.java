@@ -203,7 +203,7 @@ public class GraphicalPlayer {
     }
 
     /**
-     * Generates the main stage.
+     * Generates the main stage
      *
      * @return The main stage.
      */

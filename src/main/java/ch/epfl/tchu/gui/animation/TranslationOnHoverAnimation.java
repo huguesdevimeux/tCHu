@@ -1,48 +1,59 @@
 package ch.epfl.tchu.gui.animation;
 
-import javafx.animation.Transition;
+import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Node;
+import javafx.util.Duration;
 
 /**
  * Implements a translation animation on hover. Plays back when the mouse exit the node.
  *
  * @author ${
  */
-public class TranslationOnHoverAnimation  {
+public class TranslationOnHoverAnimation {
 
-	private final float offsetX;
-	private final float offsetY;
-	private final float cycleTime;
-	private TranslateTransition innerTransition;
+    private final float offsetX;
+    private final float offsetY;
+    private final Duration time1;
+    private final Interpolator interpolator1;
+    private final Interpolator interpolator2;
 
-	private TranslationOnHoverAnimation(float offsetX, float offsetY, float cycleTime) {
-		this.offsetX = offsetX;
-		this.offsetY = offsetY;
-		this.cycleTime = cycleTime;
+    public TranslationOnHoverAnimation(
+            float offsetX,
+            float offsetY,
+            Duration time1,
+            Interpolator interpolator1,
+            Interpolator interpolator2) {
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        this.time1 = time1;
+        this.interpolator1 = interpolator1;
+        this.interpolator2 = interpolator2;
+    }
 
-	}
+    private static void moveAnimatedTo(
+            float relativeXTarget,
+            float relativeYTarget,
+            TranslateTransition translateTransition,
+            Node animated) {
+        translateTransition.stop();
+        translateTransition.setByX(relativeXTarget - animated.getTranslateX());
+        translateTransition.setByY(relativeYTarget - animated.getTranslateY());
+        translateTransition.play();
+    }
 
-	public static void attachTo(Node animated) {
-		TranslateTransition translateTransition = new TranslateTransition();
-		animated.setOnMouseEntered(event -> {
-
-		});
-	}
-
-	private static double easeOutBounce(double x) {
-		float n1 = 7.5625f;
-		float d1 = 2.75f;
-
-		if (x < 1 / d1) {
-			return n1 * x * x;
-		} else if (x < 2 / d1) {
-			return n1 * (x -= 1.5 / d1) * x + 0.75;
-		} else if (x < 2.5 / d1) {
-			return n1 * (x -= 2.25 / d1) * x + 0.9375;
-		} else {
-			return n1 * (x -= 2.625 / d1) * x + 0.984375;
-		}
-	}
-
+    public void attachTo(Node animated) {
+        TranslateTransition translateTransition = new TranslateTransition(this.time1, animated);
+        translateTransition.setDuration(time1);
+        animated.setOnMouseEntered(
+                mouseEvent -> {
+                    translateTransition.setInterpolator(interpolator1);
+                    moveAnimatedTo(offsetX, offsetY, translateTransition, animated);
+                });
+        animated.setOnMouseExited(
+                mouseEvent -> {
+                    translateTransition.setInterpolator(interpolator2);
+                    moveAnimatedTo(0, 0, translateTransition, animated);
+                });
+    }
 }
