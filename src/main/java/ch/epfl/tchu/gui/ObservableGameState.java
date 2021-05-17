@@ -126,10 +126,8 @@ public class ObservableGameState {
                     !newGameState.claimedRoutes().contains(route)
                             && !neighbouringRoutes.contains(route.stations());
             boolean canClaimRoute = playerState.canClaimRoute(route);
-            if (playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute) {
-                // set true if all conditions are met
-                playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(true);
-            }
+            BooleanProperty conditionsAreMet = new SimpleBooleanProperty(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
+                playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(conditionsAreMet.get());
         }
     }
 
