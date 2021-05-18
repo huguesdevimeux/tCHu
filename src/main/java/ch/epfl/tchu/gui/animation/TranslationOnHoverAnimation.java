@@ -8,30 +8,49 @@ import javafx.util.Duration;
 /**
  * Implements a translation animation on hover. Plays back when the mouse exit the node.
  *
- * @author ${
+ * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
  */
 public class TranslationOnHoverAnimation {
 
     private final float offsetX;
     private final float offsetY;
-    private final Duration time1;
+    private final Duration cycleTime;
     private final Interpolator interpolator1;
     private final Interpolator interpolator2;
 
+	/**
+	 * Construct a TranslationOnHover animation, given the animated node and the necessary parameters.
+	 *
+	 * @param offsetX The offset in the x axis the node will be translated of.
+	 * @param offsetY The offset in the y axis the node will be translated of.
+	 * @param cycleTime The time of the animation.
+	 * @param interpolator1 The interpolator for the first way animation.
+	 * @param interpolator2 the interpolator for the second way animation (the return).
+	 */
     public TranslationOnHoverAnimation(
             float offsetX,
             float offsetY,
-            Duration time1,
+            Duration cycleTime,
             Interpolator interpolator1,
             Interpolator interpolator2) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
-        this.time1 = time1;
+        this.cycleTime = cycleTime;
         this.interpolator1 = interpolator1;
         this.interpolator2 = interpolator2;
     }
 
-    private static void moveAnimatedTo(
+	/**
+	 * Given a target, applies an animation translation to the target while taking care of not going further the target.
+	 * Stop translateTransition if playing.
+	 *
+	 * @param relativeXTarget The target in the x axis.
+	 * @param relativeYTarget The target in the y axis.
+	 * @param translateTransition The translation to apply.
+	 * @param animated The animated node.
+	 */
+    private static void translateAnimatedTo(
             float relativeXTarget,
             float relativeYTarget,
             TranslateTransition translateTransition,
@@ -42,18 +61,23 @@ public class TranslationOnHoverAnimation {
         translateTransition.play();
     }
 
-    public void attachTo(Node animated) {
-        TranslateTransition translateTransition = new TranslateTransition(this.time1, animated);
-        translateTransition.setDuration(time1);
+	/**
+	 * Attach a {@link TranslationOnHoverAnimation} to animated
+	 *
+	 * @param animated The node to animate.
+	 */
+	public void attachTo(Node animated) {
+        TranslateTransition translateTransition = new TranslateTransition(this.cycleTime, animated);
+        translateTransition.setDuration(cycleTime);
         animated.setOnMouseEntered(
                 mouseEvent -> {
                     translateTransition.setInterpolator(interpolator1);
-                    moveAnimatedTo(offsetX, offsetY, translateTransition, animated);
+                    translateAnimatedTo(offsetX, offsetY, translateTransition, animated);
                 });
         animated.setOnMouseExited(
                 mouseEvent -> {
                     translateTransition.setInterpolator(interpolator2);
-                    moveAnimatedTo(0, 0, translateTransition, animated);
+                    translateAnimatedTo(0, 0, translateTransition, animated);
                 });
     }
 }
