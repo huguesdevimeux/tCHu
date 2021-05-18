@@ -18,7 +18,7 @@ public final class CustomInterpolators {
                     return Math.sin((x * PI) / 2);
                 }
             };
-    public static Interpolator EASE_OUT_BOUNCE =
+    public static final Interpolator EASE_OUT_BOUNCE =
             new Interpolator() {
                 private static final float n1 = 7.5625f;
                 private static final float d1 = 2.75f;
