@@ -3,6 +3,7 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
+import ch.epfl.tchu.gui.animation.tCHuAnimation;
 import ch.epfl.tchu.gui.animation.CustomInterpolators;
 import ch.epfl.tchu.gui.animation.TranslationOnHoverAnimation;
 import javafx.animation.Interpolator;
@@ -57,7 +58,9 @@ class DecksViewCreator {
 
         for (int slot : Constants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
-            translationAnimationFaceUpCards.attachTo(displayedCard);
+            tCHuAnimation translationFaceUpCards =  translationAnimationFaceUpCards.attachTo(displayedCard);
+            displayedCard.setOnMouseEntered(event -> translationFaceUpCards.play());
+            displayedCard.setOnMouseExited(event -> translationFaceUpCards.reversePlay());
             cardsView.getChildren().add(displayedCard);
             displayedCard.disableProperty().bind(drawCardHandler.isNull());
             displayedCard.setOnMouseClicked(event -> drawCardHandler.get().onDrawCard(slot));
@@ -110,7 +113,9 @@ class DecksViewCreator {
 
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
-            translationAnimationFaceUpCards.attachTo(cardOfHand);
+            tCHuAnimation translationAnimation =  translationAnimationFaceUpCards.attachTo(cardOfHand);
+            cardOfHand.setOnMouseEntered(event -> translationAnimation.play());
+            cardOfHand.setOnMouseExited(event -> translationAnimation.reversePlay());
             String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();
             cardOfHand.getStyleClass().addAll(color);
 

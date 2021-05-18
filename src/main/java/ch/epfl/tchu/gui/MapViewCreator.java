@@ -6,6 +6,8 @@ import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.gui.ActionHandlers.ChooseCardsHandler;
 import ch.epfl.tchu.gui.ActionHandlers.ClaimRouteHandler;
+import ch.epfl.tchu.gui.animation.tCHuAnimation;
+import ch.epfl.tchu.gui.animation.IndicationAnimation;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -13,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.List;
 
@@ -43,6 +46,8 @@ class MapViewCreator {
         Pane gameMapPane = new Pane();
         gameMapPane.getStylesheets().addAll(STYLE_SHEET_MAP, STYLE_SHEET_COLORS);
         gameMapPane.getChildren().add(new ImageView());
+
+		IndicationAnimation indicationAnimation =  new IndicationAnimation(Duration.millis(1000), 10, 10, 4);
 
         for (Route route : ChMap.routes()) {
             Group mainRouteGroup = new Group();
@@ -86,13 +91,17 @@ class MapViewCreator {
                     .disableProperty()
                     .bind(routeHandler.isNull().or(obsGameState.playerCanClaimRoute(route).not()));
 
+			tCHuAnimation animation = indicationAnimation.attachTo(mainRouteGroup);
+
             // If the route is owned by a player, we fill the route's blocks
             // with the corresponding player's color (light blue for PLAYER_1 for ex)
             obsGameState
                     .getRoutesOwner(route)
                     .addListener(
-                            (observableValue, oldValue, newValue) ->
-                                    mainRouteGroup.getStyleClass().add(newValue.name()));
+                            (observableValue, oldValue, newValue) -> {
+                                animation.play();
+                                mainRouteGroup.getStyleClass().add(newValue.name());
+                            });
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {

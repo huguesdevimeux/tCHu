@@ -11,7 +11,7 @@ import javafx.util.Duration;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class TranslationOnHoverAnimation {
+public class TranslationOnHoverAnimation implements AnimationAttacher{
 
     private final float offsetX;
     private final float offsetY;
@@ -66,18 +66,30 @@ public class TranslationOnHoverAnimation {
 	 *
 	 * @param animated The node to animate.
 	 */
-	public void attachTo(Node animated) {
-        TranslateTransition translateTransition = new TranslateTransition(this.cycleTime, animated);
-        translateTransition.setDuration(cycleTime);
-        animated.setOnMouseEntered(
-                mouseEvent -> {
-                    translateTransition.setInterpolator(interpolator1);
-                    translateAnimatedTo(offsetX, offsetY, translateTransition, animated);
-                });
-        animated.setOnMouseExited(
-                mouseEvent -> {
-                    translateTransition.setInterpolator(interpolator2);
-                    translateAnimatedTo(0, 0, translateTransition, animated);
-                });
+	public TranslationOnHover attachTo(Node animated) {
+		return new TranslationOnHover(animated);
     }
+
+    private class TranslationOnHover implements tCHuAnimation {
+
+		private final Node animated;
+		private final TranslateTransition translateTransition;
+
+		public TranslationOnHover(Node animated) {
+			this.animated = animated;
+			this.translateTransition = new TranslateTransition(cycleTime, animated);
+		}
+
+		@Override
+		public void play() {
+			translateTransition.setInterpolator(interpolator1);
+			translateAnimatedTo(offsetX, offsetY, translateTransition, animated);
+		}
+
+		@Override
+		public void reversePlay() {
+			translateTransition.setInterpolator(interpolator2);
+			translateAnimatedTo(0, 0, translateTransition, animated);
+		}
+	}
 }
