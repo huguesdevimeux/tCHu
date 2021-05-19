@@ -85,5 +85,4 @@ public class GuiConstants {
     public static final int NUMBER_BOUNCES_INDICATION = 4;
 	public static final int CYCLE_TIME_FADE = 10;
 	public static final double FROM_FADE = 0.5;
-	public static final int TO_FADE = 1;
 }

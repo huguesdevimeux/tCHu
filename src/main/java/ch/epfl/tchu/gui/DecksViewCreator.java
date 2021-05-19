@@ -56,7 +56,7 @@ class DecksViewCreator {
                         Duration.millis(DURATION_ANIMATION_DECK_CARDS),
                         CustomInterpolators.EASE_OUT_SINE,
                         Interpolator.LINEAR);
-        FadeAnimation fadeAnimation = new FadeAnimation(CYCLE_TIME_FADE, FROM_FADE, TO_FADE);
+        FadeAnimation fadeAnimation = new FadeAnimation(CYCLE_TIME_FADE, FROM_FADE, 1);
 
         for (int slot : Constants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
