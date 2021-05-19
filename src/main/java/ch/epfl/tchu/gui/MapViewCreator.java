@@ -41,7 +41,7 @@ class MapViewCreator {
             ObjectProperty<ClaimRouteHandler> routeHandler,
             CardChooser cardChooser) {
         Pane gameMapPane = new Pane();
-        gameMapPane.getStylesheets().addAll(STYLE_SHEET_MAP, STYLE_SHEET_COLORS);
+        gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
         gameMapPane.getChildren().add(new ImageView());
 
         for (Route route : ChMap.routes()) {
@@ -53,7 +53,7 @@ class MapViewCreator {
                             STYLE_CLASS_ROUTE,
                             route.level().name(),
                             route.color() == null
-                                    ? STYLE_CLASS_COLOR_NEUTRAL
+                                    ? NEUTRAL_COLOR
                                     : route.color().name());
 
             for (int i = 1; i <= route.length(); i++) {

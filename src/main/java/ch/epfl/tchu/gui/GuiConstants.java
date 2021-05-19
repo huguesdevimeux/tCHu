@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  */
 public class GuiConstants {
     // style sheets constants
-    public static final String STYLE_SHEET_MAP = "map.css";
-    public static final String STYLE_SHEET_COLORS = "colors.css";
-    public static final String STYLE_SHEET_DECKS = "decks.css";
-    public static final String STYLE_SHEET_INFO = "info.css";
+    public static final String MAP_CSS = "map.css";
+    public static final String COLORS_CSS = "colors.css";
+    public static final String DECKS_CSS = "decks.css";
+    public static final String INFO_CSS = "info.css";
 
     // style class constants
     public static final String STYLE_CLASS_ROUTE = "route";
@@ -33,7 +33,7 @@ public class GuiConstants {
     public static final String STYLE_CLASS_CHOOSER = "chooser.css";
 
     /* "neutral" color. */
-    public static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
+    public static final String NEUTRAL_COLOR = "NEUTRAL";
     /* All the colors used in css. Does not include neutral, as not a proper color. */
     public static final List<String> STYLE_CLASSES_COLOR =
             Color.ALL.stream().map(Objects::toString).collect(Collectors.toList());
