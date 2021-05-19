@@ -74,4 +74,13 @@ public class GuiConstants {
     public static final int OFFSET_Y_CARDS_DECK = 0;
     /* Duration of the translation animation of deck's cards. */
     public static final int DURATION_ANIMATION_DECK_CARDS = 400;
+
+    /*Duration of the indication animation. In Ms;*/
+    public static final int DURATION_ANIMATION = 200;
+    /*Added x value during the indication animation. */
+    public static final float SCALING_X_INDICATION = 0.5f;
+    /*Added y value during the indication animation. */
+    public static final float SCALING_Y_INDICATION = 0.5f;
+    /*Number of bounces during the indication animation. */
+    public static final int NUMBER_BOUNCES_INDICATION = 4;
 }

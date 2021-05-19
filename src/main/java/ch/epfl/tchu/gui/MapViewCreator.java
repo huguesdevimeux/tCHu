@@ -28,7 +28,8 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  */
 class MapViewCreator {
-    /** Not instantiable. */
+
+	/** Not instantiable. */
     private MapViewCreator() {}
 
     /**
@@ -47,7 +48,12 @@ class MapViewCreator {
         gameMapPane.getStylesheets().addAll(STYLE_SHEET_MAP, STYLE_SHEET_COLORS);
         gameMapPane.getChildren().add(new ImageView());
 
-		IndicationAnimation indicationAnimation =  new IndicationAnimation(Duration.millis(1000), 10, 10, 4);
+        IndicationAnimation indicationAnimation =
+                new IndicationAnimation(
+                        Duration.millis(DURATION_ANIMATION),
+                        SCALING_X_INDICATION,
+                        SCALING_Y_INDICATION,
+                        NUMBER_BOUNCES_INDICATION);
 
         for (Route route : ChMap.routes()) {
             Group mainRouteGroup = new Group();
