@@ -4,7 +4,12 @@ import javafx.animation.ScaleTransition;
 import javafx.scene.Node;
 import javafx.util.Duration;
 
-/** @author ${ */
+/**
+ * Animation played to indicate a route.
+ *
+ * @author Hugues Devimeux (327282)
+ * @author Luca Mouchel (324748)
+ */
 public class IndicationAnimation implements AnimationAttacher{
 
     private final Duration cycleTime;
