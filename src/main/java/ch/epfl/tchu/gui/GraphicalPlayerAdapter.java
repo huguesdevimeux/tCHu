@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -18,16 +19,18 @@ import static javafx.application.Platform.runLater;
  */
 public class GraphicalPlayerAdapter implements Player {
 
-    private final BlockingQueue<SortedBag<Ticket>> ticketsRetriverQueue =
-            new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<SortedBag<Ticket>> ticketsRetriverQueue = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<Integer> drawSlotRetrieverQueue = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<Route> claimedRouteRetrieverQueue = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<SortedBag<Card>> initialClaimCardsRetrieverQueue =
             new ArrayBlockingQueue<>(1);
     private GraphicalPlayer graphicalPlayer;
 
-    /** Constructor for {@link GraphicalPlayerAdapter}. */
-    public GraphicalPlayerAdapter() {}
+    /**
+     * Constructor for {@link GraphicalPlayerAdapter}.
+     */
+    public GraphicalPlayerAdapter() {
+    }
 
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
@@ -112,10 +115,9 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-
         BlockingQueue<SortedBag<Card>> queue = new ArrayBlockingQueue<>(1);
         ActionHandlers.ChooseCardsHandler handler =
-                usedCardsToClaimRoute -> putInQueue(queue, usedCardsToClaimRoute);
+                usedCardsToClaimRoute -> putInQueue(queue, Objects.requireNonNullElseGet(usedCardsToClaimRoute, SortedBag::of));
         runLater(() -> graphicalPlayer.chooseAdditionalCards(options, handler));
         return retrieveFromQueue(queue);
     }
@@ -125,7 +127,7 @@ public class GraphicalPlayerAdapter implements Player {
      *
      * @param value The supplier that provide the desired value.
      * @param queue The blocking queue.
-     * @param <T> Type of the value.
+     * @param <T>   Type of the value.
      * @throws Error If there is an error during the supplier execution.
      */
     private <T> void putInQueue(BlockingQueue<T> queue, T value) {
@@ -140,7 +142,7 @@ public class GraphicalPlayerAdapter implements Player {
      * Retrieve an element from a blocking queue.
      *
      * @param queue The queue.
-     * @param <T> Type of the element.
+     * @param <T>   Type of the element.
      * @return The element.
      */
     private <T> T retrieveFromQueue(BlockingQueue<T> queue) {
