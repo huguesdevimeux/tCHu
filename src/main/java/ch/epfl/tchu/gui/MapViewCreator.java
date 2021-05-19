@@ -6,7 +6,7 @@ import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.Route;
 import ch.epfl.tchu.gui.ActionHandlers.ChooseCardsHandler;
 import ch.epfl.tchu.gui.ActionHandlers.ClaimRouteHandler;
-import ch.epfl.tchu.gui.animation.tCHuAnimation;
+import ch.epfl.tchu.gui.animation.AbstractAnimation;
 import ch.epfl.tchu.gui.animation.IndicationAnimation;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Group;
@@ -91,7 +91,7 @@ class MapViewCreator {
                     .disableProperty()
                     .bind(routeHandler.isNull().or(obsGameState.playerCanClaimRoute(route).not()));
 
-			tCHuAnimation animation = indicationAnimation.attachTo(mainRouteGroup);
+			AbstractAnimation animation = indicationAnimation.attachTo(mainRouteGroup);
 
             // If the route is owned by a player, we fill the route's blocks
             // with the corresponding player's color (light blue for PLAYER_1 for ex)

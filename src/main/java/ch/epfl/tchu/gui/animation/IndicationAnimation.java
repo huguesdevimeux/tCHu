@@ -20,14 +20,15 @@ public class IndicationAnimation implements AnimationAttacher{
         this.numberBounces = numberBounces;
     }
 
-    public tCHuAnimation attachTo(Node animated) {
+    public AbstractAnimation attachTo(Node animated) {
         return new Indication(animated);
     }
 
-    private class Indication implements tCHuAnimation {
+    private class Indication extends AbstractAnimation {
         private final ScaleTransition scaleTransition;
 
         private Indication(Node animated) {
+        	super(animated);
             this.scaleTransition = new ScaleTransition(cycleTime, animated);
             this.scaleTransition.setByX(scalingX);
             this.scaleTransition.setByY(scalingY);

@@ -70,13 +70,12 @@ public class TranslationOnHoverAnimation implements AnimationAttacher{
 		return new TranslationOnHover(animated);
     }
 
-    private class TranslationOnHover implements tCHuAnimation {
+    private class TranslationOnHover extends AbstractAnimation {
 
-		private final Node animated;
 		private final TranslateTransition translateTransition;
 
 		public TranslationOnHover(Node animated) {
-			this.animated = animated;
+			super(animated);
 			this.translateTransition = new TranslateTransition(cycleTime, animated);
 		}
 

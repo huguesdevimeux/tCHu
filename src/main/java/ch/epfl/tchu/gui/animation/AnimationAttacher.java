@@ -3,7 +3,7 @@ package ch.epfl.tchu.gui.animation;
 import javafx.scene.Node;
 
 /**
- * Can attach to a {@link Node} a tCHuAnimation.
+ * Can attach to a {@link Node} a AbstractAnimation.
  */
 public interface AnimationAttacher {
 	/**
@@ -12,5 +12,5 @@ public interface AnimationAttacher {
 	 * @param animated The node to animate.
 	 * @return The new animation.
 	 */
-	tCHuAnimation attachTo(Node animated);
+	AbstractAnimation attachTo(Node animated);
 }
