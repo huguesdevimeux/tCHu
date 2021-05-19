@@ -3,12 +3,13 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
-import ch.epfl.tchu.gui.animation.AbstractAnimation;
-import ch.epfl.tchu.gui.animation.CustomInterpolators;
-import ch.epfl.tchu.gui.animation.TranslationOnHoverAnimation;
+import ch.epfl.tchu.gui.animation.*;
+import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -30,7 +31,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  */
 class DecksViewCreator {
 
-    // Not instantiable.
+	// Not instantiable.
     private DecksViewCreator() {}
 
     public static Node createCardsView(
@@ -55,14 +56,25 @@ class DecksViewCreator {
                         Duration.millis(DURATION_ANIMATION_DECK_CARDS),
                         CustomInterpolators.EASE_OUT_SINE,
                         Interpolator.LINEAR);
+        FadeAnimation fadeAnimation = new FadeAnimation(CYCLE_TIME_FADE, FROM_FADE, TO_FADE);
 
         for (int slot : Constants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
-            AbstractAnimation translationFaceUpCards =  translationAnimationFaceUpCards.attachTo(displayedCard);
+
+            AbstractAnimation translationFaceUpCards =
+                    translationAnimationFaceUpCards.attachTo(displayedCard);
+            AbstractAnimation fade = fadeAnimation.attachTo(displayedCard);
             displayedCard.setOnMouseEntered(event -> translationFaceUpCards.play());
             displayedCard.setOnMouseExited(event -> translationFaceUpCards.reversePlay());
             cardsView.getChildren().add(displayedCard);
             displayedCard.disableProperty().bind(drawCardHandler.isNull());
+            displayedCard.disableProperty().addListener((observable, oldValue, newValue) -> {
+				if (!newValue) {
+					fade.play();
+				} else {
+					fade.reversePlay();
+				}
+			});
             displayedCard.setOnMouseClicked(event -> drawCardHandler.get().onDrawCard(slot));
 
             observableGameState
@@ -113,7 +125,8 @@ class DecksViewCreator {
 
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
-            AbstractAnimation translationAnimation =  translationAnimationFaceUpCards.attachTo(cardOfHand);
+            AbstractAnimation translationAnimation =
+                    translationAnimationFaceUpCards.attachTo(cardOfHand);
             cardOfHand.setOnMouseEntered(event -> translationAnimation.play());
             cardOfHand.setOnMouseExited(event -> translationAnimation.reversePlay());
             String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();

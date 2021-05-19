@@ -83,4 +83,7 @@ public class GuiConstants {
     public static final float SCALING_Y_INDICATION = 0.5f;
     /*Number of bounces during the indication animation. */
     public static final int NUMBER_BOUNCES_INDICATION = 4;
+	public static final int CYCLE_TIME_FADE = 10;
+	public static final double FROM_FADE = 0.5;
+	public static final int TO_FADE = 1;
 }
