@@ -33,12 +33,13 @@ public final class RemotePlayerClient {
     /** Run the client. Handles the game process through the network. */
     public void run() {
         try (Socket s = new Socket(host, port);
-             BufferedReader inReader =
+                BufferedReader inReader =
                         new BufferedReader(
                                 new InputStreamReader(s.getInputStream(), NetConstants.ENCODING));
-             BufferedWriter outWriter =
+                BufferedWriter outWriter =
                         new BufferedWriter(
-                                new OutputStreamWriter(s.getOutputStream(), NetConstants.ENCODING))) {
+                                new OutputStreamWriter(
+                                        s.getOutputStream(), NetConstants.ENCODING))) {
 
             String respFromNetwork = inReader.readLine();
 
@@ -46,7 +47,8 @@ public final class RemotePlayerClient {
                 List<String> splitResp =
                         new ArrayList<>(
                                 Arrays.asList(
-                                        respFromNetwork.split(Pattern.quote(NetConstants.SPACE), -1)));
+                                        respFromNetwork.split(
+                                                Pattern.quote(NetConstants.SPACE), -1)));
                 MessageId messageId = MessageId.valueOf(splitResp.get(0));
                 splitResp.remove(0);
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
@@ -54,12 +56,12 @@ public final class RemotePlayerClient {
                         s1 -> {
                             try {
                                 outWriter.write(s1);
+                                outWriter.write(NetConstants.ENDLINE);
+                                outWriter.flush();
                             } catch (IOException e) {
                                 throw new UncheckedIOException(e);
                             }
                         });
-                outWriter.write(NetConstants.END_LINE);
-                outWriter.flush();
                 // Response for the next iteration.
                 respFromNetwork = inReader.readLine();
             }

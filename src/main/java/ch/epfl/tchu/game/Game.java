@@ -49,6 +49,7 @@ public final class Game {
 
         // the following part represents the "mid-game" (ie each turn until the last round begins)
         while ((gameState.lastPlayer() != gameState.currentPlayerId())) {
+            gameState = nextTurn(players);
             Player currentPlayer = players.get(gameState.currentPlayerId());
             updatePlayerStates(players, gameState);
             Player.TurnKind turnKindChosenByCurrentPlayer = currentPlayer.nextTurn();
@@ -108,20 +109,22 @@ public final class Game {
             SortedBag<Ticket> initialTicketsChoice =
                     gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
             players.get(playerId).setInitialTicketChoice(initialTicketsChoice);
+            gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
         }
+        // we update the states before the player can pick desired tickets
+        updatePlayerStates(players, gameState);
+
         for (PlayerId playerId : players.keySet()) {
-            // we update the states before the player can pick desired tickets
-            updatePlayerStates(players, gameState);
             SortedBag<Ticket> chosenInitialTickets = players.get(playerId).chooseInitialTickets();
             // the player then chooses the tickets they want to keep and we have to remove the top
             // tickets from the deck of tickets
-            gameState =
-                    gameState
-                            .withInitiallyChosenTickets(playerId, chosenInitialTickets)
-                            .withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+            gameState = gameState.withInitiallyChosenTickets(playerId, chosenInitialTickets);
+        }
+
+        for (PlayerId playerId : players.keySet()) {
             ReceiveInfoHandler.chosenTicketsInfo(
                     players,
-                    playersInfo.get(playerId),
+                    playersInfo.get(gameState.currentPlayerId()),
                     gameState.playerState(playerId).ticketCount());
         }
     }
