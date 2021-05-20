@@ -2,8 +2,10 @@ package ch.epfl.tchu.game;
 
 import ch.epfl.tchu.game.Route.Level;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ChMap {
     // Stations - cities
@@ -226,6 +228,15 @@ public final class ChMap {
         return ALL_STATIONS;
     }
 
+    public static List<String> stationNames() {
+        return stations().stream().map(Station::name).collect(Collectors.toList());
+    }
+
+  public static List<String> normalizedStations() {
+    return stationNames().stream()
+        .map(s -> Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ", ""))
+            .collect(Collectors.toList());
+}
     public static List<Route> routes() {
         return ALL_ROUTES;
     }
