@@ -228,10 +228,31 @@ public final class ChMap {
         return ALL_STATIONS;
     }
 
-    public static List<String> stationNames() {
-        return stations().stream().map(Station::name).collect(Collectors.toList());
+    /**
+     * Returns a list of all the stations figuring in Switzerland.
+     * @return a list of stations in Switzerland.
+     */
+    public static List<Station> swissStations(){
+        return List.of(
+                BAD, BAL, BEL, BER, BRI, BRU, COI, DAV, DEL, FRI, GEN, INT, KRE, LAU, LCF, LOC,
+                LUC, LUG, MAR, NEU, OLT, PFA, SAR, SCE, SCZ, SIO, SOL, STG, VAD, WAS, WIN, YVE,
+                ZOU, ZUR);
     }
 
+    /**
+     * Returns a list of each stations name.
+     * @return a list of each stations' name.
+     */
+    public static List<String> stationNames() {
+        return ALL_STATIONS.stream().map(Station::name).collect(Collectors.toList());
+    }
+
+    /**
+     * List of each station's names but without the accents as CSS files cannot read accents.
+     * We must also replace the character " " for multiple word stations as CSS files do not
+     * accept ids of more than one word.
+     * @return The list of each stations names, without the accents.
+     */
   public static List<String> normalizedStations() {
     return stationNames().stream()
         .map(s -> Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ", ""))

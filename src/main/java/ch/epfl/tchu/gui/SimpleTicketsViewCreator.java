@@ -3,40 +3,82 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.Station;
 import ch.epfl.tchu.game.Ticket;
-import javafx.scene.Node;
+import javafx.collections.FXCollections;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-final class SimpleTicketsViewCreator {
+import static ch.epfl.tchu.gui.GuiConstants.*;
 
+/**
+ * Represents a small stage that popups when clicking on a station. It will open a stage where the
+ * player will see all the tickets in the game that contain the station as a from or a to station.
+ * This allows for a "strategic" aspect to the game. The player can try to guess which tickets the
+ * other player has and attempt to block the other player.
+ *
+ * @author Luca Mouchel (324748)
+ * @author Hugues Devimeux (327282)
+ */
+final class SimpleTicketsViewCreator {
+  public static final ListView<String> possibleTicketsView = new ListView<>();
+  private static TextFlow description;
+  private static Scene scene;
+
+  /** Not instantiable. */
+  private SimpleTicketsViewCreator() {}
+
+  /**
+   * Creates a stage that will display the tickets that contain the given station.
+   *
+   * @param station the station to evaluate in which tickets it appears.
+   * @return a stage (like a popup) that displays the tickets that contain the station.
+   */
   public static Stage createPossibleTicketsView(Station station) {
-    ScrollPane scrollPane = new ScrollPane();
     Stage stage = new Stage();
     List<String> possibleTicketsForGivenStation =
         ChMap.tickets().stream()
-            .map(Ticket::text)
-            .filter(text -> text.contains(station.name()))
+            .filter(
+                ticket ->
+                    ticket
+                            .getTrips()
+                            .get(0)
+                            .from()
+                            .equals(
+                                station) // the clickable stations are in switzerland so there is
+                        // only one trip
+                        || ticket.getTrips().get(0).to().equals(station))
+            .map(Ticket::toString)
             .collect(Collectors.toList());
 
-    VBox renderList = new VBox();
+    possibleTicketsView.setItems(FXCollections.observableList(possibleTicketsForGivenStation));
+    // if the list is empty it means that the station is never a "from" or a "to" but just an
+    // intermediary station.
     if (!possibleTicketsForGivenStation.isEmpty()) {
-      for (String s : possibleTicketsForGivenStation) {
-        renderList.getChildren().add(new Text(s + "\n"));
-      }
-      scrollPane.setContent(renderList);
-      stage.setScene(new Scene(scrollPane, 200, 120));
+      description =
+          new TextFlow(
+              new Text(
+                  String.format(
+                      STATION_FIGURES_IN_TICKETS,
+                      StringsFr.plural(possibleTicketsForGivenStation.size()))));
+      scene =
+          new Scene(
+              new VBox(description, possibleTicketsView),
+              SCENE_WIDTH_FOR_POSSIBLE_TICKETS,
+              SCENE_HEIGHT_FOR_POSSIBLE_TICKETS);
     } else {
-      renderList.getChildren().add(new Text("Aucun ticket n'utilise cette station " +
-              "\ncomme station de départ ou d'arrivée."));
-      stage.setScene(new Scene(renderList, 210, 50));
+      description = new TextFlow(new Text(STATION_IS_NOT_ON_TICKETS));
+      scene = new Scene(description);
     }
+    //adding a little ticket icon for fun.
+    stage.getIcons().add(new Image("ticketIcon.png"));
+    stage.setScene(scene);
     return stage;
   }
 }

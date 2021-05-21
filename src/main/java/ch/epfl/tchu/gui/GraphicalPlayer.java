@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -218,8 +219,12 @@ public class GraphicalPlayer {
                                 playerNames,
                                 observableGameState,
                                 infoProperty));
+        StationViewCreator.createStationsView(
+                MapViewCreator.getGameMapPane(), DecksViewCreator.getTicketsListView());
+
         Scene innerScene = new Scene(mainPane);
         root.setScene(innerScene);
+        root.getIcons().add(new Image("TCHU.png"));
         return root;
     }
 

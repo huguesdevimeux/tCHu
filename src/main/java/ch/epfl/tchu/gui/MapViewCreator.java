@@ -1,10 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
-import ch.epfl.tchu.game.Card;
-import ch.epfl.tchu.game.ChMap;
-import ch.epfl.tchu.game.Route;
-import ch.epfl.tchu.game.Station;
+import ch.epfl.tchu.game.*;
 import ch.epfl.tchu.gui.ActionHandlers.ChooseCardsHandler;
 import ch.epfl.tchu.gui.ActionHandlers.ClaimRouteHandler;
 import javafx.beans.property.ObjectProperty;
@@ -27,8 +24,10 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  */
 final class MapViewCreator {
+  private static Pane gameMapPane;
   /** Not instantiable. */
   private MapViewCreator() {}
+
   /**
    * Method in charge of creating the whole view of the map. ie the routes, the map, the colors.
    *
@@ -41,7 +40,7 @@ final class MapViewCreator {
       ObservableGameState obsGameState,
       ObjectProperty<ClaimRouteHandler> routeHandler,
       CardChooser cardChooser) {
-    Pane gameMapPane = new Pane();
+    gameMapPane = new Pane();
     gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
     gameMapPane.getChildren().add(new ImageView());
 
@@ -77,16 +76,6 @@ final class MapViewCreator {
         mainRouteGroup.getChildren().addAll(eachRoutesBlock);
       }
 
-      for (Station station : ChMap.stations()) {
-        Group stationCircle = new Group();
-        stationCircle.getStyleClass().add("station");
-        stationCircle.setId(ChMap.normalizedStations().get(stations().indexOf(station)));
-        //circle = (new Circle(6));
-        stationCircle.getChildren().add(new Circle(6));
-        stationCircle.setOnMouseClicked(
-            e -> SimpleTicketsViewCreator.createPossibleTicketsView(station).show());
-        gameMapPane.getChildren().add(stationCircle);
-      }
       gameMapPane.getChildren().add(mainRouteGroup);
       // If the route handler is null or the player can't claim the route
       // we disable the player's attempt to claim the route, ie pressing
@@ -118,6 +107,9 @@ final class MapViewCreator {
     return gameMapPane;
   }
 
+  public static Pane getGameMapPane() {
+    return gameMapPane;
+  }
   /**
    * Interface containing a method intended to be called when the player must choose the cards he
    * wishes to use to seize a route.

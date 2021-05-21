@@ -1,6 +1,8 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.game.*;
+import ch.epfl.tchu.game.Card;
+import ch.epfl.tchu.game.Constants;
+import ch.epfl.tchu.game.Ticket;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Group;
@@ -10,12 +12,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import static ch.epfl.tchu.game.ChMap.stations;
 import static ch.epfl.tchu.gui.GuiConstants.*;
 
 /**
@@ -79,27 +78,7 @@ final class DecksViewCreator {
     ticketsListView.setItems(observableGameState.playersTicketsList());
     ticketsListView.getStylesheets().add(MAP_CSS);
     ticketsListView.setId(ID_TICKETS);
-    ticketsListView.setOnMouseClicked(
-        e -> {
-          Station to =
-              ticketsListView
-                  .getItems()
-                  .get(ticketsListView.getSelectionModel().getSelectedIndex())
-                  .getTo();
-          Station from = ticketsListView
-                  .getItems()
-                  .get(ticketsListView.getSelectionModel().getSelectedIndex())
-                  .getFrom();
 
-          Group group = new Group();
-          group.getStyleClass().add("station");
-          group.setId(ChMap.normalizedStations().get(stations().indexOf(from)));
-          Circle c = new Circle(6);
-          group.getChildren().add(c);
-          c.setFill(Color.RED);
-        });
-
-    //
     HBox cardsHandPanel = new HBox();
     cardsHandPanel.setId(ID_HAND_PANE);
 
@@ -128,6 +107,10 @@ final class DecksViewCreator {
     HBox handView = new HBox(ticketsListView, cardsHandPanel);
     handView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
     return handView;
+  }
+
+  public static ListView<Ticket> getTicketsListView() {
+    return ticketsListView;
   }
 
   private static StackPane individualCard() {

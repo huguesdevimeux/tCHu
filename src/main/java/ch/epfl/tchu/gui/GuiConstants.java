@@ -33,6 +33,7 @@ public final class GuiConstants {
     public static final String STYLE_CLASS_OUTSIDE = "outside";
     public static final String STYLE_CLASS_TRAIN_IMAGE = "train-image";
     public static final String STYLE_CLASS_CHOOSER = "chooser.css";
+    public static final String STYLE_CLASS_STATION = "station";
 
     /* "neutral" color. */
     public static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
@@ -61,6 +62,27 @@ public final class GuiConstants {
     public static final int MINIMUM_CHOICES_CLAIM_CARDS = 1;
     /* How many hands of cards the player has to choose when choosing additional cards. */
     public static final int MINIMUM_CHOICES_ADDITIONAL_CARDS = 1;
-    /* The title of the holy tCHu window. */
+  /* The radius of the stations circles on the map.*/
+  public static final int STATION_CIRCLE_RADIUS = 6;
+  /* The radius of the stations circles that is increased when pressing on a ticket.*/
+  public static final int INCREASED_CIRCLE_RADIUS = 9;
+  /* The style we give to the from station of the selected ticket. */
+  public static final String SWISS_FROM_STATION_STYLE = "-fx-fill: #6f6ff3";
+  /* The style we give to the to station of the selected ticket. */
+  public static final String SWISS_TO_STATION_STYLE = "-fx-fill: #f15454";
+  /* The initial and default style of the stations */
+  public static final String SWISS_STATION_STYLE = "-fx-fill: white";
+  /* The custom width of the scene that is generated that displays the tickets where the stations appear.*/
+  public static final int SCENE_WIDTH_FOR_POSSIBLE_TICKETS = 220;
+  /* The custom height of the scene that is generated that displays the tickets where the stations appear.*/
+  public static final int SCENE_HEIGHT_FOR_POSSIBLE_TICKETS = 130;
+  /* The description of the possible tickets where a station is used */
+  public static final String STATION_FIGURES_IN_TICKETS =
+          "Cette station ce trouve sur le%s ticket%<s :";
+  /* The description saying the station doesn't figure on any ticket*/
+  public static final String STATION_IS_NOT_ON_TICKETS =
+          "Aucun ticket n'utilise cette station " + "\ncomme station de départ ou d'arrivée.";
+
+  /* The title of the holy tCHu window. */
     public static final String TCHU_TITLE = "tCHu \u2014 %s";
 }

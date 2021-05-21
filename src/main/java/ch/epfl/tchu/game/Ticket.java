@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
  * @author Luca Mouchel (324748)
  */
 public final class Ticket implements Comparable<Ticket> {
-    private Station from;
-    private Station to;
     private final String textRepresentation;
     private final List<Trip> trips;
 
@@ -45,8 +43,6 @@ public final class Ticket implements Comparable<Ticket> {
      */
     public Ticket(Station from, Station to, int points) {
         this(Collections.singletonList(new Trip(from, to, points)));
-        this.from = from;
-        this.to = to;
     }
 
     private String computeTextRepresentation() {
@@ -106,13 +102,5 @@ public final class Ticket implements Comparable<Ticket> {
     @Override
     public int compareTo(Ticket that) {
         return this.text().compareTo(that.text());
-    }
-
-    public Station getFrom() {
-        return from;
-    }
-
-    public Station getTo() {
-        return to;
     }
 }

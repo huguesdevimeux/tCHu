@@ -48,7 +48,7 @@ ImageView {
 .station:hover Circle{
     -fx-scale-x: 1.5;
     -fx-scale-y: 1.5;
-    -fx-fill: #226008;
+    -fx-fill: #f6f671;
 }
 
 
@@ -268,34 +268,34 @@ ImageView {
 #BEL_LUG_2_1 { -fx-translate-x: 741; -fx-translate-y: 625; -fx-rotate: -81 }
 
 #Baden {-fx-translate-x: 548; -fx-translate-y: 144}
-#Bale {-fx-translate-x: 397; -fx-translate-y: 119}
+#Bale {-fx-translate-x: 397; -fx-translate-y: 120}
 #Bellinzone {-fx-translate-x: 754; -fx-translate-y: 595}
 #Berne {-fx-translate-x: 362; -fx-translate-y: 337}
 #Brigue {-fx-translate-x: 488; -fx-translate-y: 545}
-#Brusio {-fx-translate-x: 995; -fx-translate-y: 567}
+#Brusio {-fx-translate-x: 996; -fx-translate-y: 567}
 #Coire {-fx-translate-x: 851; -fx-translate-y: 374}
 #Davos {-fx-translate-x: 965; -fx-translate-y: 374}
 #Delemont {-fx-translate-x: 312; -fx-translate-y: 191}
 #Fribourg {-fx-translate-x: 306; -fx-translate-y: 390}
-#Geneve {-fx-translate-x: 45; -fx-translate-y: 596}
+#Geneve {-fx-translate-x: 45; -fx-translate-y: 595}
 #Interlaken {-fx-translate-x: 465; -fx-translate-y: 436}
 #Kreuzlingen {-fx-translate-x: 777; -fx-translate-y: 85}
-#Lausanne {-fx-translate-x: 182; -fx-translate-y: 474}
-#LaChaux-de-Fonds  {-fx-translate-x: 184; -fx-translate-y: 270}
+#Lausanne {-fx-translate-x: 182; -fx-translate-y: 473}
+#LaChaux-de-Fonds  {-fx-translate-x: 185; -fx-translate-y: 270}
 #Locarno {-fx-translate-x: 681; -fx-translate-y: 611}
 #Lucerne {-fx-translate-x: 561; -fx-translate-y: 299}
-#Lugano {-fx-translate-x: 737; -fx-translate-y: 662}
+#Lugano {-fx-translate-x: 737; -fx-translate-y: 661}
 #Martigny {-fx-translate-x: 257; -fx-translate-y: 635}
 #Neuchatel {-fx-translate-x: 238; -fx-translate-y: 320}
-#Olten {-fx-translate-x: 460; -fx-translate-y: 208}
+#Olten {-fx-translate-x: 460; -fx-translate-y: 206}
 #Pfaffikon {-fx-translate-x: 691; -fx-translate-y: 253}
-#Sargans {-fx-translate-x: 820; -fx-translate-y: 312}
-#Schaffhouse {-fx-translate-x: 628; -fx-translate-y: 54}
+#Sargans {-fx-translate-x: 821; -fx-translate-y: 312}
+#Schaffhouse {-fx-translate-x: 628; -fx-translate-y: 53}
 #Schwyz {-fx-translate-x: 642; -fx-translate-y: 319}
 #Sion {-fx-translate-x: 345; -fx-translate-y: 573}
-#Soleure {-fx-translate-x: 380; -fx-translate-y: 222}
-#Saint-Gall {-fx-translate-x: 814; -fx-translate-y: 151}
-#Vaduz {-fx-translate-x: 863; -fx-translate-y: 253}
+#Soleure {-fx-translate-x: 380; -fx-translate-y: 221}
+#Saint-Gall {-fx-translate-x: 814; -fx-translate-y: 152}
+#Vaduz {-fx-translate-x: 864; -fx-translate-y: 254}
 #Wassen {-fx-translate-x: 643; -fx-translate-y: 428}
 #Winterthour {-fx-translate-x: 658; -fx-translate-y: 119}
 #Yverdon {-fx-translate-x: 170; -fx-translate-y: 391}
