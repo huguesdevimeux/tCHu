@@ -28,8 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static ch.epfl.tchu.gui.GuiConstants.CHOOSER_CSS;
-import static ch.epfl.tchu.gui.GuiConstants.VISIBLE_INFOS;
+import static ch.epfl.tchu.gui.GuiConstants.*;
 import static javafx.application.Platform.isFxApplicationThread;
 
 /**
@@ -224,7 +223,7 @@ public class GraphicalPlayer {
 
         Scene innerScene = new Scene(mainPane);
         root.setScene(innerScene);
-        root.getIcons().add(new Image("TCHU.png"));
+        root.getIcons().add(new Image(TCHU_ICON));
         return root;
     }
 

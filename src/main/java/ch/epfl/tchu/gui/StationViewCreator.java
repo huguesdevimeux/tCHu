@@ -88,7 +88,7 @@ final class StationViewCreator {
           switch (newList.size()) {
             case 1:
               fromStation = newList.get(0);
-              fromStation.setStyle("-fx-fill: #04621f");
+              fromStation.setStyle(SWISS_FROM_STATION_TO_COUNTRY_STYLE);
               fromStation.setRadius(INCREASED_CIRCLE_RADIUS);
               break;
             case 2:
