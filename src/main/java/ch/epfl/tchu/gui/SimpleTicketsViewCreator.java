@@ -27,7 +27,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  */
 final class SimpleTicketsViewCreator {
-  public static final ListView<String> possibleTicketsView = new ListView<>();
+  private static final ListView<String> possibleTicketsView = new ListView<>();
   private static TextFlow description;
   private static Scene scene;
 
