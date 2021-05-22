@@ -32,6 +32,7 @@ public final class ObservableGameState {
     private final Map<PlayerId, IntegerProperty> eachPlayersCardsCount = createMapWithSingleIntProperty();
     private final Map<PlayerId, IntegerProperty> eachPlayersCarsCount = createMapWithSingleIntProperty();
     private final Map<PlayerId, IntegerProperty> eachPlayersClaimPoints = createMapWithSingleIntProperty();
+    private final IntegerProperty eachplayersTicketPoints = new SimpleIntegerProperty();
     // 3rd group of properties
     private final ObservableList<Ticket> playersTickets = FXCollections.observableArrayList();
     // we stock the number of each type of card in a list such that the numbers in the list
@@ -89,9 +90,10 @@ public final class ObservableGameState {
         for (PlayerId playerId : PlayerId.ALL) {
             eachPlayersTicketsCount.get(playerId).set(newGameState.playerState(playerId).ticketCount());
             eachPlayersCardsCount.get(playerId).set(newGameState.playerState(playerId).cardCount());
-            eachPlayersCarsCount.get(playerId).set((newGameState.playerState(playerId).carCount()));
-            eachPlayersClaimPoints.get(playerId).set((newGameState.playerState(playerId).claimPoints()));
-        }
+            eachPlayersCarsCount.get(playerId).set(newGameState.playerState(playerId).carCount());
+            eachPlayersClaimPoints.get(playerId).set(newGameState.playerState(playerId).claimPoints());
+            eachplayersTicketPoints.set(playerState.ticketPoints());
+            }
 
         // simply setting the object property as the tickets of the player
         playersTickets.setAll(playerState.tickets().toList());
@@ -253,6 +255,10 @@ public final class ObservableGameState {
      */
     public ReadOnlyIntegerProperty playerClaimPoints(PlayerId playerId) {
         return eachPlayersClaimPoints.get(playerId);
+    }
+
+    public ReadOnlyIntegerProperty playerTicketPoints() {
+        return eachplayersTicketPoints;
     }
 
     /**

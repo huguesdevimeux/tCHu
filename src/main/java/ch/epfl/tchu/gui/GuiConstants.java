@@ -63,4 +63,6 @@ public final class GuiConstants {
     public static final int MINIMUM_CHOICES_ADDITIONAL_CARDS = 1;
     /* The title of the holy tCHu window. */
     public static final String TCHU_TITLE = "tCHu \u2014 %s";
+    /* A simple empty string to add to the completed ticket section*/
+    public static final String EMPTY_STRING = "";
 }

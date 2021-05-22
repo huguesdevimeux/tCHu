@@ -23,7 +23,7 @@ public final class Constants {
     /** Nombre de billets distribués à chaque joueur en début de partie. */
     public static final int INITIAL_TICKETS_COUNT = 5;
     /** Nombre de cartes distribuées à chaque joueur en début de partie. */
-    public static final int INITIAL_CARDS_COUNT = 4;
+    public static final int INITIAL_CARDS_COUNT = 50;
     /** Nombre de wagons dont dispose chaque joueur en début de partie. */
     public static final int INITIAL_CAR_COUNT = 40;
     /** Nombre de billets tirés à la fois en cours de partie. */
