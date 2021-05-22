@@ -80,14 +80,10 @@ public class GraphicalPlayer {
 
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
-        if (infoProperty.size() < VISIBLE_INFOS) infoProperty.add(new Text(message));
-        else {
-            // we limit the number to VISIBLE_INFOS - 1 because we have to set the text to
-            // the element of the VISIBLE_INFOS th position
-            for (int i = 0; i < VISIBLE_INFOS - 1; i++)
-                infoProperty.get(i).setText(infoProperty.get(i + 1).getText());
-            infoProperty.get(VISIBLE_INFOS - 1).setText(message);
-        }
+        // remove the first index of the observable list to not have more than VISIBLE_INFOS amount
+        // of messages.
+        if (infoProperty.size() == VISIBLE_INFOS) infoProperty.remove(0);
+        infoProperty.add(new Text(message));
     }
 
     public void startTurn(
