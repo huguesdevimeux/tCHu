@@ -77,7 +77,7 @@ final class MapViewCreator {
 
                 // established hierarchy : cars group -> block group -> route group
                 eachRoutesBlock.getChildren().add(routesCars);
-                mainRouteGroup.getChildren().addAll(eachRoutesBlock);
+                mainRouteGroup.getChildren().add(eachRoutesBlock);
             }
 
             gameMapPane.getChildren().add(mainRouteGroup);

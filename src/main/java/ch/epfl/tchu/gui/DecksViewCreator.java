@@ -81,7 +81,6 @@ final class DecksViewCreator {
         // TICKETS HAND VIEW
         ticketsListView = new ListView<>();
         ticketsListView.setItems(observableGameState.playersTicketsList());
-        ticketsListView.getStylesheets().add(MAP_CSS);
         ticketsListView.setId(ID_TICKETS);
 
         HBox cardsHandPanel = new HBox();
