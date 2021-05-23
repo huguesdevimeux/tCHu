@@ -89,16 +89,17 @@ final class InfoViewCreator {
                 (observableValue, oldV, newV) -> {
                     // we can detect if a ticket is completed if the player's ticket points change
                     // hence the old value != new value. We also have to put the condition that the
-                    // old value != 0 as when the game starts all points are at 0 before picking tickets
-                    // so the message validated ticket would appear although no one would have played.
-                    if (!oldV.equals(newV) && oldV.intValue() != 0) {
+                    // player's ticket list isn't empty as at the beginning of the game, each
+                    // player's ticket points
+                    // goes from 0 to (-n) so the game would perceive it as a completed ticket but
+                    // it isn't
+                    if (!oldV.equals(newV) && !obsGameState.playersTicketsList().isEmpty()) {
                         isTicketCompleted.setValue(StringsFr.VALIDATED_TICKET);
                         // we display the message only for a limited amount of time and once
                         // finished, we reset the string property's value to an empty string.
-                        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(8));
-                        pauseTransition.setOnFinished(
-                                actionEvent -> isTicketCompleted.setValue(EMPTY_STRING));
-                        pauseTransition.playFromStart();
+                        PauseTransition pt = new PauseTransition(Duration.seconds(5));
+                        pt.setOnFinished(actionEvent -> isTicketCompleted.setValue(EMPTY_STRING));
+                        pt.playFromStart();
                     }
                 });
         StringExpression ticketPoints =
