@@ -24,6 +24,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  */
 final class DecksViewCreator {
+    private static ListView<Ticket> ticketsListView;
 
     // Not instantiable.
     private DecksViewCreator() {}
@@ -79,7 +80,7 @@ final class DecksViewCreator {
     public static Node createHandView(ObservableGameState observableGameState) {
 
         // TICKETS HAND VIEW
-        ListView<Ticket> ticketsListView = new ListView<>();
+        ticketsListView = new ListView<>();
         ticketsListView.setItems(observableGameState.playersTicketsList());
         ticketsListView.setId(ID_TICKETS);
 
@@ -111,6 +112,14 @@ final class DecksViewCreator {
         HBox handView = new HBox(ticketsListView, cardsHandPanel);
         handView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
         return handView;
+    }
+
+    /**
+     * Returns the list view.
+     * @return the list view.
+     */
+    public static ListView<Ticket> getTicketsListView() {
+        return ticketsListView;
     }
 
     private static StackPane individualCard() {

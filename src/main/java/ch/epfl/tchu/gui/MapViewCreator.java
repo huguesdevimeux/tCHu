@@ -25,6 +25,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  */
 final class MapViewCreator {
+    private static Pane gameMapPane;
     /** Not instantiable. */
     private MapViewCreator() {}
 
@@ -41,7 +42,7 @@ final class MapViewCreator {
             ObservableGameState obsGameState,
             ObjectProperty<ClaimRouteHandler> routeHandler,
             CardChooser cardChooser) {
-        Pane gameMapPane = new Pane();
+        gameMapPane = new Pane();
         gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
         gameMapPane.getChildren().add(new ImageView());
 
@@ -109,6 +110,14 @@ final class MapViewCreator {
                         }
                     });
         }
+        return gameMapPane;
+    }
+
+    /**
+     * Returns the main pane of the map.
+     * @return the game pane.
+     */
+    public static Pane getGameMapPane() {
         return gameMapPane;
     }
 

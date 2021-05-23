@@ -90,6 +90,14 @@ public final class Ticket implements Comparable<Ticket> {
     }
 
     /**
+     * Returns the list of the trips.
+     * @return the list of the trips.
+     */
+    public List<Trip> getTrips() {
+        return trips;
+    }
+
+    /**
      * Lexicographically (on ticket's name) compare with the given ticket.
      *
      * @param that To compare.
