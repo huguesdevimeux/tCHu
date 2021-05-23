@@ -299,7 +299,8 @@ public class GraphicalPlayer {
         }
 
         /**
-         * Sets the handler in case of multiple choice.
+         * Sets the handler in case of multiple choice. The given value to the consumer will be null
+         * if nothing has been chosen.
          *
          * @param actionHandlerWrapper The handler wrapped in a consumer.
          * @return The object (for chaining).
@@ -311,7 +312,8 @@ public class GraphicalPlayer {
         }
 
         /**
-         * Sets the handler in case of single item choice.
+         * Sets the handler in case of single item choice. The given value to the consumer will be
+         * null if nothing has been chosen.
          *
          * @param actionHandlerWrapper the handler wrapped in a consumer.
          * @return The object (for chaining).
