@@ -253,7 +253,7 @@ public final class ChMap {
      * accept ids of more than one word.
      * @return The list of each stations names, without the accents.
      */
-    public static List<String> normalizedStations() {
+    public static List<String> normalizedStationNames() {
         return stationNames().stream()
                 .map(s -> Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ", ""))
                 .collect(Collectors.toList());

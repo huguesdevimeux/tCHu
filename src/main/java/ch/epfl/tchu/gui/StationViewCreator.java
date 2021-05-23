@@ -23,7 +23,8 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  */
 final class StationViewCreator {
-
+private static final int FROM_STATION_ONLY = 1;
+private static final int SWISS_FROM_AND_TO = 2;
     /* Not instantiable*/
     private StationViewCreator() {}
 
@@ -51,7 +52,7 @@ final class StationViewCreator {
             // we set the id as the name of the station but normalized (without any accents) as the
             // CSS
             // files don't read accents correctly.
-            circle.setId(ChMap.normalizedStations().get(stations().indexOf(station)));
+            circle.setId(ChMap.normalizedStationNames().get(stations().indexOf(station)));
             stationsCircleList.add(circle);
             stationCircle.getChildren().add(circle);
             stationCircle.setOnMouseClicked(
@@ -59,8 +60,7 @@ final class StationViewCreator {
             gameMapPane.getChildren().add(stationCircle);
         }
         // this part manages the action where the player clicks a ticket and the stations on it will
-        // be
-        // highlighted. REMINDER: stations in other countries are not highlighted in any way.
+        // be highlighted. REMINDER: stations in other countries are not highlighted in any way.
         listView.setOnMouseClicked(
                 e -> {
                     Ticket chosen = listView.getSelectionModel().getSelectedItem();
@@ -72,50 +72,51 @@ final class StationViewCreator {
                     // be the from and to stations that figure on the ticket.
                     // The circle's id is the stations' name but without accents so we check the
                     // equality with the from station but normalized.
-                    String normalizedFromStationName = ChMap.normalizedStations().get(stations().indexOf(from));
-                    String normalizedToStationName = ChMap.normalizedStations().get(stations().indexOf(to));
-                    List<Circle> newList =
+                    String fromStationName =
+                            ChMap.normalizedStationNames().get(stations().indexOf(from));
+                    String toStationName =
+                            ChMap.normalizedStationNames().get(stations().indexOf(to));
+                    List<Circle> itineraryList =
                             stationsCircleList.stream()
                                     .filter(
-                                            circle -> circle.getId().equals(normalizedFromStationName)
-                                                    || circle.getId().equals(normalizedToStationName))
+                                            circle -> circle.getId().equals(fromStationName)
+                                                            || circle.getId().equals(toStationName))
                                     .collect(Collectors.toList());
 
                     Circle fromStation, toStation;
                     // the above list can be of size 1 if for example the ticket is "Coire -
                     // {Allemagne (6), France (10), ...}" and in that case, only the station COIRE
                     // will be highlighted.
-                    switch (newList.size()) {
-                        case 1:
-                            fromStation = newList.get(0);
-                            fromStation.setStyle(SWISS_FROM_STATION_TO_COUNTRY_STYLE);
-                            fromStation.setRadius(INCREASED_CIRCLE_RADIUS);
+                    switch (itineraryList.size()) {
+                        case FROM_STATION_ONLY:
+                            fromStation = itineraryList.get(0);
+                            setStyle(
+                                    fromStation,
+                                    SWISS_FROM_STATION_TO_COUNTRY_STYLE,
+                                    INCREASED_CIRCLE_RADIUS);
                             break;
-                        case 2:
+                        case SWISS_FROM_AND_TO:
                             // we have to check which of the stations is the from and to station
                             // because the circles are added in alphabetical order.
                             // This means that without this verification, the ticket (Zurich -
                             // Lugano) will have Lugano as the from station as it comes first
                             // alphabetically, but it is wrong.
                             fromStation =
-                                    newList.get(0)
-                                            .getId()
-                                            .equals(normalizedFromStationName)
-                                            ? newList.get(0)
-                                            : newList.get(1);
+                                    itineraryList.get(0).getId().equals(fromStationName)
+                                            ? itineraryList.get(0)
+                                            : itineraryList.get(1);
                             toStation =
-                                    newList.get(0).equals(fromStation)
-                                            ? newList.get(1)
-                                            : newList.get(0);
+                                    itineraryList.get(0).equals(fromStation)
+                                            ? itineraryList.get(1)
+                                            : itineraryList.get(0);
 
                             // we set default colors for the from and to stations: blue-ish =
                             // from, red-ish = to.
-                            fromStation.setStyle(SWISS_FROM_STATION_STYLE);
-                            toStation.setStyle(SWISS_TO_STATION_STYLE);
                             // each circle representing the from and two stations will have
                             // their radius increased when a ticket is selected.
-                            List.of(fromStation, toStation)
-                                    .forEach(c -> c.setRadius(INCREASED_CIRCLE_RADIUS));
+                            setStyle(
+                                    fromStation, SWISS_FROM_STATION_STYLE, INCREASED_CIRCLE_RADIUS);
+                            setStyle(toStation, SWISS_TO_STATION_STYLE, INCREASED_CIRCLE_RADIUS);
                             break;
                     }
                 });
@@ -124,9 +125,15 @@ final class StationViewCreator {
         listView.setOnMouseReleased(
                 e ->
                         stationsCircleList.forEach(
-                                circle -> {
-                                    circle.setStyle(SWISS_STATION_STYLE);
-                                    circle.setRadius(STATION_CIRCLE_RADIUS);
-                                }));
+                                circle ->
+                                        setStyle(
+                                                circle,
+                                                SWISS_STATION_STYLE,
+                                                STATION_CIRCLE_RADIUS)));
+    }
+
+    private static void setStyle(Circle circle, String style, double newRadius) {
+        circle.setStyle(style);
+        circle.setRadius(newRadius);
     }
 }
