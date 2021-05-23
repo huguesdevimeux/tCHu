@@ -156,7 +156,7 @@ public final class RemotePlayerProxy implements Player {
             this.outRedirect.write(messageId.name() + NetConstants.SPACE);
             if (serializedArgs.size() > 0)
                 this.outRedirect.write(String.join(NetConstants.SPACE, serializedArgs));
-            this.outRedirect.write(NetConstants.ENDLINE);
+            this.outRedirect.write(NetConstants.END_LINE);
             this.outRedirect.flush();
             // The Optional will be empty if readLine returns null.
             String value = awaitsResponse ? this.inRedirect.readLine() : null;

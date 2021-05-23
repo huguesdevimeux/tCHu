@@ -80,14 +80,10 @@ public class GraphicalPlayer {
 
     public void receiveInfo(String message) {
         assert isFxApplicationThread();
-        if (infoProperty.size() < VISIBLE_INFOS) infoProperty.add(new Text(message));
-        else {
-            // we limit the number to VISIBLE_INFOS - 1 because we have to set the text to
-            // the element of the VISIBLE_INFOS th position
-            for (int i = 0; i < VISIBLE_INFOS - 1; i++)
-                infoProperty.get(i).setText(infoProperty.get(i + 1).getText());
-            infoProperty.get(VISIBLE_INFOS - 1).setText(message);
-        }
+        // remove the first index of the observable list to not have more than VISIBLE_INFOS amount
+        // of messages.
+        if (infoProperty.size() == VISIBLE_INFOS) infoProperty.remove(0);
+        infoProperty.add(new Text(message));
     }
 
     public void startTurn(
@@ -303,7 +299,8 @@ public class GraphicalPlayer {
         }
 
         /**
-         * Sets the handler in case of multiple choice.
+         * Sets the handler in case of multiple choice. The given value to the consumer will be null
+         * if nothing has been chosen.
          *
          * @param actionHandlerWrapper The handler wrapped in a consumer.
          * @return The object (for chaining).
@@ -315,7 +312,8 @@ public class GraphicalPlayer {
         }
 
         /**
-         * Sets the handler in case of single item choice.
+         * Sets the handler in case of single item choice. The given value to the consumer will be
+         * null if nothing has been chosen.
          *
          * @param actionHandlerWrapper the handler wrapped in a consumer.
          * @return The object (for chaining).

@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -112,10 +113,14 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-
         BlockingQueue<SortedBag<Card>> queue = new ArrayBlockingQueue<>(1);
         ActionHandlers.ChooseCardsHandler handler =
-                usedCardsToClaimRoute -> putInQueue(queue, usedCardsToClaimRoute);
+                // usedCardsToClaimRoute is null when nothing as been chosen.
+                usedCardsToClaimRoute ->
+                        putInQueue(
+                                queue,
+                                Objects.requireNonNullElseGet(
+                                        usedCardsToClaimRoute, SortedBag::of));
         runLater(() -> graphicalPlayer.chooseAdditionalCards(options, handler));
         return retrieveFromQueue(queue);
     }
