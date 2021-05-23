@@ -48,7 +48,6 @@ ImageView {
 .station:hover Circle{
     -fx-scale-x: 1.5;
     -fx-scale-y: 1.5;
-    -fx-fill: #f6f671;
 }
 
 
