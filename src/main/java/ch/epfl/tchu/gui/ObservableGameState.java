@@ -289,8 +289,8 @@ public final class ObservableGameState {
      *
      * @return true if the player can draw tickets, else false
      */
-    public ReadOnlyBooleanProperty canDrawTickets() {
-        return new SimpleBooleanProperty(gameState.canDrawTickets());
+    public boolean canDrawTickets() {
+        return gameState.canDrawTickets();
     }
 
     /**
@@ -298,8 +298,8 @@ public final class ObservableGameState {
      *
      * @return true whether the player can draw cards, else false
      */
-    public ReadOnlyBooleanProperty canDrawCards() {
-        return new SimpleBooleanProperty(gameState.canDrawCards());
+    public boolean canDrawCards() {
+        return gameState.canDrawCards();
     }
 
     /**
@@ -308,7 +308,7 @@ public final class ObservableGameState {
      * @param route to extract the possible claim cards from
      * @return the possible claim cards to claim the route
      */
-    public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(Route route) {
-        return new SimpleObjectProperty<>(playerState.possibleClaimCards(route));
+    public List<SortedBag<Card>> possibleClaimCards(Route route) {
+        return playerState.possibleClaimCards(route);
     }
 }

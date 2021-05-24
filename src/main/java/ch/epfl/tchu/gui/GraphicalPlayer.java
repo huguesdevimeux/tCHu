@@ -92,14 +92,14 @@ public class GraphicalPlayer {
             ActionHandlers.ClaimRouteHandler claimRouteH) {
         assert isFxApplicationThread();
 
-        if (observableGameState.canDrawCards().getValue()) {
+        if (observableGameState.canDrawCards()) {
             drawCardHandler.setValue(
                     indexOfChosenCard -> {
                         drawCardH.onDrawCard(indexOfChosenCard);
                         emptyHandlers();
                     });
         }
-        if (observableGameState.canDrawTickets().getValue()) {
+        if (observableGameState.canDrawTickets()) {
             drawTicketsHandler.setValue(
                     () -> {
                         drawTicketsH.onDrawTickets();
