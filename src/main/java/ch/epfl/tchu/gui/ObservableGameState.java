@@ -43,7 +43,7 @@ public final class ObservableGameState {
     // we assign true, false otherwise (false is the default value).
     private final List<BooleanProperty> playerCanClaimRoute = createBooleanPropertyList();
     private final PlayerId correspondingPlayer;
-    private PublicGameState newGameState;
+    private PublicGameState gameState;
     private PlayerState playerState;
 
     /**
@@ -76,7 +76,7 @@ public final class ObservableGameState {
      * @throws NullPointerException if the player state is null
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
-        this.newGameState = Objects.requireNonNull(newGameState);
+        this.gameState = Objects.requireNonNull(newGameState);
         this.playerState = Objects.requireNonNull(playerState);
         // counting the number of each players' tickets and calculates the percentage remaining
         int numOfTicketsUsed =
@@ -290,7 +290,7 @@ public final class ObservableGameState {
      * @return true if the player can draw tickets, else false
      */
     public ReadOnlyBooleanProperty canDrawTickets() {
-        return new SimpleBooleanProperty(newGameState.canDrawTickets());
+        return new SimpleBooleanProperty(gameState.canDrawTickets());
     }
 
     /**
@@ -299,7 +299,7 @@ public final class ObservableGameState {
      * @return true whether the player can draw cards, else false
      */
     public ReadOnlyBooleanProperty canDrawCards() {
-        return new SimpleBooleanProperty(newGameState.canDrawCards());
+        return new SimpleBooleanProperty(gameState.canDrawCards());
     }
 
     /**
