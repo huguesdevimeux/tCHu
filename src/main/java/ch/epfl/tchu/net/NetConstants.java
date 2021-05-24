@@ -3,6 +3,7 @@ package ch.epfl.tchu.net;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * Constants ans settings commonly used in network operations through tCHu.
@@ -23,8 +24,12 @@ public final class NetConstants {
     public static final String SEMI_COLON_SEPARATOR = ";";
     /* Colon used in network to separate elements. */
     public static final String COLON_SEPARATOR = ":";
-    /* Host used in the game. */
-    public static final String SERVER_HOST = "localhost";
-    /* Port number on which the server listens. */
-    public static final int PORT_NUMBER = 5108;
+    /* The default port used for conne	ction */
+    public static final int DEFAULT_PORT = 5108;
+    /* The default IP used for connection */
+    public static final String DEFAULT_IP = "localhost";
+    /* Default names for the players.*/
+    public static final List<String> DEFAULT_NAMES = List.of("Ada", "Charles");
+    /* Required number of paramaters */
+    public static final int PARAMETERS_REQUIRED = 2;
 }

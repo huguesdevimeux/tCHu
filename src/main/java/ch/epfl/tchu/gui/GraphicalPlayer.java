@@ -186,7 +186,7 @@ public class GraphicalPlayer {
                 .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
-                .setMinimumChoices(GuiConstants.MINIMUM_CHOICES_ADDITIONAL_CARDS)
+                .setMinimumChoices(GuiConstants.MIN_CARDS_REQUIRED)
                 .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();

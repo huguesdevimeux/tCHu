@@ -93,7 +93,7 @@ final class DecksViewCreator {
             cardOfHand.getStyleClass().addAll(color);
             cardOfHand
                     .visibleProperty()
-                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
+                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(MIN_CARDS_REQUIRED));
 
             // Count.
             Text count = new Text();
@@ -115,11 +115,13 @@ final class DecksViewCreator {
 
     private static StackPane individualCard() {
         // Inner icon of cards. Sorted in an exterior fashion.
-        Rectangle inner1 = new Rectangle(60, 90);
+        Rectangle inner1 = new Rectangle(INNER_RECT1_LENGTH, INNER_RECT1_WIDTH);
         inner1.getStyleClass().add(STYLE_CLASS_OUTSIDE);
-        Rectangle inner2 = new Rectangle(40, 70);
+
+        Rectangle inner2 = new Rectangle(INNER_RECT_LENGTH, INNER_RECT_WIDTH);
         inner2.getStyleClass().addAll(STYLE_CLASS_FILLED, STYLE_CLASS_INSIDE);
-        Rectangle inner3 = new Rectangle(40, 70);
+
+        Rectangle inner3 = new Rectangle(INNER_RECT_LENGTH, INNER_RECT_WIDTH);
         inner3.getStyleClass().add(STYLE_CLASS_TRAIN_IMAGE);
 
         // Outer layout.
@@ -134,11 +136,11 @@ final class DecksViewCreator {
         Button itemPile = new Button(itemName);
         itemPile.getStyleClass().add(STYLE_CLASS_GAUGED);
 
-        Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
+        Rectangle backgroundButtonGraphic = new Rectangle(BUTTON_GAUGE_LENGTH, BUTTON_GAUGE_WIDTH);
         backgroundButtonGraphic.getStyleClass().add(STYLE_CLASS_BACKGROUND);
-        Rectangle foregroundButtonGraphic = new Rectangle(50, 5);
+        Rectangle foregroundButtonGraphic = new Rectangle(BUTTON_GAUGE_LENGTH, BUTTON_GAUGE_WIDTH);
         foregroundButtonGraphic.getStyleClass().add(STYLE_CLASS_FOREGROUND);
-        foregroundButtonGraphic.widthProperty().bind(percentageProperty.divide(2));
+        foregroundButtonGraphic.widthProperty().bind(percentageProperty.divide(DIVIDE_PROPERTY));
 
         itemPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
         return itemPile;
