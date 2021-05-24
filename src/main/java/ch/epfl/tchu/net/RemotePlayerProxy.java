@@ -50,7 +50,7 @@ public final class RemotePlayerProxy implements Player {
                 MessageId.INIT_PLAYERS,
                 List.of(
                         playerIdSerde.serialize(ownId),
-                        stringListSerde.serialize((List<String>) orderedMap.values())),
+                        stringListSerde.serialize(new ArrayList<>(orderedMap.values()))),
                 false);
     }
 
