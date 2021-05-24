@@ -143,32 +143,32 @@ public final class ObservableGameState {
 
     //Private methods to create lists or maps comprised of n elements of
     //either false if property requires a boolean, 0 or null.
-    private List<ObjectProperty<Card>> createFaceUpCards() {
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
         return Stream.generate(() -> new SimpleObjectProperty<Card>())
                 .limit(FACE_UP_CARDS_COUNT)
                 .collect(Collectors.toList());
     }
 
-    private Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
+    private static Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
         Map<Route, ObjectProperty<PlayerId>> mapRouteToOwner = new HashMap<>();
         for (Route route : ChMap.routes())
             mapRouteToOwner.put(route, new SimpleObjectProperty<>(null));
         return mapRouteToOwner;
     }
 
-    private Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
+    private static Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
         Map<PlayerId, IntegerProperty> map = new HashMap<>();
         PlayerId.ALL.forEach(playerId -> map.put(playerId, new SimpleIntegerProperty()));
         return map;
     }
 
-    private List<IntegerProperty> createPlayersCardsOfEachColor() {
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
         return Stream.generate(SimpleIntegerProperty::new)
                 .limit(Card.COUNT)
                 .collect(Collectors.toList());
     }
 
-    private List<BooleanProperty> createBooleanPropertyList() {
+    private static List<BooleanProperty> createBooleanPropertyList() {
         return Stream.generate(SimpleBooleanProperty::new)
                 .limit(ChMap.routes().size())
                 .collect(Collectors.toList());
