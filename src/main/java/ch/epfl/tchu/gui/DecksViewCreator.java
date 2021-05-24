@@ -57,15 +57,18 @@ final class DecksViewCreator {
                                         newValue.color() == null
                                                 ? STYLE_CLASS_COLOR_NEUTRAL
                                                 : newValue.color().name();
-                                // Remove any Color css attribute and replace by the new color.
-                                displayedCard
-                                        .getStyleClass()
-                                        .removeIf(
-                                                (s) ->
-                                                        STYLE_CLASSES_COLOR.contains(s)
-                                                                || s.equals(
-                                                                        STYLE_CLASS_COLOR_NEUTRAL));
-                                displayedCard.getStyleClass().add(newColor);
+                                // oldValue is null during the initialization.
+                                if (oldValue == null) displayedCard.getStyleClass().add(newColor);
+                                else {
+                                    String oldColor =
+                                            oldValue.color() == null
+                                                    ? STYLE_CLASS_COLOR_NEUTRAL
+                                                    : oldValue.color().name();
+                                    // Remove any Color css attribute and replace by the new color.
+                                    displayedCard
+                                            .getStyleClass()
+                                            .replaceAll(s -> s.equals(oldColor) ? newColor : s);
+                                }
                             });
         }
         Button cardsPile =
