@@ -43,9 +43,7 @@ public class ServerMain extends Application {
         try (ServerSocket serverSocket = new ServerSocket(GuiConstants.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-            for (int i = 1; i < PlayerId.COUNT; i++) {
-                players.put(PlayerId.ALL.get(i), new RemotePlayerProxy(serverSocket.accept()));
-            }
+			players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
         }
 
         new Thread(
