@@ -1,0 +1,25 @@
+-------------------------------------------------------------------------------
+Test set: ch.epfl.tchu.net.SerdesTest
+-------------------------------------------------------------------------------
+Tests run: 17, Failures: 3, Errors: 1, Skipped: 0, Time elapsed: 0.048 s <<< FAILURE! - in ch.epfl.tchu.net.SerdesTest
+ch.epfl.tchu.net.SerdesTest.testWithPublicCardState  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <85> but was: <574>
+	at ch.epfl.tchu.net.SerdesTest.lambda$testWithPublicCardState$1(SerdesTest.java:196)
+	at ch.epfl.tchu.net.SerdesTest.testSerdeWithValues(SerdesTest.java:371)
+	at ch.epfl.tchu.net.SerdesTest.testWithPublicCardState(SerdesTest.java:224)
+
+ch.epfl.tchu.net.SerdesTest.testWithPlayerSTate  Time elapsed: 0 s  <<< ERROR!
+java.lang.NumberFormatException: For input string: ""
+	at ch.epfl.tchu.net.SerdesTest.testSerdeWithValues(SerdesTest.java:371)
+	at ch.epfl.tchu.net.SerdesTest.testWithPlayerSTate(SerdesTest.java:290)
+
+ch.epfl.tchu.net.SerdesTest.testWithPublicPlayerState  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <0;40;> but was: <0;0;>
+	at ch.epfl.tchu.net.SerdesTest.testSerdeWithValues(SerdesTest.java:370)
+	at ch.epfl.tchu.net.SerdesTest.testWithPublicPlayerState(SerdesTest.java:248)
+
+ch.epfl.tchu.net.SerdesTest.testWithTicket  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <39> but was: <38>
+	at ch.epfl.tchu.net.SerdesTest.testSerdeWithValues(SerdesTest.java:363)
+	at ch.epfl.tchu.net.SerdesTest.testWithTicket(SerdesTest.java:86)
+
