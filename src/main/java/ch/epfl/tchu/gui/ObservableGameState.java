@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,6 +53,18 @@ public final class ObservableGameState {
      */
     public ObservableGameState(PlayerId correspondingPlayer) {
         this.correspondingPlayer = correspondingPlayer;
+    }
+
+    /**
+     * Boolean method to evaluate if the {@code route} is part of a double Route.
+     *
+     * @param route to evaluate
+     * @return whether the {@code route} has a neighbour
+     */
+    private static boolean isDouble(Route route) {
+        return ChMap.routes().stream()
+                .anyMatch(routeTemp ->
+                        !routeTemp.equals(route) && routeTemp.stations().equals(route.stations()));
     }
 
     /**
@@ -108,7 +119,7 @@ public final class ObservableGameState {
         // they have the same "from" and "to" stations, so we add
         // all the neighboured routes' stations to the set.
         Set<List<Station>> neighborRoutesStations = newGameState.claimedRoutes().stream()
-                .filter(this::routeHasNeighbour)
+                .filter(ObservableGameState::isDouble)
                 .map(Route::stations).collect(Collectors.toSet());
         for (Route route : ChMap.routes()) {
             // setting the 4th property of the first group that sets the owner of the route
@@ -128,18 +139,6 @@ public final class ObservableGameState {
             BooleanProperty conditionsAreMet = new SimpleBooleanProperty(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
                 playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(conditionsAreMet.get());
         }
-    }
-
-    /**
-     * Boolean method to evaluate if the {@code route} has a neighbour.
-     *
-     * @param route to evaluate
-     * @return whether the {@code route} has a neighbour
-     */
-    private boolean routeHasNeighbour(Route route) {
-        return ChMap.routes().stream()
-                .anyMatch(routeTemp ->
-                        !routeTemp.equals(route) && routeTemp.stations().equals(route.stations()));
     }
 
     //Private methods to create lists or maps comprised of n elements of
