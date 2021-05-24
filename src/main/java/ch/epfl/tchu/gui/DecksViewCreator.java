@@ -90,7 +90,7 @@ final class DecksViewCreator {
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
             String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();
-            cardOfHand.getStyleClass().addAll(color);
+            cardOfHand.getStyleClass().add(color);
             cardOfHand
                     .visibleProperty()
                     .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
