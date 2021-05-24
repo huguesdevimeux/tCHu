@@ -136,10 +136,9 @@ public final class ObservableGameState {
                             && !neighborRoutesStations.contains(route.stations()); //This condition means
             //that if any of the routes that have neighbors is claimed, no one can claim the one next to it.
             boolean canClaimRoute = playerState.canClaimRoute(route);
-            BooleanProperty conditionsAreMet = new SimpleBooleanProperty(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
-                playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(conditionsAreMet.get());
-        }
-    }
+			playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
+		}
+	}
 
     //Private methods to create lists or maps comprised of n elements of
     //either false if property requires a boolean, 0 or null.
