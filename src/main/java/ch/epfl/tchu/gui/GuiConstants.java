@@ -56,7 +56,8 @@ public final class GuiConstants {
     public static final int VISIBLE_INFOS = 5;
     /* The minimum amount of one card before the number if displayed on the gui. */
     public static final int MIN_CARDS_NUMBER_DISPLAYED = 1;
-
+    /* A simple empty string to add to the completed ticket section*/
+    public static final String EMPTY_STRING = "";
     /* How many hands of cards the player has to choose when claiming a card */
     public static final int MINIMUM_CHOICES_CLAIM_CARDS = 1;
     /* How many hands of cards the player has to choose when choosing additional cards. */

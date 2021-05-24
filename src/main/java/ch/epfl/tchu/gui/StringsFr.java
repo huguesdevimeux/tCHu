@@ -52,6 +52,12 @@ public final class StringsFr {
     // Statistiques des joueurs
     public static final String PLAYER_STATS =
             " %s :\n– %s billets,\n– %s cartes,\n– %s wagons,\n– %s points.";
+    //les points reservés aux tickets du joueur
+    public static final String PLAYER_TICKET_POINTS =
+            "\nVous avez actuellement %s points \nréservés à vos tickets.\n" +
+                    "%s";
+    // phrase à faire apparaitre quand un ticket est validé
+    public static final String VALIDATED_TICKET = "Vous avez validé un ticket!\n";
     // Séparateurs textuels
     public static final String AND_SEPARATOR = " et ";
     public static final String EN_DASH_SEPARATOR = " – ";
