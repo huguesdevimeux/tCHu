@@ -1,8 +1,5 @@
 package ch.epfl.tchu.net;
 
-import static ch.epfl.tchu.net.NetConstants.COMMA_SEPARATOR;
-import static ch.epfl.tchu.net.Serdes.*;
-
 import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 
@@ -11,6 +8,9 @@ import java.net.Socket;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static ch.epfl.tchu.net.NetConstants.COMMA_SEPARATOR;
+import static ch.epfl.tchu.net.Serdes.*;
 
 /**
  * Represents a remote player.
@@ -49,8 +49,7 @@ public final class RemotePlayerClient {
                                 Arrays.asList(
                                         respFromNetwork.split(
                                                 Pattern.quote(NetConstants.SPACE), -1)));
-                MessageId messageId = MessageId.valueOf(splitResp.get(0));
-                splitResp.remove(0);
+                MessageId messageId = MessageId.valueOf(splitResp.remove(0));
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
                 toSendBack.ifPresent(
                         s1 -> {
