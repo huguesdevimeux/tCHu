@@ -24,10 +24,10 @@ public final class Game {
     /**
      * Method that makes the two <code>players</code> play the game.
      *
-     * @param players     the two players in the game
+     * @param players the two players in the game
      * @param playerNames name of the two players
-     * @param tickets     bag of tickets
-     * @param rng         random element
+     * @param tickets bag of tickets
+     * @param rng random element
      */
     public static void play(
             Map<PlayerId, Player> players,
@@ -83,7 +83,7 @@ public final class Game {
      * Deals with the beginning of the game. Initialises the players and deals with the ticket
      * management at the beginning of the game
      *
-     * @param players     players in the game
+     * @param players players in the game
      * @param playerNames names of <code>players</code>
      */
     private static void beginGame(
@@ -173,26 +173,22 @@ public final class Game {
                                                 Trail.longest(
                                                         gameState.playerState(playerId).routes())));
 
-        Map.Entry<PlayerId, Trail> maxTrail =
-                Collections.max(
-                        longestTrails.entrySet(),
-                        Comparator.comparingInt(value -> value.getValue().length()));
-        boolean isMaxTrailUnique =
-                Collections.frequency(
-                        longestTrails.values().stream()
-                                .map(Trail::length)
-                                .collect(Collectors.toList()),
-                        maxTrail.getValue().length())
-                        == 1;
-        if (isMaxTrailUnique) {
-            points.computeIfPresent(
-                    maxTrail.getKey(),
-                    (playerId, integer) -> integer + Constants.LONGEST_TRAIL_BONUS_POINTS);
-            ReceiveInfoHandler.longestTrail(
-                    players,
-                    playersInfo.get(maxTrail.getKey()),
-                    Trail.longest(gameState.playerState(maxTrail.getKey()).routes()));
-        }
+        int maxLength =
+                longestTrails.values().stream()
+                        .map(Trail::length)
+                        .max(Integer::compareTo)
+                        .orElse(0);
+
+        // Adds the bonus for each player that has the longest trail.
+        longestTrails.entrySet().stream()
+                .filter(playerIdTrailEntry -> playerIdTrailEntry.getValue().length() == maxLength)
+                .forEach(
+                        playerIdTrailEntry ->
+                                points.computeIfPresent(
+                                        playerIdTrailEntry.getKey(),
+                                        (p, pointsOfPlayer) ->
+                                                pointsOfPlayer
+                                                        + Constants.LONGEST_TRAIL_BONUS_POINTS));
 
         int maxPoints = Collections.max(points.values());
         Map<PlayerId, Integer> playersWithMaxPoints =
@@ -214,10 +210,7 @@ public final class Game {
                     playersWithMaxPoints.keySet().stream()
                             .map(playerNames::get)
                             .collect(Collectors.toList());
-            ReceiveInfoHandler.playersHaveDrawn(
-                    players,
-                    playersWithSamePointsNames,
-                    maxPoints);
+            ReceiveInfoHandler.playersHaveDrawn(players, playersWithSamePointsNames, maxPoints);
         }
     }
 
