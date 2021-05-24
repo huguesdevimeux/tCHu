@@ -7,9 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import static ch.epfl.tchu.net.NetConstants.COMMA_SEPARATOR;
 import static ch.epfl.tchu.net.Serdes.*;
 
 /**
@@ -82,19 +80,15 @@ public final class RemotePlayerClient {
     private Optional<String> handleClientResponse(MessageId messageId, List<String> args) {
         switch (messageId) {
             case INIT_PLAYERS:
-                // Deserializer handmade. See RemotePlayerProxy l. 48 for serializer implementation.
-                List<String> playersSerialized =
-                        List.of(args.get(1).split(Pattern.quote(COMMA_SEPARATOR), -1)).stream()
-                                .map(stringSerde::deserialize)
-                                .collect(Collectors.toList());
+				EnumMap<PlayerId, String> playerDeserialized = new EnumMap<>(PlayerId.class);
+				List<String> playerNames = stringListSerde.deserialize(args.get(1));
+                for (int i = 0; i < PlayerId.COUNT; i++) {
+                    playerDeserialized.put(PlayerId.ALL.get(i), playerNames.get(i));
+                }
 
                 player.initPlayers(
                         playerIdSerde.deserialize(args.get(0)),
-                        Map.of(
-                                PlayerId.PLAYER_1,
-                                playersSerialized.get(0),
-                                PlayerId.PLAYER_2,
-                                playersSerialized.get(1)));
+                        playerDeserialized);
 
                 return Optional.empty();
             case RECEIVE_INFO:
