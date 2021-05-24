@@ -3,16 +3,12 @@ package ch.epfl.tchu.net;
 import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Representation of a Serde (serialized or deserialized object).
@@ -42,9 +38,9 @@ public interface Serde<T> {
     /**
      * Creates a simple serde given the serializer and the deserializer.
      *
-     * @param serializer   Function to serialize an object of type {@code T}
+     * @param serializer Function to serialize an object of type {@code T}
      * @param deserializer Function to deserialize a String into an object of type {@code T}
-     * @param <T>          type of the object to (de)serialize
+     * @param <T> type of the object to (de)serialize
      * @return Serde of type {@code T}
      */
     static <T> Serde<T> of(Function<T, String> serializer, Function<String, T> deserializer) {
@@ -77,7 +73,7 @@ public interface Serde<T> {
      * Given a list, returns the serializer of its elements.
      *
      * @param objList to (de)serialize its elements
-     * @param <T>     type of the object to (de)serialize
+     * @param <T> type of the object to (de)serialize
      * @return Serde corresponding to a list
      * @throws IllegalArgumentException if the list in argument is empty
      */
@@ -92,9 +88,9 @@ public interface Serde<T> {
      * Returns a serde capable of (de)serializing lists of (de)serialized values given by parameter
      * {@code serde}
      *
-     * @param serde     to use to (de)serialize
+     * @param serde to use to (de)serialize
      * @param separator separating character between each element
-     * @param <T>       type of the object to (de)serialize
+     * @param <T> type of the object to (de)serialize
      * @return a serde capable of (de)serializing lists of (de)serialized values
      * @throws NullPointerException if the separator is null
      */
@@ -122,7 +118,8 @@ public interface Serde<T> {
             @Override
             public List<T> deserialize(String s) {
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
-                        .map(serde::deserialize).collect(Collectors.toList());
+                        .map(serde::deserialize)
+                        .collect(Collectors.toList());
             }
         };
     }
@@ -131,9 +128,9 @@ public interface Serde<T> {
      * Returns a serde capable of (de)serializing Bags of (de)serialized values given by parameter
      * {@code serde}.
      *
-     * @param serde     to use to (de)serialize
+     * @param serde to use to (de)serialize
      * @param separator separating character between each element
-     * @param <T>       type of the object to (de)serialize
+     * @param <T> type of the object to (de)serialize
      * @return a serde capable of (de)serializing bags of (de)serialized values
      */
     static <T extends Comparable<T>> Serde<SortedBag<T>> bagOf(Serde<T> serde, String separator) {
@@ -168,18 +165,18 @@ public interface Serde<T> {
     /**
      * Private method in charge of serializing lists.
      *
-     * @param serde           to use to (de)serialize
+     * @param serde to use to (de)serialize
      * @param listToSerialize serialize each element and join them in a string
-     * @param separator       character to separate each element of the list
-     * @param <T>             type of the object to (de)serialize
+     * @param separator character to separate each element of the list
+     * @param <T> type of the object to (de)serialize
      * @return a String that's been serialized from the list
      */
     private static <T> String ToStringSerializer(
             Serde<T> serde, List<T> listToSerialize, String separator) {
         // creation of a list of Strings where each element of the list given
         // as parameter is SERIALIZED
-        List<String> stringList =
-                listToSerialize.stream().map(serde::serialize).collect(Collectors.toList());
-        return String.join(separator, stringList);
+        return listToSerialize.stream()
+                .map(serde::serialize)
+                .collect(Collectors.joining(separator));
     }
 }
