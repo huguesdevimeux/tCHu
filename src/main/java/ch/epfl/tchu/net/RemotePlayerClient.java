@@ -56,7 +56,7 @@ public final class RemotePlayerClient {
                         s1 -> {
                             try {
                                 outWriter.write(s1);
-                                outWriter.write(NetConstants.ENDLINE);
+                                outWriter.write(NetConstants.END_LINE);
                                 outWriter.flush();
                             } catch (IOException e) {
                                 throw new UncheckedIOException(e);

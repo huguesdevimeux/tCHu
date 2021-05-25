@@ -1,11 +1,11 @@
 package ch.epfl.tchu.game;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class PublicCardStateTest {
 
@@ -30,10 +30,10 @@ class PublicCardStateTest {
         assertThrows(IllegalArgumentException.class, () -> new PublicCardState(Card.ALL, 4, -1));
     }
 
-    @Test
-    public void totalSize() {
-        assertEquals(5 + 10 + 10, cards.totalSize());
-    }
+//    @Test
+//    public void totalSize() {
+//        assertEquals(5 + 10 + 10, cards.totalSize());
+//    }
 
     @Test
     void faceUpCards() {

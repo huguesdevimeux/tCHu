@@ -55,7 +55,7 @@ final class DecksViewCreator {
                             (observable, oldValue, newValue) -> {
                                 String newColor =
                                         newValue.color() == null
-                                                ? NEUTRAL
+                                                ? STYLE_CLASS_COLOR_NEUTRAL
                                                 : newValue.color().name();
                                 // Remove any Color css attribute and replace by the new color.
                                 displayedCard
@@ -89,7 +89,7 @@ final class DecksViewCreator {
 
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
-            String color = card.color() == null ? NEUTRAL : card.color().name();
+            String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();
             cardOfHand.getStyleClass().addAll(color);
             cardOfHand
                     .visibleProperty()

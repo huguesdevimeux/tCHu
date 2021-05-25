@@ -60,7 +60,7 @@ public final class GuiConstants {
     /* How many hands of cards the player has to choose when claiming a card */
     public static final int MINIMUM_CHOICES_CLAIM_CARDS = 1;
     /* How many hands of cards the player has to choose when choosing additional cards. */
-    public static final int MINIMUM_CHOICES_ADDITIONAL_CARDS = 1;
+    public static final int MINIMUM_CHOICES_ADDITIONAL_CARDS = 0;
     /* The title of the holy tCHu window. */
     public static final String TCHU_TITLE = "tCHu \u2014 %s";
 }
