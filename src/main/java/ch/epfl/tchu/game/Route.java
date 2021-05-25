@@ -229,4 +229,15 @@ public final class Route {
     public int claimPoints() {
         return Constants.ROUTE_CLAIM_POINTS.get(length);
     }
+
+	/**
+	 * Returns whether the route is part of a double route.
+	 *
+	 * @return whether the route is part of a double route.
+	 */
+	public boolean isPartOfDouble() {
+		return ChMap.routes().stream()
+			.anyMatch(routeTemp ->
+				!routeTemp.equals(this) && routeTemp.stations().equals(this.stations()));
+	}
 }

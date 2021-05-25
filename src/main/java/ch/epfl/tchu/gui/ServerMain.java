@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * Server implementation of tCHu. Used to host and play a game of tchu.
+ * The whole game is launched from here.
+ *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
@@ -43,9 +46,7 @@ public class ServerMain extends Application {
         try (ServerSocket serverSocket = new ServerSocket(GuiConstants.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-            for (int i = 1; i < PlayerId.COUNT; i++) {
-                players.put(PlayerId.ALL.get(i), new RemotePlayerProxy(serverSocket.accept()));
-            }
+			players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
         }
 
         new Thread(

@@ -92,14 +92,14 @@ public class GraphicalPlayer {
             ActionHandlers.ClaimRouteHandler claimRouteH) {
         assert isFxApplicationThread();
 
-        if (observableGameState.canDrawCards().getValue()) {
+        if (observableGameState.canDrawCards()) {
             drawCardHandler.setValue(
                     indexOfChosenCard -> {
                         drawCardH.onDrawCard(indexOfChosenCard);
                         emptyHandlers();
                     });
         }
-        if (observableGameState.canDrawTickets().getValue()) {
+        if (observableGameState.canDrawTickets()) {
             drawTicketsHandler.setValue(
                     () -> {
                         drawTicketsH.onDrawTickets();
@@ -126,7 +126,6 @@ public class GraphicalPlayer {
             SortedBag<Ticket> choosableTickets,
             ActionHandlers.ChooseTicketsHandler chooseTicketsHandler) {
         assert isFxApplicationThread();
-        Preconditions.checkArgument(choosableTickets.size() == 3 || choosableTickets.size() == 5);
         int minTickets = choosableTickets.size() - Constants.DISCARDABLE_TICKETS_COUNT;
         String title =
                 String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));

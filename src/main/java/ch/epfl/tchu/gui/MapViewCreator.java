@@ -98,7 +98,7 @@ final class MapViewCreator {
             mainRouteGroup.setOnMouseClicked(
                     event -> {
                         List<SortedBag<Card>> possibleClaimCards =
-                                obsGameState.possibleClaimCards(route).get();
+                                obsGameState.possibleClaimCards(route);
                         if (possibleClaimCards.size() == 1)
                             routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
                         else {

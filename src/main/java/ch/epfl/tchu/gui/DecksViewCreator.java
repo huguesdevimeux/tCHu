@@ -38,7 +38,7 @@ final class DecksViewCreator {
         Button ticketsPile =
                 itemPileWithGauge(StringsFr.TICKETS, observableGameState.percentageTickets());
         ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
-        ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
+        ticketsPile.setOnMouseClicked(event -> drawTicketsHandler.get().onDrawTickets());
         VBox cardsView = new VBox(ticketsPile);
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
@@ -57,21 +57,24 @@ final class DecksViewCreator {
                                         newValue.color() == null
                                                 ? STYLE_CLASS_COLOR_NEUTRAL
                                                 : newValue.color().name();
-                                // Remove any Color css attribute and replace by the new color.
-                                displayedCard
-                                        .getStyleClass()
-                                        .removeIf(
-                                                (s) ->
-                                                        STYLE_CLASSES_COLOR.contains(s)
-                                                                || s.equals(
-                                                                        STYLE_CLASS_COLOR_NEUTRAL));
-                                displayedCard.getStyleClass().add(newColor);
+                                // oldValue is null during the initialization.
+                                if (oldValue == null) displayedCard.getStyleClass().add(newColor);
+                                else {
+                                    String oldColor =
+                                            oldValue.color() == null
+                                                    ? STYLE_CLASS_COLOR_NEUTRAL
+                                                    : oldValue.color().name();
+                                    // Remove any Color css attribute and replace by the new color.
+                                    displayedCard
+                                            .getStyleClass()
+                                            .replaceAll(s -> s.equals(oldColor) ? newColor : s);
+                                }
                             });
         }
         Button cardsPile =
                 itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
-        cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
+        cardsPile.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
         cardsView.getChildren().add(cardsPile);
         return cardsView;
     }
@@ -90,7 +93,7 @@ final class DecksViewCreator {
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
             String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();
-            cardOfHand.getStyleClass().addAll(color);
+            cardOfHand.getStyleClass().add(color);
             cardOfHand
                     .visibleProperty()
                     .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
