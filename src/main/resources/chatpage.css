@@ -1,0 +1,5 @@
+TextField{
+    -fx-background-color: grey;
+    -fx-border-color : black;
+    -fx-border-width: 0 0 1 0;
+}
