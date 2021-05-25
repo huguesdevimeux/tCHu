@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.Game;
 import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.NetConstants;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -16,6 +17,9 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * Server implementation of tCHu. Used to host and play a game of tchu.
+ * The whole game is launched from here.
+ *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
@@ -27,7 +31,7 @@ public class ServerMain extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        List<String> names = GuiConstants.DEFAULT_NAMES;
+        List<String> names = NetConstants.DEFAULT_NAMES;
         List<String> params = getParameters().getRaw();
         if (params.size() == names.size()) names = params;
         else if (params.size() != 0)
@@ -40,12 +44,10 @@ public class ServerMain extends Application {
         }
 
         Map<PlayerId, Player> players = new HashMap<>();
-        try (ServerSocket serverSocket = new ServerSocket(GuiConstants.DEFAULT_PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(NetConstants.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-            for (int i = 1; i < PlayerId.COUNT; i++) {
-                players.put(PlayerId.ALL.get(i), new RemotePlayerProxy(serverSocket.accept()));
-            }
+			players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
         }
 
         new Thread(

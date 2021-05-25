@@ -1,5 +1,6 @@
 package ch.epfl.tchu.gui;
 
+import ch.epfl.tchu.net.NetConstants;
 import ch.epfl.tchu.net.RemotePlayerClient;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -7,6 +8,8 @@ import javafx.stage.Stage;
 import java.util.List;
 
 /**
+ * Implements a client for tCHu, to play a game as a Client.
+ *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
@@ -19,9 +22,9 @@ public class ClientMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> params = getParameters().getRaw();
         // Default values.
-        String ipTarget = GuiConstants.DEFAULT_IP;
-        int port = GuiConstants.DEFAULT_PORT;
-        if (params.size() == 2) {
+        String ipTarget = NetConstants.DEFAULT_IP;
+        int port = NetConstants.DEFAULT_PORT;
+        if (params.size() == NetConstants.PARAMETERS_REQUIRED) {
             ipTarget = params.get(0);
             port = Integer.parseInt(params.get(1));
         } else if (params.size() != 0)

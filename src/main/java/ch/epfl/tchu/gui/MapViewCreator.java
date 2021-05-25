@@ -59,19 +59,19 @@ final class MapViewCreator {
 
             for (int i = 1; i <= route.length(); i++) {
                 Group eachRoutesBlock = new Group();
-                eachRoutesBlock.setId(String.format("%s_%s", route.id(), i));
+                eachRoutesBlock.setId(String.format(ROUTE_RECT_ID, route.id(), i));
 
-                Rectangle rectForTracks = new Rectangle(36, 12);
+                Rectangle rectForTracks = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
                 eachRoutesBlock.getChildren().add(rectForTracks);
 
                 Group routesCars = new Group();
                 routesCars.getStyleClass().add(STYLE_CLASS_CAR);
 
-                Rectangle rectForCars = new Rectangle(36, 12);
+                Rectangle rectForCars = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
-                Circle circle1 = new Circle(12, 6, 3);
-                Circle circle2 = new Circle(24, 6, 3);
+                Circle circle1 = new Circle(CIRCLE1_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
+                Circle circle2 = new Circle(CIRCLE2_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
                 routesCars.getChildren().addAll(rectForCars, circle1, circle2);
 
                 // established hierarchy : cars group -> block group -> route group
@@ -98,7 +98,7 @@ final class MapViewCreator {
             mainRouteGroup.setOnMouseClicked(
                     event -> {
                         List<SortedBag<Card>> possibleClaimCards =
-                                obsGameState.possibleClaimCards(route).get();
+                                obsGameState.possibleClaimCards(route);
                         if (possibleClaimCards.size() == 1)
                             routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
                         else {

@@ -4,6 +4,7 @@ import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -105,8 +106,9 @@ public interface Serde<T> {
              * @return a serialized string
              */
             @Override
+
             public String serialize(List<T> listToSerialize) {
-                return Serde.ToStringSerializer(serde, listToSerialize, separator);
+                return Serde.toStringSerializer(serde, listToSerialize, separator);
             }
 
             /**
@@ -117,6 +119,7 @@ public interface Serde<T> {
              */
             @Override
             public List<T> deserialize(String s) {
+            	if (s.isEmpty()) return Collections.emptyList();
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
                         .map(serde::deserialize)
                         .collect(Collectors.toList());
@@ -144,7 +147,7 @@ public interface Serde<T> {
              */
             @Override
             public String serialize(SortedBag<T> bagToSerialize) {
-                return Serde.ToStringSerializer(serde, bagToSerialize.toList(), separator);
+                return Serde.toStringSerializer(serde, bagToSerialize.toList(), separator);
             }
 
             /**
@@ -155,7 +158,8 @@ public interface Serde<T> {
              */
             @Override
             public SortedBag<T> deserialize(String s) {
-                List<String> splitString = Arrays.asList(s.split(Pattern.quote(separator), -1));
+            	if (s.isEmpty()) return SortedBag.of();
+            	List<String> splitString = Arrays.asList(s.split(Pattern.quote(separator), -1));
                 return SortedBag.of(
                         splitString.stream().map(serde::deserialize).collect(Collectors.toList()));
             }
@@ -164,6 +168,7 @@ public interface Serde<T> {
 
     /**
      * Private method in charge of serializing lists.
+	 * If the list is empty, returns an empty string.
      *
      * @param serde to use to (de)serialize
      * @param listToSerialize serialize each element and join them in a string
@@ -171,10 +176,9 @@ public interface Serde<T> {
      * @param <T> type of the object to (de)serialize
      * @return a String that's been serialized from the list
      */
-    private static <T> String ToStringSerializer(
+    private static <T> String toStringSerializer(
             Serde<T> serde, List<T> listToSerialize, String separator) {
-        // creation of a list of Strings where each element of the list given
-        // as parameter is SERIALIZED
+		// If the list is empty, this will return an empty string.
         return listToSerialize.stream()
                 .map(serde::serialize)
                 .collect(Collectors.joining(separator));
