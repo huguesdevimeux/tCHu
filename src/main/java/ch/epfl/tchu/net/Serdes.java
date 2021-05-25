@@ -21,9 +21,12 @@ import static ch.epfl.tchu.net.NetConstants.*;
  */
 public final class Serdes {
 
-    /** Serde for integers */
+	/** Serde for integers */
     public static final Serde<Integer> intSerde =
             Serde.of(i -> Integer.toString(i), Integer::parseInt);
+
+	/** Not instantiable. */
+	private Serdes() {}
     /** Serde for Strings using Base64 class */
     public static final Serde<String> stringSerde =
             Serde.of(
@@ -168,6 +171,4 @@ public final class Serdes {
                                 lastPlayer);
                     });
 
-    /** Not instantiable. */
-    private Serdes() {}
 }
