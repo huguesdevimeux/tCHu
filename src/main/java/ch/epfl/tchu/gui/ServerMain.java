@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Random;
 
 /**
+ * Server implementation of tCHu. Used to host and play a game of tchu.
+ * The whole game is launched from here.
+ *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */

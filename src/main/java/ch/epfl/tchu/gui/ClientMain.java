@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import java.util.List;
 
 /**
+ * Implements a client for tCHu, to play a game as a Client.
+ *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
