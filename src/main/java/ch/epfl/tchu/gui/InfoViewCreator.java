@@ -30,14 +30,14 @@ final class InfoViewCreator {
      * Creates the info view part (the left side of the game) dealing with each player's stats :
      * ticket, car, card count and claimPoints. Also contains the area where messages will appear.
      *
-     * @param currentPlayer the currentPlayerID
+     * @param correspondingPlayer the currentPlayerID
      * @param playerNames map matching the playerID with the names
      * @param obsGameState observable state of the game
      * @param infos contains the information on the progress of the game
      * @return the information part of the game
      */
     public static Node createInfoView(
-            PlayerId currentPlayer,
+            PlayerId correspondingPlayer,
             Map<PlayerId, String> playerNames,
             ObservableGameState obsGameState,
             ObservableList<Text> infos) {
@@ -47,9 +47,11 @@ final class InfoViewCreator {
         VBox playerStats = new VBox();
         playerStats.setId(ID_PLAYER_STATS);
 
-        createIndividualPlayerInfoView(currentPlayer, obsGameState, playerStats, playerNames);
-        createIndividualPlayerInfoView(
-                currentPlayer.next(), obsGameState, playerStats, playerNames);
+        playerStats
+                .getChildren()
+                .addAll(
+                        createPlayerInfoView(correspondingPlayer, obsGameState, playerNames),
+                        createPlayerInfoView(correspondingPlayer.next(), obsGameState, playerNames));
 
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
@@ -59,17 +61,15 @@ final class InfoViewCreator {
     }
 
     /**
-     * Private method to return a player's info view, ie the player's stats.
+     * Private method to return a player's info view, ie the player's stats
+     * in the form of a text flow.
+     *
      * @param player the player's view
      * @param obsGameState the observable game state
-     * @param playerStats the vbox to fill with the player's stats
      * @param playerNames map with the names of the player
      */
-    private static void createIndividualPlayerInfoView(
-            PlayerId player,
-            ObservableGameState obsGameState,
-            VBox playerStats,
-            Map<PlayerId, String> playerNames) {
+    private static Node createPlayerInfoView(
+            PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
         TextFlow playerN = new TextFlow();
         playerN.getStyleClass().add(player.name());
         Circle circle = new Circle(5);
@@ -86,8 +86,7 @@ final class InfoViewCreator {
                         obsGameState.playerClaimPoints(player));
         Text playerStatsText = new Text();
         playerStatsText.textProperty().bind(updatedExpression);
-
         playerN.getChildren().addAll(circle, playerStatsText);
-        playerStats.getChildren().add(playerN);
+        return playerN;
     }
 }
