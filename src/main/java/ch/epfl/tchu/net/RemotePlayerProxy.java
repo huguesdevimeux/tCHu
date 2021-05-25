@@ -19,8 +19,8 @@ public final class RemotePlayerProxy implements Player {
 
     // NOTE : these are never closed, and this is intended since this class will in theory be run
     // during the WHOLE programme.
-    private final BufferedWriter outRedirect;
-    private final BufferedReader inRedirect;
+    private final BufferedWriter writer;
+    private final BufferedReader reader;
 
     /**
      * Constructor for {@link RemotePlayerProxy}.
@@ -31,11 +31,11 @@ public final class RemotePlayerProxy implements Player {
     public RemotePlayerProxy(Socket socket) {
         Objects.requireNonNull(socket);
         try {
-            this.outRedirect =
+            this.writer =
                     new BufferedWriter(
                             new OutputStreamWriter(
                                     socket.getOutputStream(), NetConstants.ENCODING));
-            this.inRedirect =
+            this.reader =
                     new BufferedReader(
                             new InputStreamReader(socket.getInputStream(), NetConstants.ENCODING));
         } catch (IOException e) {
@@ -46,121 +46,118 @@ public final class RemotePlayerProxy implements Player {
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
         Map<PlayerId, String> orderedMap = new EnumMap<>(playerNames);
-        networkInteractionHandler(
+        sendInNetwork(
                 MessageId.INIT_PLAYERS,
                 List.of(
                         playerIdSerde.serialize(ownId),
-                        stringListSerde.serialize(List.copyOf(orderedMap.values()))),
-                false);
+                        stringListSerde.serialize(List.copyOf(orderedMap.values()))));
     }
 
     @Override
     public void receiveInfo(String info) {
-        networkInteractionHandler(
-                MessageId.RECEIVE_INFO, List.of(stringSerde.serialize(info)), false);
+        sendInNetwork(MessageId.RECEIVE_INFO, List.of(stringSerde.serialize(info)));
     }
 
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
-        networkInteractionHandler(
+        sendInNetwork(
                 MessageId.UPDATE_STATE,
                 List.of(
                         publicGameStateSerde.serialize(newState),
-                        playerStateSerde.serialize(ownState)),
-                false);
+                        playerStateSerde.serialize(ownState)));
     }
 
     @Override
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
-        networkInteractionHandler(
-                MessageId.SET_INITIAL_TICKETS, List.of(ticketBagSerde.serialize(tickets)), false);
+        sendInNetwork(MessageId.SET_INITIAL_TICKETS, List.of(ticketBagSerde.serialize(tickets)));
     }
 
     @Override
     public SortedBag<Ticket> chooseInitialTickets() {
-        return networkInteractionHandler(MessageId.CHOOSE_INITIAL_TICKETS)
-                .map(ticketBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.CHOOSE_INITIAL_TICKETS);
+        return ticketBagSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public TurnKind nextTurn() {
-        return networkInteractionHandler(MessageId.NEXT_TURN)
-                .map(turnKindSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.NEXT_TURN);
+        return turnKindSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
-        return networkInteractionHandler(
-                MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)), true)
-                .map(ticketBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)));
+        return ticketBagSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public int drawSlot() {
-        return networkInteractionHandler(MessageId.DRAW_SLOT)
-                .map(intSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.DRAW_SLOT);
+        return intSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public Route claimedRoute() {
-        return networkInteractionHandler(MessageId.ROUTE)
-                .map(routeSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.ROUTE);
+        return routeSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public SortedBag<Card> initialClaimCards() {
-        return networkInteractionHandler(MessageId.CARDS)
-                .map(cardBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.CARDS);
+        return cardBagSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        return networkInteractionHandler(
-                MessageId.CHOOSE_ADDITIONAL_CARDS,
-                List.of(listOfCardBagSerde.serialize(options)),
-                        true)
-                .map(cardBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(
+                MessageId.CHOOSE_ADDITIONAL_CARDS, List.of(listOfCardBagSerde.serialize(options)));
+        return cardBagSerde.deserialize(readFromNetwork());
     }
 
-    /**
-     * Handles the sending of method's corresponding message over the network.
-     *
-     * @param messageId The messageId of the message that will be sent.
-     * @return An eventual response of the network. Not deserialized.
-     * @throws UncheckedIOException in case of {@link IOException}.
-     */
-    private Optional<String> networkInteractionHandler(MessageId messageId) {
-        return networkInteractionHandler(messageId, Collections.emptyList(), true);
-    }
-
-    /**
-     * Handles the sending of method's corresponding message over the network.
-     *
-     * @param messageId      The messageId of the message that will be sent.
-     * @param serializedArgs The arguments of the methods to be communicate.
-     * @param awaitsResponse Wethet there is a need to wait a respsonse.
-     * @return An eventual response of the network. Not deserialized.
-     * @throws UncheckedIOException in case of {@link IOException}.
-     */
-    private Optional<String> networkInteractionHandler(
-            MessageId messageId, List<String> serializedArgs, boolean awaitsResponse) {
-        Objects.requireNonNull(serializedArgs);
+	/**
+	 * Reads the network and return a string corresponding to the response.
+	 *
+	 * @return The response.
+	 * @throws IllegalStateException if the end of the stream has been reached
+	 */
+	private String readFromNetwork() {
+        String returnValue;
         try {
-            this.outRedirect.write(messageId.name() + NetConstants.SPACE);
-            if (serializedArgs.size() > 0)
-                this.outRedirect.write(String.join(NetConstants.SPACE, serializedArgs));
-            this.outRedirect.write(NetConstants.END_LINE);
-            this.outRedirect.flush();
-            // The Optional will be empty if readLine returns null.
-            String value = awaitsResponse ? this.inRedirect.readLine() : null;
-            return Optional.ofNullable(value);
+            returnValue = reader.readLine();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        if (returnValue == null) {
+            throw new IllegalStateException("Expected response from network but gets nothing.");
+        }
+        return returnValue;
+    }
+
+    /**
+     * Sends in the network the passed messageId and eventual args in the right format. Blocking.
+     *
+     * @param messageId The message Id. Can't be null.
+     */
+    private void sendInNetwork(MessageId messageId) {
+        sendInNetwork(messageId, Collections.emptyList());
+    }
+
+    /**
+     * Sends in the network the passed messageId and eventual args in the right format. Blocking.
+     *
+     * @param messageId The message Id. Can't be null.
+     * @param serializedArgs The args serialized. Can't be null but can be empty.
+     */
+    private void sendInNetwork(MessageId messageId, List<String> serializedArgs) {
+        try {
+            this.writer.write(Objects.requireNonNull(messageId).name() + NetConstants.SPACE);
+            if (serializedArgs.size() > 0) {
+                this.writer.write(
+                        String.join(NetConstants.SPACE, Objects.requireNonNull(serializedArgs)));
+            }
+            this.writer.write(NetConstants.END_LINE);
+            this.writer.flush();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
