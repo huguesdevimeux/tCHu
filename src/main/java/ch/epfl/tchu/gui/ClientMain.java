@@ -13,7 +13,7 @@ import java.util.List;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class ClientMain extends Application {
+public final class ClientMain extends Application {
     public static void main(String[] args) {
         launch(args);
     }
