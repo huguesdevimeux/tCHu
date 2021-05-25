@@ -56,18 +56,6 @@ public final class ObservableGameState {
     }
 
     /**
-     * Boolean method to evaluate if the {@code route} is part of a double Route.
-     *
-     * @param route to evaluate
-     * @return whether the {@code route} has a neighbour
-     */
-    private static boolean isDouble(Route route) {
-        return ChMap.routes().stream()
-                .anyMatch(routeTemp ->
-                        !routeTemp.equals(route) && routeTemp.stations().equals(route.stations()));
-    }
-
-    /**
      * Updates all of the attributes.
      *
      * @param newGameState the new gameState
@@ -119,7 +107,7 @@ public final class ObservableGameState {
         // they have the same "from" and "to" stations, so we add
         // all the neighboured routes' stations to the set.
         Set<List<Station>> neighborRoutesStations = newGameState.claimedRoutes().stream()
-                .filter(ObservableGameState::isDouble)
+                .filter(Route::isPartOfDouble)
                 .map(Route::stations).collect(Collectors.toSet());
         for (Route route : ChMap.routes()) {
             // setting the 4th property of the first group that sets the owner of the route
