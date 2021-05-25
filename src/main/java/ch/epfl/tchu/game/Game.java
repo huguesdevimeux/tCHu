@@ -176,12 +176,16 @@ public final class Game {
         longestTrails.entrySet().stream()
                 .filter(playerIdTrailEntry -> playerIdTrailEntry.getValue().length() == maxLength)
                 .forEach(
-                        playerIdTrailEntry ->
-                                points.computeIfPresent(
-                                        playerIdTrailEntry.getKey(),
-                                        (p, pointsOfPlayer) ->
-                                                pointsOfPlayer
-                                                        + Constants.LONGEST_TRAIL_BONUS_POINTS));
+                        playerIdTrailEntry -> {
+                            points.computeIfPresent(
+                                    playerIdTrailEntry.getKey(),
+                                    (p, pointsOfPlayer) ->
+                                            pointsOfPlayer + Constants.LONGEST_TRAIL_BONUS_POINTS);
+                            ReceiveInfoHandler.longestTrail(
+                                    players,
+                                    playersInfo.get(playerIdTrailEntry.getKey()),
+                                    playerIdTrailEntry.getValue());
+                        });
 
         int maxPoints = Collections.max(points.values());
         Map<PlayerId, Integer> playersWithMaxPoints =
