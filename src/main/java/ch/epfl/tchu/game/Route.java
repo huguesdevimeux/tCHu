@@ -38,7 +38,7 @@ public final class Route {
      * @param level Defines what type of route it is
      * @param color Can be any color
      * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of
-     *     bounds defined by Constants.java
+     *     bounds defined by GuiConstants.java
      * @throws NullPointerException if either id, station1, station2 or level is null
      */
     public Route(

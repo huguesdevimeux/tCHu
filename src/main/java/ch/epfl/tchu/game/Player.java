@@ -71,7 +71,7 @@ public interface Player {
     /**
      * Called when the player has decided to draw cards (can be locomotives) to know where he wants
      * to to draw them from. It can be a faceUp card - to which the method returns int in [0,4]. It
-     * can be a deck card - to which the method returns <code>Constants.DECK_SLOT</code> aka -1.
+     * can be a deck card - to which the method returns <code>GuiConstants.DECK_SLOT</code> aka -1.
      *
      * @return an int that depends on what type of card is drawn
      */

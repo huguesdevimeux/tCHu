@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 /**
- * Constants ans settings commonly used in the package through tCHu.
+ * GuiConstants ans settings commonly used in the package through tCHu.
  *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)

@@ -3,10 +3,10 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.Color;
 
 /**
- * Constants used for the GUI part of the project. Includes .css files, style classes and IDs and
- * other Constants in general.
+ * GuiConstants used for the GUI part of the project. Includes .css files, style classes and IDs and
+ * other GuiConstants in general.
  */
-public final class Constants {
+public final class GuiConstants {
     // Geometric values constants for mapViewCreator
     public static final int RECTANGLE_WIDTH = 36;
     public static final int RECTANGLE_HEIGHT = 12;

@@ -33,7 +33,7 @@ public final class GameState extends PublicGameState {
 
     /**
      * Returns the initial state of a game of tCHu in which the ticket deck contains the given
-     * tickets and the card deck contains the Constants.ALL_CARDS cards, without the top 8 (2×4),
+     * tickets and the card deck contains the GuiConstants.ALL_CARDS cards, without the top 8 (2×4),
      * dealt to the players; these decks are shuffled with the given random generator, which is also
      * used to randomly choose the identity of the first player.
      *
