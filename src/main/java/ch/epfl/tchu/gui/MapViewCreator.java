@@ -61,13 +61,13 @@ final class MapViewCreator {
                 Group eachRoutesBlock = new Group();
                 eachRoutesBlock.setId(String.format(ROUTE_RECT_ID, route.id(), i));
 
-                Rectangle rectForTracks = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
+                Rectangle rectForTracks = new Rectangle(RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
 
                 Group routeCars = new Group();
                 routeCars.getStyleClass().add(STYLE_CLASS_CAR);
 
-                Rectangle rectForCars = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
+                Rectangle rectForCars = new Rectangle(RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
                 Circle circle1 = new Circle(CIRCLE1_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
                 Circle circle2 = new Circle(CIRCLE2_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);

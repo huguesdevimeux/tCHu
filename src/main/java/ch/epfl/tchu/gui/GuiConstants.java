@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
  */
 public final class GuiConstants {
     // Geometric values constants for mapViewCreator
-    public static final int RECTANGLE_LENGTH = 36;
-    public static final int RECTANGLE_WIDTH = 12;
+    public static final int RECTANGLE_WIDTH = 36;
+    public static final int RECTANGLE_HEIGHT = 12;
     public static final int CIRCLE1_CENTER_X = 12;
     public static final int CIRCLE2_CENTER_X = 24;
     public static final int CIRCLE_CENTER_Y = 6;
