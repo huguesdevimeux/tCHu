@@ -25,18 +25,18 @@ public final class Constants {
         public static final List<String> DEFAULT_NAMES = List.of("Ada", "Charles");
         /* Required number of paramaters */
         public static final int NUMBER_PARAMETERS_REQUIRED = 2;
-		/* End line char used in network messages.*/
-		public static final String CHAR_END_MESSAGE = "\n";
-		/* Character used to separate the components in the network messages.*/
-		public static final String SEPARATOR_COMPONENT_MESSAGE = " ";
+        /* End line char used in network messages.*/
+        public static final String CHAR_END_MESSAGE = "\n";
+        /* Character used to separate the components in the network messages.*/
+        public static final String SEPARATOR_COMPONENT_MESSAGE = " ";
 
-		private Network() {}
+        private Network() {}
     }
 
     public static class Serdes {
         /* UTF-8 encoding for string serde */
         public static final Charset ENCODING = UTF_8;
-		/* Comma used in network to separate elements. */
+        /* Comma used in network to separate elements. */
         public static final String SEPARATOR_1 = ",";
         /* Semi-colon used in network to separate elements. */
         public static final String SEPARATOR_2 = ";";
