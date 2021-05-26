@@ -232,6 +232,7 @@ public final class Route {
 
 	/**
 	 * Returns whether the route is part of a double route.
+     * (added at stage 9)
 	 *
 	 * @return whether the route is part of a double route.
 	 */
