@@ -88,8 +88,8 @@ public class ObservableGameStateTest {
 
     @Test
     void currentPlayersNumberOfCards() {
-        assertEquals(1, gameState.playersNumberOfCards(Card.WHITE).get());
-        assertEquals(3, gameState.playersNumberOfCards(Card.RED).get());
+        assertEquals(1, gameState.playerNumberOfCards(Card.WHITE).get());
+        assertEquals(3, gameState.playerNumberOfCards(Card.RED).get());
         PlayerState ps =
                 new PlayerState(
                         SortedBag.of(ChMap.tickets().subList(0, 10)),
@@ -101,7 +101,7 @@ public class ObservableGameStateTest {
                         ChMap.routes().subList(0, 3));
         gameState.setState(publicGameState, ps);
         for (int i = 0; i < Card.COUNT; i++) {
-            assertEquals(1, gameState.playersNumberOfCards(Card.ALL.get(i)).get());
+            assertEquals(1, gameState.playerNumberOfCards(Card.ALL.get(i)).get());
         }
     }
 

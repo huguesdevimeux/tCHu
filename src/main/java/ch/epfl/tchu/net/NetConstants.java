@@ -1,6 +1,7 @@
 package ch.epfl.tchu.net;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.List;
 public final class NetConstants {
     /* Encoding used in CharSet message */
     public static final Charset ENCODING = US_ASCII;
+    /* UTF-8 encoding for string serde */
+    public static final Charset STRING_ENCODING = UTF_8;
     /* End line char used in networkd messages.*/
     public static final String END_LINE = "\n";
     /* Space used in network messages.*/
@@ -32,4 +35,6 @@ public final class NetConstants {
     public static final List<String> DEFAULT_NAMES = List.of("Ada", "Charles");
     /* Required number of paramaters */
     public static final int PARAMETERS_REQUIRED = 2;
+    /* An empty string */
+    public static final String EMPTY_STRING = "";
 }
