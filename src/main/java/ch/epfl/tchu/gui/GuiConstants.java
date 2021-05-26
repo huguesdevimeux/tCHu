@@ -25,7 +25,7 @@ public final class GuiConstants {
     public static final int INNER_RECT_WIDTH = 70;
     public static final int BUTTON_GAUGE_LENGTH = 50;
     public static final int BUTTON_GAUGE_WIDTH = 5;
-    public static final int DIVIDE_PROPERTY = 2;
+    public static final int DIVIDE_PERCENTAGE = 2;
 
 
 
