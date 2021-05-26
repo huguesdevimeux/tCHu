@@ -34,7 +34,7 @@ public final class Serdes {
                     str ->
                             new String(
                                     Base64.getDecoder().decode(str.getBytes()),
-                                    StandardCharsets.UTF_8));
+                                    UTF_ENCODING));
     /** Serde for PlayerId */
     public static final Serde<PlayerId> playerIdSerde = Serde.oneOf(PlayerId.ALL);
     /** Serde for TurnKind */
