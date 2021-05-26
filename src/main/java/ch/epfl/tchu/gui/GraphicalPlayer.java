@@ -37,7 +37,7 @@ import static javafx.application.Platform.isFxApplicationThread;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class GraphicalPlayer {
+public final class GraphicalPlayer {
 
     private final ObservableGameState observableGameState;
     private final PlayerId correspondingPlayer;
@@ -225,7 +225,7 @@ public class GraphicalPlayer {
         takeRouteHandler.set(null);
     }
 
-    private static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+    private final static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
         @Override
         public String toString(SortedBag<Card> cards) {
             return Info.displaySortedBagOfCards(cards);

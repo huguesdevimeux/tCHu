@@ -139,7 +139,7 @@ public final class ObservableGameState {
     private static Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
         Map<Route, ObjectProperty<PlayerId>> mapRouteToOwner = new HashMap<>();
         for (Route route : ChMap.routes())
-            mapRouteToOwner.put(route, new SimpleObjectProperty<>(null));
+            mapRouteToOwner.put(route, new SimpleObjectProperty<>());
         return mapRouteToOwner;
     }
 
@@ -256,7 +256,7 @@ public final class ObservableGameState {
      * @param card the card to evaluate it's total amount in the player's cards
      * @return the amount of cards of type {@code card}
      */
-    public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
+    public ReadOnlyIntegerProperty playerNumberOfCards(Card card) {
         return currentPlayersNumberOfEachCards.get(Card.ALL.indexOf(card));
     }
 
