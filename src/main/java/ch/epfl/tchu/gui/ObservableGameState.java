@@ -139,7 +139,7 @@ public final class ObservableGameState {
     private static Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
         Map<Route, ObjectProperty<PlayerId>> mapRouteToOwner = new HashMap<>();
         for (Route route : ChMap.routes())
-            mapRouteToOwner.put(route, new SimpleObjectProperty<>(null));
+            mapRouteToOwner.put(route, new SimpleObjectProperty<>());
         return mapRouteToOwner;
     }
 

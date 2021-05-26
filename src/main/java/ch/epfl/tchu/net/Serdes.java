@@ -142,7 +142,7 @@ public final class Serdes {
                                     // if the last player is null, we serialize an empty string
                                     // otherwise we serialize the lastPlayer using playerIdSerde
                                     publicGameState.lastPlayer() == null
-                                            ? stringSerde.serialize("")
+                                            ? stringSerde.serialize(EMPTY_STRING)
                                             : playerIdSerde.serialize(
                                                     publicGameState.lastPlayer())),
                     (str) -> {
