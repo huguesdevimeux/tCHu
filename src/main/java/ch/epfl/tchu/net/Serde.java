@@ -81,11 +81,11 @@ public interface Serde<T> {
     static <T> Serde<T> oneOf(List<T> objList) {
         Preconditions.checkArgument(!objList.isEmpty());
         Function<T, String> serialize = (T t) -> {
-        	if (t == null) return NetConstants.FALLBACK_VALUE_NULLITY;
+        	if (t == null) return Constants.Serdes.FALLBACK_VALUE_NULLITY;
         	return String.valueOf(objList.indexOf(t));
 		};
         Function<String, T> deserialize = (String s) -> {
-        	if (s.equals(NetConstants.FALLBACK_VALUE_NULLITY)) return null;
+        	if (s.equals(Constants.Serdes.FALLBACK_VALUE_NULLITY)) return null;
         	return objList.get(Integer.parseInt(s));
 		};
         return Serde.of(serialize, deserialize);
@@ -114,6 +114,7 @@ public interface Serde<T> {
             @Override
 
             public String serialize(List<T> listToSerialize) {
+            	if (listToSerialize.isEmpty()) return Constants.Serdes.FALLBACK_VALUE_NULLITY;
                 return Serde.serializeList(serde, listToSerialize, separator);
             }
 
@@ -125,7 +126,7 @@ public interface Serde<T> {
              */
             @Override
             public List<T> deserialize(String s) {
-            	if (s.isEmpty()) return Collections.emptyList();
+            	if (s.equals(Constants.Serdes.FALLBACK_VALUE_NULLITY)) return Collections.emptyList();
                 return Arrays.stream(s.split(Pattern.quote(separator), -1))
                         .map(serde::deserialize)
                         .collect(Collectors.toList());
@@ -153,7 +154,8 @@ public interface Serde<T> {
              */
             @Override
             public String serialize(SortedBag<T> bagToSerialize) {
-                return Serde.serializeList(serde, bagToSerialize.toList(), separator);
+				if (bagToSerialize.isEmpty()) return Constants.Serdes.FALLBACK_VALUE_NULLITY;
+				return Serde.serializeList(serde, bagToSerialize.toList(), separator);
             }
 
             /**
@@ -164,7 +166,7 @@ public interface Serde<T> {
              */
             @Override
             public SortedBag<T> deserialize(String s) {
-            	if (s.isEmpty()) return SortedBag.of();
+            	if (s.equals(Constants.Serdes.FALLBACK_VALUE_NULLITY)) return SortedBag.of();
             	List<String> splitString = Arrays.asList(s.split(Pattern.quote(separator), -1));
                 return SortedBag.of(
                         splitString.stream().map(serde::deserialize).collect(Collectors.toList()));
