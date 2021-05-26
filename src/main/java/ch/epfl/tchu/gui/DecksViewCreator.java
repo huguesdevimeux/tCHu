@@ -56,9 +56,15 @@ final class DecksViewCreator {
                     .addListener(
                             (observable, oldCard, newCard) -> {
                             	// oldCard is null during the initialization.
-                                displayedCard.getStyleClass().remove(convertColorToCssColor(oldCard == null ? null: oldCard.color()));
-                                displayedCard.getStyleClass().add(convertColorToCssColor(newCard.color()));
-                            });
+								if (oldCard != null) {
+									displayedCard
+										.getStyleClass()
+										.remove(convertColorToCssColor(oldCard.color()));
+								}
+								displayedCard
+									.getStyleClass()
+									.add(convertColorToCssColor(newCard.color()));
+							});
         }
         Button cardsPile =
                 itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
