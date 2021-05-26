@@ -58,8 +58,7 @@ final class DecksViewCreator {
                                         newValue.color() == null
                                                 ? STYLE_CLASS_COLOR_NEUTRAL
                                                 : newValue.color().name();
-                                // oldValue is null during the initialization so
-                                //there is only one case of this nature;
+                                // oldValue is null during the initialization.
                                 if (oldValue == null) {
                                     displayedCard.getStyleClass().add(newColor);
                                     return;
