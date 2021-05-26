@@ -3,6 +3,7 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.Constants;
 import ch.epfl.tchu.game.Ticket;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Group;
@@ -57,9 +58,13 @@ final class DecksViewCreator {
                                         newValue.color() == null
                                                 ? STYLE_CLASS_COLOR_NEUTRAL
                                                 : newValue.color().name();
-                                // oldValue is null during the initialization.
-                                if (oldValue == null) displayedCard.getStyleClass().add(newColor);
-                                else {
+                                // oldValue is null during the initialization so
+                                //there is only one case of this nature;
+                                if (oldValue == null) {
+                                    displayedCard.getStyleClass().add(newColor);
+                                    return;
+                                }
+
                                     String oldColor =
                                             oldValue.color() == null
                                                     ? STYLE_CLASS_COLOR_NEUTRAL
@@ -68,7 +73,7 @@ final class DecksViewCreator {
                                     displayedCard
                                             .getStyleClass()
                                             .replaceAll(s -> s.equals(oldColor) ? newColor : s);
-                                }
+
                             });
         }
         Button cardsPile =
@@ -86,7 +91,6 @@ final class DecksViewCreator {
         ticketsListView.setItems(observableGameState.playersTicketsList());
         ticketsListView.setId(ID_TICKETS);
 
-        //
         HBox cardsHandPanel = new HBox();
         cardsHandPanel.setId(ID_HAND_PANE);
 
@@ -96,16 +100,20 @@ final class DecksViewCreator {
             cardOfHand.getStyleClass().add(color);
             cardOfHand
                     .visibleProperty()
-                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(MIN_CARDS_REQUIRED));
-
-            // Count.
-            Text count = new Text();
-            count.textProperty().bind(observableGameState.playersNumberOfCards(card).asString());
-            count.visibleProperty()
                     .bind(
                             observableGameState
                                     .playersNumberOfCards(card)
-                                    .greaterThan(MIN_CARDS_NUMBER_DISPLAYED));
+                                    .greaterThan(MIN_CARDS_REQUIRED));
+
+            // Count.
+            Text count = new Text();
+            count.textProperty()
+                    .bind(Bindings.convert(observableGameState.playersNumberOfCards(card)));
+            count.visibleProperty()
+                    .bind(Bindings.greaterThan(
+                                    observableGameState.playersNumberOfCards(card),
+                                    MIN_CARDS_NUMBER_DISPLAYED));
+
             count.getStyleClass().add(STYLE_CLASS_COUNT);
             cardOfHand.getChildren().add(count);
             cardsHandPanel.getChildren().add(cardOfHand);
@@ -128,9 +136,9 @@ final class DecksViewCreator {
         inner3.getStyleClass().add(STYLE_CLASS_TRAIN_IMAGE);
 
         // Outer layout.
-        StackPane cardOfHand = new StackPane();
-        cardOfHand.getChildren().addAll(inner1, inner2, inner3);
-        cardOfHand.getStyleClass().add(STYLE_CLASS_CARD);
+        StackPane cardOfHand = new StackPane(inner1, inner2, inner3);
+        cardOfHand.getStyleClass().add(STYLE_CLASS_CARD); // we add the style class here
+        // because this method will be called for the handsView and the cardsView.
         return cardOfHand;
     }
 
