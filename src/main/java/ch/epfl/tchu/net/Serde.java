@@ -80,8 +80,14 @@ public interface Serde<T> {
      */
     static <T> Serde<T> oneOf(List<T> objList) {
         Preconditions.checkArgument(!objList.isEmpty());
-        Function<T, String> serialize = (T t) -> String.valueOf(objList.indexOf(t));
-        Function<String, T> deserialize = (String s) -> objList.get(Integer.parseInt(s));
+        Function<T, String> serialize = (T t) -> {
+        	if (t == null) return "";
+        	return String.valueOf(objList.indexOf(t));
+		};
+        Function<String, T> deserialize = (String s) -> {
+        	if (s.isEmpty()) return null;
+        	return objList.get(Integer.parseInt(s));
+		};
         return Serde.of(serialize, deserialize);
     }
 
