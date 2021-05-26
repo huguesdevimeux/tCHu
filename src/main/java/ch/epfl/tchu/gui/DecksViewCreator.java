@@ -52,23 +52,9 @@ final class DecksViewCreator {
             observableGameState
                     .faceUpCard(slot)
                     .addListener(
-                            (observable, oldValue, newValue) -> {
-                                String newColor =
-                                        newValue.color() == null
-                                                ? STYLE_CLASS_COLOR_NEUTRAL
-                                                : newValue.color().name();
-                                // oldValue is null during the initialization.
-                                if (oldValue == null) displayedCard.getStyleClass().add(newColor);
-                                else {
-                                    String oldColor =
-                                            oldValue.color() == null
-                                                    ? STYLE_CLASS_COLOR_NEUTRAL
-                                                    : oldValue.color().name();
-                                    // Remove any Color css attribute and replace by the new color.
-                                    displayedCard
-                                            .getStyleClass()
-                                            .replaceAll(s -> s.equals(oldColor) ? newColor : s);
-                                }
+                            (observable, oldCard, newCard) -> {
+                                displayedCard.getStyleClass().remove(convertColorToCssColor(oldCard.color()));
+                                displayedCard.getStyleClass().add(convertColorToCssColor(newCard.color()));
                             });
         }
         Button cardsPile =
@@ -92,8 +78,7 @@ final class DecksViewCreator {
 
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
-            String color = card.color() == null ? STYLE_CLASS_COLOR_NEUTRAL : card.color().name();
-            cardOfHand.getStyleClass().add(color);
+            cardOfHand.getStyleClass().add(convertColorToCssColor(card.color()));
             cardOfHand
                     .visibleProperty()
                     .bind(observableGameState.playersNumberOfCards(card).greaterThan(MIN_CARDS_REQUIRED));

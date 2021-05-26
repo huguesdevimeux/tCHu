@@ -34,8 +34,8 @@ final class MapViewCreator {
      * @param obsGameState the observable part of the game.
      * @param routeHandler responsible for an attempt to claim a route.
      * @param cardChooser responsible for choosing cards.
-     * @return the node that contains all elements in the mapView -
-     * an instance of Pane in this case.
+     * @return the node that contains all elements in the mapView - an instance of Pane in this
+     *     case.
      */
     public static Node createMapView(
             ObservableGameState obsGameState,
@@ -53,9 +53,7 @@ final class MapViewCreator {
                     .addAll(
                             STYLE_CLASS_ROUTE,
                             route.level().name(),
-                            route.color() == null
-                                    ? STYLE_CLASS_COLOR_NEUTRAL
-                                    : route.color().name());
+                            convertColorToCssColor(route.color()));
 
             for (int i = 1; i <= route.length(); i++) {
                 Group eachRoutesBlock = new Group();
