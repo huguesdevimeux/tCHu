@@ -108,7 +108,7 @@ public interface Serde<T> {
             @Override
 
             public String serialize(List<T> listToSerialize) {
-                return Serde.toStringSerializer(serde, listToSerialize, separator);
+                return Serde.serializeList(serde, listToSerialize, separator);
             }
 
             /**
@@ -147,7 +147,7 @@ public interface Serde<T> {
              */
             @Override
             public String serialize(SortedBag<T> bagToSerialize) {
-                return Serde.toStringSerializer(serde, bagToSerialize.toList(), separator);
+                return Serde.serializeList(serde, bagToSerialize.toList(), separator);
             }
 
             /**
@@ -176,7 +176,7 @@ public interface Serde<T> {
      * @param <T> type of the object to (de)serialize
      * @return a String that's been serialized from the list
      */
-    private static <T> String toStringSerializer(
+    private static <T> String serializeList(
             Serde<T> serde, List<T> listToSerialize, String separator) {
 		// If the list is empty, this will return an empty string.
         return listToSerialize.stream()
