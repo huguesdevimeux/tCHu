@@ -101,16 +101,16 @@ final class DecksViewCreator {
                     .visibleProperty()
                     .bind(
                             observableGameState
-                                    .playersNumberOfCards(card)
+                                    .playerNumberOfCards(card)
                                     .greaterThan(MIN_CARDS_REQUIRED));
 
             // Count.
             Text count = new Text();
             count.textProperty()
-                    .bind(Bindings.convert(observableGameState.playersNumberOfCards(card)));
+                    .bind(Bindings.convert(observableGameState.playerNumberOfCards(card)));
             count.visibleProperty()
                     .bind(Bindings.greaterThan(
-                                    observableGameState.playersNumberOfCards(card),
+                                    observableGameState.playerNumberOfCards(card),
                                     MIN_CARDS_NUMBER_DISPLAYED));
 
             count.getStyleClass().add(STYLE_CLASS_COUNT);
