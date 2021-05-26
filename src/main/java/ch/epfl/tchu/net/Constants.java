@@ -42,8 +42,8 @@ public final class Constants {
         public static final String SEPARATOR_2 = ";";
         /* Colon used in network to separate elements. */
         public static final String SEPARATOR_3 = ":";
-        /* Fall back value in case of nullity */
-        public static final String FALLBACK_VALUE_NULLITY = "";
+        /* Default value when the element is either null or empty. */
+        public static final String DEFAULT_VALUE_EMPTINESS = "";
 
         private Serdes() {}
     }
