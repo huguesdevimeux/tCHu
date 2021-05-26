@@ -81,11 +81,11 @@ public interface Serde<T> {
     static <T> Serde<T> oneOf(List<T> objList) {
         Preconditions.checkArgument(!objList.isEmpty());
         Function<T, String> serialize = (T t) -> {
-        	if (t == null) return "";
+        	if (t == null) return NetConstants.FALLBACK_VALUE_NULLITY;
         	return String.valueOf(objList.indexOf(t));
 		};
         Function<String, T> deserialize = (String s) -> {
-        	if (s.isEmpty()) return null;
+        	if (s.equals(NetConstants.FALLBACK_VALUE_NULLITY)) return null;
         	return objList.get(Integer.parseInt(s));
 		};
         return Serde.of(serialize, deserialize);

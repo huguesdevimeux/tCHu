@@ -35,6 +35,6 @@ public final class NetConstants {
     public static final List<String> DEFAULT_NAMES = List.of("Ada", "Charles");
     /* Required number of paramaters */
     public static final int PARAMETERS_REQUIRED = 2;
-    /* An empty string */
-    public static final String EMPTY_STRING = "";
+    /* Fall back value in case of nullity */
+	public static final String FALLBACK_VALUE_NULLITY = "";
 }
