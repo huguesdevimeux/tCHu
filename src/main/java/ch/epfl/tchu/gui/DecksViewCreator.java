@@ -15,6 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import java.util.Objects;
+
 import static ch.epfl.tchu.gui.GuiConstants.*;
 
 /**
@@ -53,7 +55,8 @@ final class DecksViewCreator {
                     .faceUpCard(slot)
                     .addListener(
                             (observable, oldCard, newCard) -> {
-                                displayedCard.getStyleClass().remove(convertColorToCssColor(oldCard.color()));
+                            	// oldCard is null during the initialization.
+                                displayedCard.getStyleClass().remove(convertColorToCssColor(oldCard == null ? null: oldCard.color()));
                                 displayedCard.getStyleClass().add(convertColorToCssColor(newCard.color()));
                             });
         }
