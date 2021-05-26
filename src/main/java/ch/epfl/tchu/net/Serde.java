@@ -80,8 +80,14 @@ public interface Serde<T> {
      */
     static <T> Serde<T> oneOf(List<T> objList) {
         Preconditions.checkArgument(!objList.isEmpty());
-        Function<T, String> serialize = (T t) -> String.valueOf(objList.indexOf(t));
-        Function<String, T> deserialize = (String s) -> objList.get(Integer.parseInt(s));
+        Function<T, String> serialize = (T t) -> {
+        	if (t == null) return "";
+        	return String.valueOf(objList.indexOf(t));
+		};
+        Function<String, T> deserialize = (String s) -> {
+        	if (s.isEmpty()) return null;
+        	return objList.get(Integer.parseInt(s));
+		};
         return Serde.of(serialize, deserialize);
     }
 
@@ -108,7 +114,7 @@ public interface Serde<T> {
             @Override
 
             public String serialize(List<T> listToSerialize) {
-                return Serde.toStringSerializer(serde, listToSerialize, separator);
+                return Serde.serializeList(serde, listToSerialize, separator);
             }
 
             /**
@@ -147,7 +153,7 @@ public interface Serde<T> {
              */
             @Override
             public String serialize(SortedBag<T> bagToSerialize) {
-                return Serde.toStringSerializer(serde, bagToSerialize.toList(), separator);
+                return Serde.serializeList(serde, bagToSerialize.toList(), separator);
             }
 
             /**
@@ -176,7 +182,7 @@ public interface Serde<T> {
      * @param <T> type of the object to (de)serialize
      * @return a String that's been serialized from the list
      */
-    private static <T> String toStringSerializer(
+    private static <T> String serializeList(
             Serde<T> serde, List<T> listToSerialize, String separator) {
 		// If the list is empty, this will return an empty string.
         return listToSerialize.stream()

@@ -21,12 +21,12 @@ import static ch.epfl.tchu.net.NetConstants.*;
  */
 public final class Serdes {
 
-	/** Serde for integers */
+    /** Serde for integers */
     public static final Serde<Integer> intSerde =
             Serde.of(i -> Integer.toString(i), Integer::parseInt);
 
-	/** Not instantiable. */
-	private Serdes() {}
+    /** Not instantiable. */
+    private Serdes() {}
     /** Serde for Strings using Base64 class */
     public static final Serde<String> stringSerde =
             Serde.of(
@@ -79,8 +79,6 @@ public final class Serdes {
                         // ie index 0 -> attribute List<Cards>faceUpCards -> use of cardListSerde
                         String[] elements = str.split(Pattern.quote(SEMI_COLON_SEPARATOR), -1);
                         return new PublicCardState(
-                                // we don't have to verify if elements[0] is empty
-                                // because the face up cards' size = 5
                                 cardListSerde.deserialize(elements[0]),
                                 intSerde.deserialize(elements[1]),
                                 intSerde.deserialize(elements[2]));
@@ -139,12 +137,8 @@ public final class Serdes {
                                             publicGameState.playerState(PLAYER_1)),
                                     publicPlayerStateSerde.serialize(
                                             publicGameState.playerState(PLAYER_2)),
-                                    // if the last player is null, we serialize an empty string
-                                    // otherwise we serialize the lastPlayer using playerIdSerde
-                                    publicGameState.lastPlayer() == null
-                                            ? stringSerde.serialize(EMPTY_STRING)
-                                            : playerIdSerde.serialize(
-                                                    publicGameState.lastPlayer())),
+                                    playerIdSerde.serialize(publicGameState.lastPlayer())),
+      
                     (str) -> {
                         // we split the string but now we have an array of 5 elements
                         // in order, these are the attributes of the constructor of
@@ -156,11 +150,7 @@ public final class Serdes {
                         PublicPlayerState firstPS = publicPlayerStateSerde.deserialize(elements[3]);
                         PublicPlayerState secondPS =
                                 publicPlayerStateSerde.deserialize(elements[4]);
-						// An empty string is deserialized as a null player.
-                        PlayerId lastPlayer =
-                                elements[5].isEmpty()
-                                        ? null
-                                        : playerIdSerde.deserialize(elements[5]);
+                        // An empty string is deserialized as a null player.
                         Map<PlayerId, PublicPlayerState> map =
                                 Map.of(PLAYER_1, firstPS, PLAYER_2, secondPS);
                         return new PublicGameState(
@@ -168,7 +158,6 @@ public final class Serdes {
                                 publicCardStateSerde.deserialize(elements[1]),
                                 playerIdSerde.deserialize(elements[2]),
                                 map,
-                                lastPlayer);
+                                playerIdSerde.deserialize(elements[5]));
                     });
-
 }
