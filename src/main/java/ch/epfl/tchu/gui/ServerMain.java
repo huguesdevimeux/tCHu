@@ -31,7 +31,7 @@ public final class ServerMain extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        List<String> names = NetConstants.DEFAULT_NAMES;
+        List<String> names = NetConstants.Network.DEFAULT_NAMES;
         List<String> params = getParameters().getRaw();
         if (params.size() == names.size()) names = params;
         else if (params.size() != 0)
@@ -44,7 +44,7 @@ public final class ServerMain extends Application {
         }
 
         Map<PlayerId, Player> players = new HashMap<>();
-        try (ServerSocket serverSocket = new ServerSocket(NetConstants.DEFAULT_PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
 			players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));

@@ -38,7 +38,7 @@ public final class Route {
      * @param level Defines what type of route it is
      * @param color Can be any color
      * @throws IllegalArgumentException If stations 1 and 2 are the same or if length is out of
-     *     bounds defined by Constants.java
+     *     bounds defined by GuiConstants.java
      * @throws NullPointerException if either id, station1, station2 or level is null
      */
     public Route(
@@ -51,7 +51,7 @@ public final class Route {
         this.color = color;
         Preconditions.checkArgument(!(station1.equals(station2)));
         Preconditions.checkArgument(
-                length >= Constants.MIN_ROUTE_LENGTH && length <= Constants.MAX_ROUTE_LENGTH);
+                length >= GameConstants.MIN_ROUTE_LENGTH && length <= GameConstants.MAX_ROUTE_LENGTH);
     }
 
     /**
@@ -227,7 +227,7 @@ public final class Route {
      * @return claimPoints for the route of given <code>length</code>
      */
     public int claimPoints() {
-        return Constants.ROUTE_CLAIM_POINTS.get(length);
+        return GameConstants.ROUTE_CLAIM_POINTS.get(length);
     }
 
 	/**

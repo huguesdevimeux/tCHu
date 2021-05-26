@@ -4,7 +4,7 @@ import ch.epfl.tchu.SortedBag;
 
 import java.util.List;
 
-public final class Constants {
+public final class GameConstants {
     /** Nombre de cartes wagon de chaque couleur. */
     public static final int CAR_CARDS_COUNT = 12;
     /** Nombre de cartes locomotive. */
@@ -46,7 +46,7 @@ public final class Constants {
     /** Nombre de points bonus obtenus par le(s) joueur(s) disposant du plus long chemin. */
     public static final int LONGEST_TRAIL_BONUS_POINTS = 10;
 
-    private Constants() {}
+    private GameConstants() {}
 
     private static SortedBag<Card> computeAllCards() {
         var cardsBuilder = new SortedBag.Builder<Card>();

@@ -1,6 +1,5 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import javafx.beans.binding.Bindings;
@@ -126,7 +125,7 @@ public final class GraphicalPlayer {
             SortedBag<Ticket> choosableTickets,
             ActionHandlers.ChooseTicketsHandler chooseTicketsHandler) {
         assert isFxApplicationThread();
-        int minTickets = choosableTickets.size() - Constants.DISCARDABLE_TICKETS_COUNT;
+        int minTickets = choosableTickets.size() - GameConstants.DISCARDABLE_TICKETS_COUNT;
         String title =
                 String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));
         new PopupChoiceBuilder<Ticket>(title, choosableTickets.toList())

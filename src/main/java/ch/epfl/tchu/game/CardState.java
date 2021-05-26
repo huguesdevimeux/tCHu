@@ -47,13 +47,13 @@ public final class CardState extends PublicCardState {
     public static CardState of(Deck<Card> deck) {
         Preconditions.checkArgument(deck.size() >= 5);
         // faceUpCards represents the first 5 cards of the deck
-        List<Card> faceUpCards = deck.topCards(Constants.FACE_UP_CARDS_COUNT).toList();
+        List<Card> faceUpCards = deck.topCards(GameConstants.FACE_UP_CARDS_COUNT).toList();
         // discarded cards is 0
         return new CardState(
                 faceUpCards,
-                deck.size() - Constants.FACE_UP_CARDS_COUNT,
+                deck.size() - GameConstants.FACE_UP_CARDS_COUNT,
                 0,
-                deck.withoutTopCards(Constants.FACE_UP_CARDS_COUNT),
+                deck.withoutTopCards(GameConstants.FACE_UP_CARDS_COUNT),
                 SortedBag.of());
     }
 
@@ -68,7 +68,7 @@ public final class CardState extends PublicCardState {
      */
     public CardState withDrawnFaceUpCard(int slot) {
         List<Card> faceUpCards = new ArrayList<>(faceUpCards());
-        Objects.checkIndex(slot, Constants.FACE_UP_CARDS_COUNT);
+        Objects.checkIndex(slot, GameConstants.FACE_UP_CARDS_COUNT);
         Preconditions.checkArgument(!isDeckEmpty());
         faceUpCards.set(slot, topDeckCard());
         // in the return statement we make sure we use deck but without the top card as it is

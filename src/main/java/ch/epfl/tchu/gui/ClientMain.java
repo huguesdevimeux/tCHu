@@ -22,9 +22,9 @@ public final class ClientMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> params = getParameters().getRaw();
         // Default values.
-        String ipTarget = NetConstants.DEFAULT_IP;
-        int port = NetConstants.DEFAULT_PORT;
-        if (params.size() == NetConstants.PARAMETERS_REQUIRED) {
+        String ipTarget = NetConstants.Network.DEFAULT_IP;
+        int port = NetConstants.Network.DEFAULT_PORT;
+        if (params.size() == NetConstants.Network.NUMBER_PARAMETERS_REQUIRED) {
             ipTarget = params.get(0);
             port = Integer.parseInt(params.get(1));
         } else if (params.size() != 0)

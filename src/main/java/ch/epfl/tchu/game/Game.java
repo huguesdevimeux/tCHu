@@ -100,9 +100,9 @@ public final class Game {
         for (PlayerId playerId : players.keySet()) {
             // player gets delivered the top 5 tickets
             SortedBag<Ticket> initialTicketsChoice =
-                    gameState.topTickets(Constants.INITIAL_TICKETS_COUNT);
+                    gameState.topTickets(GameConstants.INITIAL_TICKETS_COUNT);
             players.get(playerId).setInitialTicketChoice(initialTicketsChoice);
-            gameState = gameState.withoutTopTickets(Constants.INITIAL_TICKETS_COUNT);
+            gameState = gameState.withoutTopTickets(GameConstants.INITIAL_TICKETS_COUNT);
         }
         // we update the states before the player can pick desired tickets
         updatePlayerStates(players, gameState);
@@ -180,7 +180,7 @@ public final class Game {
                             points.computeIfPresent(
                                     playerIdTrailEntry.getKey(),
                                     (p, pointsOfPlayer) ->
-                                            pointsOfPlayer + Constants.LONGEST_TRAIL_BONUS_POINTS);
+                                            pointsOfPlayer + GameConstants.LONGEST_TRAIL_BONUS_POINTS);
                             ReceiveInfoHandler.longestTrail(
                                     players,
                                     playersInfo.get(playerIdTrailEntry.getKey()),
@@ -220,7 +220,7 @@ public final class Game {
             if (gameState.canDrawTickets()) {
                 ReceiveInfoHandler.drewTickets(players, currentPlayerInfo);
                 SortedBag<Ticket> topTicketsInGame =
-                        gameState.topTickets(Constants.IN_GAME_TICKETS_COUNT);
+                        gameState.topTickets(GameConstants.IN_GAME_TICKETS_COUNT);
 
                 // take the three first of the tickets pile
                 SortedBag<Ticket> retainedTickets = currentPlayer.chooseTickets(topTicketsInGame);
@@ -248,7 +248,7 @@ public final class Game {
                     int indexOfChosenCard = currentPlayer.drawSlot();
                     // method drawSlot returns -1 if the player picks a card from the
                     // deck of cards or a number between 0 and 4 if one of the faceUp cards
-                    if (indexOfChosenCard == Constants.DECK_SLOT) {
+                    if (indexOfChosenCard == GameConstants.DECK_SLOT) {
                         ReceiveInfoHandler.drewBlindCard(players, currentPlayerInfo);
                         gameState = gameState.withBlindlyDrawnCard();
                     } else {
@@ -287,7 +287,7 @@ public final class Game {
                 // in case drawn cards are needed for an attempt to claim a tunnel
                 // the program must add the THREE top deck cards to the drawn cards because when
                 // attempting to claim a tunnel, only three cards are drawn
-                for (int i = 0; i < Constants.ADDITIONAL_TUNNEL_CARDS; i++) {
+                for (int i = 0; i < GameConstants.ADDITIONAL_TUNNEL_CARDS; i++) {
                     gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                     drawnCards.add(gameState.topCard());
                     gameState = gameState.withoutTopCard();
@@ -373,7 +373,7 @@ public final class Game {
         public static void drewTickets(Map<PlayerId, Player> players, Info currentPlayer) {
             players.forEach(
                     (playerId, player) ->
-                            player.receiveInfo(currentPlayer.drewTickets(Constants.IN_GAME_TICKETS_COUNT)));
+                            player.receiveInfo(currentPlayer.drewTickets(GameConstants.IN_GAME_TICKETS_COUNT)));
         }
 
         public static void claimedRoute(

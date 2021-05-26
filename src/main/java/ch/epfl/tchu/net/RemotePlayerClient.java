@@ -31,13 +31,13 @@ public final class RemotePlayerClient {
     /** Run the client. Handles the game process through the network. */
     public void run() {
         try (Socket s = new Socket(host, port);
-                BufferedReader inReader =
+			 BufferedReader inReader =
                         new BufferedReader(
-                                new InputStreamReader(s.getInputStream(), NetConstants.ENCODING));
-                BufferedWriter outWriter =
+                                new InputStreamReader(s.getInputStream(), NetConstants.Network.ENCODING));
+			 BufferedWriter outWriter =
                         new BufferedWriter(
                                 new OutputStreamWriter(
-                                        s.getOutputStream(), NetConstants.ENCODING))) {
+                                        s.getOutputStream(), NetConstants.Network.ENCODING))) {
 
             String respFromNetwork = inReader.readLine();
 
@@ -46,14 +46,14 @@ public final class RemotePlayerClient {
                         new ArrayList<>(
                                 Arrays.asList(
                                         respFromNetwork.split(
-                                                Pattern.quote(NetConstants.SPACE), -1)));
+                                                Pattern.quote(NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE), -1)));
                 MessageId messageId = MessageId.valueOf(splitResp.remove(0));
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
                 toSendBack.ifPresent(
                         s1 -> {
                             try {
                                 outWriter.write(s1);
-                                outWriter.write(NetConstants.END_LINE);
+                                outWriter.write(NetConstants.Network.CHAR_END_MESSAGE);
                                 outWriter.flush();
                             } catch (IOException e) {
                                 throw new UncheckedIOException(e);

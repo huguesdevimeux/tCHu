@@ -34,10 +34,10 @@ public final class RemotePlayerProxy implements Player {
             this.writer =
                     new BufferedWriter(
                             new OutputStreamWriter(
-                                    socket.getOutputStream(), NetConstants.ENCODING));
+                                    socket.getOutputStream(), NetConstants.Network.ENCODING));
             this.reader =
                     new BufferedReader(
-                            new InputStreamReader(socket.getInputStream(), NetConstants.ENCODING));
+                            new InputStreamReader(socket.getInputStream(), NetConstants.Network.ENCODING));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -151,12 +151,12 @@ public final class RemotePlayerProxy implements Player {
      */
     private void sendInNetwork(MessageId messageId, List<String> serializedArgs) {
         try {
-            this.writer.write(Objects.requireNonNull(messageId).name() + NetConstants.SPACE);
+            this.writer.write(Objects.requireNonNull(messageId).name() + NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE);
             if (serializedArgs.size() > 0) {
                 this.writer.write(
-                        String.join(NetConstants.SPACE, Objects.requireNonNull(serializedArgs)));
+                        String.join(NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE, Objects.requireNonNull(serializedArgs)));
             }
-            this.writer.write(NetConstants.END_LINE);
+            this.writer.write(NetConstants.Network.CHAR_END_MESSAGE);
             this.writer.flush();
         } catch (IOException e) {
             throw new UncheckedIOException(e);

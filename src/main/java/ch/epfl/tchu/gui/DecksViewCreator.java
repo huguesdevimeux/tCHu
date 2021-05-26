@@ -1,7 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Card;
-import ch.epfl.tchu.game.Constants;
+import ch.epfl.tchu.game.GameConstants;
 import ch.epfl.tchu.game.Ticket;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -15,8 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-
-import java.util.Objects;
 
 import static ch.epfl.tchu.gui.GuiConstants.*;
 
@@ -46,7 +44,7 @@ final class DecksViewCreator {
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
 
-        for (int slot : Constants.FACE_UP_CARD_SLOTS) {
+        for (int slot : GameConstants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
             cardsView.getChildren().add(displayedCard);
             displayedCard.disableProperty().bind(drawCardHandler.isNull());
@@ -71,7 +69,7 @@ final class DecksViewCreator {
         Button cardsPile =
                 itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
-        cardsPile.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
+        cardsPile.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(GameConstants.DECK_SLOT));
         cardsView.getChildren().add(cardsPile);
         return cardsView;
     }
