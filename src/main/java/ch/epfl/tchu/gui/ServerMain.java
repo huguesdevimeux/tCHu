@@ -5,7 +5,7 @@ import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.Game;
 import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
-import ch.epfl.tchu.net.Constants;
+import ch.epfl.tchu.net.NetConstants;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -31,7 +31,7 @@ public final class ServerMain extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        List<String> names = Constants.Network.DEFAULT_NAMES;
+        List<String> names = NetConstants.Network.DEFAULT_NAMES;
         List<String> params = getParameters().getRaw();
         if (params.size() == names.size()) names = params;
         else if (params.size() != 0)
@@ -44,7 +44,7 @@ public final class ServerMain extends Application {
         }
 
         Map<PlayerId, Player> players = new HashMap<>();
-        try (ServerSocket serverSocket = new ServerSocket(Constants.Network.DEFAULT_PORT)) {
+        try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
 			players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));

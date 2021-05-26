@@ -1,6 +1,6 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.net.Constants;
+import ch.epfl.tchu.net.NetConstants;
 import ch.epfl.tchu.net.RemotePlayerClient;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -22,9 +22,9 @@ public final class ClientMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> params = getParameters().getRaw();
         // Default values.
-        String ipTarget = Constants.Network.DEFAULT_IP;
-        int port = Constants.Network.DEFAULT_PORT;
-        if (params.size() == Constants.Network.NUMBER_PARAMETERS_REQUIRED) {
+        String ipTarget = NetConstants.Network.DEFAULT_IP;
+        int port = NetConstants.Network.DEFAULT_PORT;
+        if (params.size() == NetConstants.Network.NUMBER_PARAMETERS_REQUIRED) {
             ipTarget = params.get(0);
             port = Integer.parseInt(params.get(1));
         } else if (params.size() != 0)

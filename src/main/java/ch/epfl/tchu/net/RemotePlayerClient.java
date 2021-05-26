@@ -33,11 +33,11 @@ public final class RemotePlayerClient {
         try (Socket s = new Socket(host, port);
 			 BufferedReader inReader =
                         new BufferedReader(
-                                new InputStreamReader(s.getInputStream(), Constants.Network.ENCODING));
+                                new InputStreamReader(s.getInputStream(), NetConstants.Network.ENCODING));
 			 BufferedWriter outWriter =
                         new BufferedWriter(
                                 new OutputStreamWriter(
-                                        s.getOutputStream(), Constants.Network.ENCODING))) {
+                                        s.getOutputStream(), NetConstants.Network.ENCODING))) {
 
             String respFromNetwork = inReader.readLine();
 
@@ -46,14 +46,14 @@ public final class RemotePlayerClient {
                         new ArrayList<>(
                                 Arrays.asList(
                                         respFromNetwork.split(
-                                                Pattern.quote(Constants.Network.SEPARATOR_COMPONENT_MESSAGE), -1)));
+                                                Pattern.quote(NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE), -1)));
                 MessageId messageId = MessageId.valueOf(splitResp.remove(0));
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
                 toSendBack.ifPresent(
                         s1 -> {
                             try {
                                 outWriter.write(s1);
-                                outWriter.write(Constants.Network.CHAR_END_MESSAGE);
+                                outWriter.write(NetConstants.Network.CHAR_END_MESSAGE);
                                 outWriter.flush();
                             } catch (IOException e) {
                                 throw new UncheckedIOException(e);

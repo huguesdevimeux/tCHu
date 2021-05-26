@@ -12,7 +12,7 @@ import java.util.List;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public final class Constants {
+public final class NetConstants {
 
     public static class Network {
         /* Encoding used in CharSet message */
