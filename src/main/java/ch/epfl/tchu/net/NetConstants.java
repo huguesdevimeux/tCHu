@@ -16,7 +16,7 @@ public final class NetConstants {
     /* Encoding used in CharSet message */
     public static final Charset ENCODING = US_ASCII;
     /* UTF-8 encoding for string serde */
-    public static final Charset UTF_ENCODING = UTF_8;
+    public static final Charset STRING_ENCODING = UTF_8;
     /* End line char used in networkd messages.*/
     public static final String END_LINE = "\n";
     /* Space used in network messages.*/

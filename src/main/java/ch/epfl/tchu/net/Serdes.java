@@ -30,11 +30,11 @@ public final class Serdes {
     /** Serde for Strings using Base64 class */
     public static final Serde<String> stringSerde =
             Serde.of(
-                    obj -> Base64.getEncoder().encodeToString(obj.getBytes(StandardCharsets.UTF_8)),
+                    obj -> Base64.getEncoder().encodeToString(obj.getBytes(STRING_ENCODING)),
                     str ->
                             new String(
                                     Base64.getDecoder().decode(str.getBytes()),
-                                    UTF_ENCODING));
+                                    STRING_ENCODING));
     /** Serde for PlayerId */
     public static final Serde<PlayerId> playerIdSerde = Serde.oneOf(PlayerId.ALL);
     /** Serde for TurnKind */
