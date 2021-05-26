@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ch.epfl.tchu.game.Constants.*;
+import static ch.epfl.tchu.game.GameConstants.*;
 
 /**
  * Representation of the observable state/part of the game.

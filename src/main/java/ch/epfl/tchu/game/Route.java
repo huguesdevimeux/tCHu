@@ -51,7 +51,7 @@ public final class Route {
         this.color = color;
         Preconditions.checkArgument(!(station1.equals(station2)));
         Preconditions.checkArgument(
-                length >= Constants.MIN_ROUTE_LENGTH && length <= Constants.MAX_ROUTE_LENGTH);
+                length >= GameConstants.MIN_ROUTE_LENGTH && length <= GameConstants.MAX_ROUTE_LENGTH);
     }
 
     /**
@@ -227,7 +227,7 @@ public final class Route {
      * @return claimPoints for the route of given <code>length</code>
      */
     public int claimPoints() {
-        return Constants.ROUTE_CLAIM_POINTS.get(length);
+        return GameConstants.ROUTE_CLAIM_POINTS.get(length);
     }
 
 	/**

@@ -37,9 +37,9 @@ public class PublicGameStateTest {
                     Route.Level.UNDERGROUND,
                     Color.GREEN);
     PublicPlayerState publicPlayerState1 =
-            new PublicPlayerState(ticketsCount, Constants.TOTAL_CARDS_COUNT, List.of(r1));
+            new PublicPlayerState(ticketsCount, GameConstants.TOTAL_CARDS_COUNT, List.of(r1));
     PublicPlayerState publicPlayerState2 =
-            new PublicPlayerState(ticketsCount, Constants.TOTAL_CARDS_COUNT, List.of(r2));
+            new PublicPlayerState(ticketsCount, GameConstants.TOTAL_CARDS_COUNT, List.of(r2));
 
     @BeforeEach
     void setup() {

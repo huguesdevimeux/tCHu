@@ -42,12 +42,12 @@ public final class GameState extends PublicGameState {
      * @return An instance of {@link GameState} with the specified attributes.
      */
     public static GameState initial(SortedBag<Ticket> tickets, Random rng) {
-        Deck<Card> deckCards = Deck.of(Constants.ALL_CARDS, rng);
+        Deck<Card> deckCards = Deck.of(GameConstants.ALL_CARDS, rng);
         Map<PlayerId, PlayerState> playerStates = new EnumMap<>(PlayerId.class);
         for (PlayerId player : PlayerId.ALL) {
             playerStates.put(
-                    player, PlayerState.initial(deckCards.topCards(Constants.INITIAL_CARDS_COUNT)));
-            deckCards = deckCards.withoutTopCards(Constants.INITIAL_CARDS_COUNT);
+                    player, PlayerState.initial(deckCards.topCards(GameConstants.INITIAL_CARDS_COUNT)));
+            deckCards = deckCards.withoutTopCards(GameConstants.INITIAL_CARDS_COUNT);
         }
 
         return new GameState(
