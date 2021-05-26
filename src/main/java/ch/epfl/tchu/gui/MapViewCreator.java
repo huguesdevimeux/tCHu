@@ -43,7 +43,7 @@ final class MapViewCreator {
             CardChooser cardChooser) {
         Pane gameMapPane = new Pane();
         gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
-        gameMapPane.getChildren().add(new ImageView());
+        gameMapPane.getChildren().add(new ImageView());//this adds the background to the pane
 
         for (Route route : ChMap.routes()) {
             Group mainRouteGroup = new Group();
@@ -63,19 +63,18 @@ final class MapViewCreator {
 
                 Rectangle rectForTracks = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
-                eachRoutesBlock.getChildren().add(rectForTracks);
 
-                Group routesCars = new Group();
-                routesCars.getStyleClass().add(STYLE_CLASS_CAR);
+                Group routeCars = new Group();
+                routeCars.getStyleClass().add(STYLE_CLASS_CAR);
 
                 Rectangle rectForCars = new Rectangle(RECTANGLE_LENGTH, RECTANGLE_WIDTH);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
                 Circle circle1 = new Circle(CIRCLE1_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
                 Circle circle2 = new Circle(CIRCLE2_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
-                routesCars.getChildren().addAll(rectForCars, circle1, circle2);
+                routeCars.getChildren().addAll(rectForCars, circle1, circle2);
 
                 // established hierarchy : cars group -> block group -> route group
-                eachRoutesBlock.getChildren().add(routesCars);
+                eachRoutesBlock.getChildren().addAll(rectForTracks, routeCars);
                 mainRouteGroup.getChildren().add(eachRoutesBlock);
             }
             gameMapPane.getChildren().add(mainRouteGroup);
