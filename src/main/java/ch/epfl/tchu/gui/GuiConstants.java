@@ -51,11 +51,19 @@ public final class GuiConstants {
     public static final String STYLE_CLASS_TRAIN_IMAGE = "train-image";
 
     /* "neutral" color. */
-    public static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
-    /* All the colors used in css. Does not include neutral, as not a proper color. */
-    public static final List<String> STYLE_CLASSES_COLOR =
-            Color.ALL.stream().map(Objects::toString).collect(Collectors.toList());
-    // ID constants
+    private static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
+	/**
+	 * Converts a Color given as parameter to a the css class name used in tCHu.
+	 * Color can be null, and in this case the color will be NEUTRAL.
+	 *
+	 * @param color The color to convert
+	 * @return The CSS class name.
+	 */
+	public static String convertColorToCssColor(Color color) {
+    	return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
+	}
+
+	// ID constants
     public static final String ID_TICKETS = "tickets";
     public static final String ID_CARD_PANE = "card-pane";
     public static final String ID_HAND_PANE = "hand-pane";
