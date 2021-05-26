@@ -16,9 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
-import java.util.Objects;
-
-import static ch.epfl.tchu.gui.GuiConstants.*;
+import static ch.epfl.tchu.gui.Constants.*;
 
 /**
  * Creates Decks. Non instantiable

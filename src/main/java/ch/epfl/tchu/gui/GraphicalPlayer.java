@@ -1,6 +1,5 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import javafx.beans.binding.Bindings;
@@ -27,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static ch.epfl.tchu.gui.GuiConstants.CHOOSER_CSS;
-import static ch.epfl.tchu.gui.GuiConstants.VISIBLE_INFOS;
+import static ch.epfl.tchu.gui.Constants.CHOOSER_CSS;
+import static ch.epfl.tchu.gui.Constants.VISIBLE_INFOS;
 import static javafx.application.Platform.isFxApplicationThread;
 
 /**
@@ -126,7 +125,7 @@ public final class GraphicalPlayer {
             SortedBag<Ticket> choosableTickets,
             ActionHandlers.ChooseTicketsHandler chooseTicketsHandler) {
         assert isFxApplicationThread();
-        int minTickets = choosableTickets.size() - Constants.DISCARDABLE_TICKETS_COUNT;
+        int minTickets = choosableTickets.size() - ch.epfl.tchu.game.Constants.DISCARDABLE_TICKETS_COUNT;
         String title =
                 String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));
         new PopupChoiceBuilder<Ticket>(title, choosableTickets.toList())
@@ -166,7 +165,7 @@ public final class GraphicalPlayer {
                 .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
-                .setMinimumChoices(GuiConstants.MINIMUM_CHOICES_CLAIM_CARDS)
+                .setMinimumChoices(Constants.MINIMUM_CHOICES_CLAIM_CARDS)
                 .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
@@ -185,7 +184,7 @@ public final class GraphicalPlayer {
                 .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
-                .setMinimumChoices(GuiConstants.MIN_CARDS_REQUIRED)
+                .setMinimumChoices(Constants.MIN_CARDS_REQUIRED)
                 .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
@@ -198,7 +197,7 @@ public final class GraphicalPlayer {
      */
     private Stage generateStage() {
         root = new Stage();
-        root.setTitle(String.format(GuiConstants.TCHU_TITLE, playerNames.get(correspondingPlayer)));
+        root.setTitle(String.format(Constants.TCHU_TITLE, playerNames.get(correspondingPlayer)));
 
         BorderPane mainPane =
                 new BorderPane(

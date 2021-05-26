@@ -16,7 +16,7 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
-import static ch.epfl.tchu.gui.GuiConstants.*;
+import static ch.epfl.tchu.gui.Constants.*;
 
 /**
  * Representation of the map and the routes in the game.

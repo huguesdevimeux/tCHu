@@ -13,7 +13,7 @@ import javafx.scene.text.TextFlow;
 
 import java.util.Map;
 
-import static ch.epfl.tchu.gui.GuiConstants.*;
+import static ch.epfl.tchu.gui.Constants.*;
 
 /**
  * Representation of the information section in the game. Not instantiable.

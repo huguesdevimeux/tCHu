@@ -2,15 +2,11 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Color;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 /**
  * Constants used for the GUI part of the project. Includes .css files, style classes and IDs and
  * other Constants in general.
  */
-public final class GuiConstants {
+public final class Constants {
     // Geometric values constants for mapViewCreator
     public static final int RECTANGLE_WIDTH = 36;
     public static final int RECTANGLE_HEIGHT = 12;
@@ -18,7 +14,7 @@ public final class GuiConstants {
     public static final int CIRCLE2_CENTER_X = 24;
     public static final int CIRCLE_CENTER_Y = 6;
     public static final int ROUTE_CIRCLE_RADIUS = 3;
-    //Geometric constants for DecksViewCreator
+    // Geometric constants for DecksViewCreator
     public static final int INNER_RECT1_WIDTH = 60;
     public static final int INNER_RECT1_HEIGHT = 90;
     public static final int INNER_RECT_WIDTH = 40;
@@ -26,8 +22,6 @@ public final class GuiConstants {
     public static final int BUTTON_GAUGE_WIDTH = 50;
     public static final int BUTTON_GAUGE_HEIGHT = 5;
     public static final int DIVIDE_PERCENTAGE = 2;
-
-
 
     // style sheets constants
     public static final String MAP_CSS = "map.css";
@@ -52,18 +46,18 @@ public final class GuiConstants {
 
     /* "neutral" color. */
     private static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
-	/**
-	 * Converts a Color given as parameter to a the css class name used in tCHu.
-	 * Color can be null, and in this case the color will be NEUTRAL.
-	 *
-	 * @param color The color to convert
-	 * @return The CSS class name.
-	 */
-	public static String convertColorToCssColor(Color color) {
-    	return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
-	}
+    /**
+     * Converts a Color given as parameter to a the css class name used in tCHu. Color can be null,
+     * and in this case the color will be NEUTRAL.
+     *
+     * @param color The color to convert
+     * @return The CSS class name.
+     */
+    public static String convertColorToCssColor(Color color) {
+        return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
+    }
 
-	// ID constants
+    // ID constants
     public static final String ID_TICKETS = "tickets";
     public static final String ID_CARD_PANE = "card-pane";
     public static final String ID_HAND_PANE = "hand-pane";
