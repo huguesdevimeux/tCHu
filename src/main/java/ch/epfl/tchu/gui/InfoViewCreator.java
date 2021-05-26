@@ -67,7 +67,7 @@ final class InfoViewCreator {
      * @param player the player's view
      * @param obsGameState the observable game state
      * @param playerNames map with the names of the player
-     * @return a node that we will add to the vbox playerStats
+     * @return a node representing the views with the info. 
      */
     private static Node createPlayerInfoView(
             PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
