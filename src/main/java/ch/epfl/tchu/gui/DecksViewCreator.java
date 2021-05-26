@@ -117,13 +117,13 @@ final class DecksViewCreator {
 
     private static StackPane individualCard() {
         // Inner icon of cards. Sorted in an exterior fashion.
-        Rectangle inner1 = new Rectangle(INNER_RECT1_LENGTH, INNER_RECT1_WIDTH);
+        Rectangle inner1 = new Rectangle(INNER_RECT1_WIDTH, INNER_RECT1_HEIGHT);
         inner1.getStyleClass().add(STYLE_CLASS_OUTSIDE);
 
-        Rectangle inner2 = new Rectangle(INNER_RECT_LENGTH, INNER_RECT_WIDTH);
+        Rectangle inner2 = new Rectangle(INNER_RECT_WIDTH, INNER_RECT_HEIGHT);
         inner2.getStyleClass().addAll(STYLE_CLASS_FILLED, STYLE_CLASS_INSIDE);
 
-        Rectangle inner3 = new Rectangle(INNER_RECT_LENGTH, INNER_RECT_WIDTH);
+        Rectangle inner3 = new Rectangle(INNER_RECT_WIDTH, INNER_RECT_HEIGHT);
         inner3.getStyleClass().add(STYLE_CLASS_TRAIN_IMAGE);
 
         // Outer layout.
@@ -138,9 +138,9 @@ final class DecksViewCreator {
         Button itemPile = new Button(itemName);
         itemPile.getStyleClass().add(STYLE_CLASS_GAUGED);
 
-        Rectangle backgroundButtonGraphic = new Rectangle(BUTTON_GAUGE_LENGTH, BUTTON_GAUGE_WIDTH);
+        Rectangle backgroundButtonGraphic = new Rectangle(BUTTON_GAUGE_WIDTH, BUTTON_GAUGE_HEIGHT);
         backgroundButtonGraphic.getStyleClass().add(STYLE_CLASS_BACKGROUND);
-        Rectangle foregroundButtonGraphic = new Rectangle(BUTTON_GAUGE_LENGTH, BUTTON_GAUGE_WIDTH);
+        Rectangle foregroundButtonGraphic = new Rectangle(BUTTON_GAUGE_WIDTH, BUTTON_GAUGE_HEIGHT);
         foregroundButtonGraphic.getStyleClass().add(STYLE_CLASS_FOREGROUND);
         foregroundButtonGraphic.widthProperty().bind(percentageProperty.divide(DIVIDE_PERCENTAGE));
 

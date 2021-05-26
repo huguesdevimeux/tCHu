@@ -19,12 +19,12 @@ public final class GuiConstants {
     public static final int CIRCLE_CENTER_Y = 6;
     public static final int ROUTE_CIRCLE_RADIUS = 3;
     //Geometric constants for DecksViewCreator
-    public static final int INNER_RECT1_LENGTH = 60;
-    public static final int INNER_RECT1_WIDTH = 90;
-    public static final int INNER_RECT_LENGTH = 40;
-    public static final int INNER_RECT_WIDTH = 70;
-    public static final int BUTTON_GAUGE_LENGTH = 50;
-    public static final int BUTTON_GAUGE_WIDTH = 5;
+    public static final int INNER_RECT1_WIDTH = 60;
+    public static final int INNER_RECT1_HEIGHT = 90;
+    public static final int INNER_RECT_WIDTH = 40;
+    public static final int INNER_RECT_HEIGHT = 70;
+    public static final int BUTTON_GAUGE_WIDTH = 50;
+    public static final int BUTTON_GAUGE_HEIGHT = 5;
     public static final int DIVIDE_PERCENTAGE = 2;
 
 
