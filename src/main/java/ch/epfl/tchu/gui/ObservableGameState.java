@@ -102,29 +102,25 @@ public final class ObservableGameState {
                     .set((int) playerState.cards().stream().filter(c -> c.equals(card)).count());
         }
 
-        // We first create a set using a list of stations in order to deal with double routes.
-        // If the players' routes are "neighbours",
-        // they have the same "from" and "to" stations, so we add
-        // all the neighboured routes' stations to the set.
-        Set<List<Station>> neighborRoutesStations = newGameState.claimedRoutes().stream()
+        Set<List<Station>> stationsOfDoubleClaimedRoutes = newGameState.claimedRoutes().stream()
                 .filter(Route::isPartOfDouble)
                 .map(Route::stations).collect(Collectors.toSet());
         for (Route route : ChMap.routes()) {
-            // setting the 4th property of the first group that sets the owner of the route
-            for (PlayerId playerId : PlayerId.ALL) {
-                if (newGameState.playerState(playerId).routes().contains(route))
-                    allRoutesOwners.get(route).set(playerId);
-            }
 
             // Setting the last property
             // We create 3 booleans which are conditions to be met in order to claim a route.
             boolean playerIsCurrentPlayer = newGameState.currentPlayerId().equals(correspondingPlayer);
             boolean routeIsNotClaimed =
                     !newGameState.claimedRoutes().contains(route)
-                            && !neighborRoutesStations.contains(route.stations()); //This condition means
-            //that if any of the routes that have neighbors is claimed, no one can claim the one next to it.
+							// The player can't take a a part of a double route which one part has been claimed.
+                            && !stationsOfDoubleClaimedRoutes.contains(route.stations());
             boolean canClaimRoute = playerState.canClaimRoute(route);
 			playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
+
+            for (PlayerId playerId : PlayerId.ALL) {
+                if (newGameState.playerState(playerId).routes().contains(route))
+                    allRoutesOwners.get(route).set(playerId);
+            }
 		}
 	}
 
