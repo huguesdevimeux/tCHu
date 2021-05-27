@@ -65,7 +65,7 @@ public class MainMenuServerController {
                                         playersNames.put(PlayerId.ALL.get(i), names[i]);
                                     }
                                     ServerSocket serverSocket =
-                                            new ServerSocket(GuiConstants.DEFAULT_PORT);
+                                            new ServerSocket(5108);
                                     players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
                                     players.put(
                                             PlayerId.PLAYER_2,

@@ -9,25 +9,27 @@ import javafx.scene.control.TextField;
 import java.net.UnknownHostException;
 
 public class MainMenuClientController {
-    @FXML
-    private Button getIP, joinGame, copyIP;
+    @FXML private Button getIP, joinGame, copyIP;
     @FXML private TextField IpField, port;
-
 
     public void setMenuActions() throws UnknownHostException {
         String numericalIp = PlayersIPAddress.getIPAddress();
         getIP.setOnMouseClicked(e -> IpField.setText(numericalIp));
-
-        joinGame.setOnMouseClicked(e -> {
-            new Thread(
-                    () ->
-                            new RemotePlayerClient(
-                                    new GraphicalPlayerAdapter(),
-                                    IpField.getText(),
-                                    Integer.parseInt(port.getText()))
-                                    .run())
-                    .start();
-        });
+        copyIP.setOnMouseClicked(
+                event -> {
+                    System.out.println(IpField.getText());
+                    System.out.println(Integer.parseInt(port.getText()));
+                });
+        joinGame.setOnMouseClicked(
+                e ->
+                        ClientMain.main(new String[]{IpField.getText(), port.getText()}));
+//                        new Thread(
+//                                        () ->
+//                                                new RemotePlayerClient(
+//                                                                new GraphicalPlayerAdapter(),
+//                                                                IpField.getText(),
+//                                                                Integer.parseInt(port.getText()))
+//                                                        .run())
+//                                .start());
     }
-
 }
