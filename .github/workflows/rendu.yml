@@ -1,6 +1,6 @@
 # THis will automatically format every push on main branch. 
 
-name: Format
+name: Rendu
 
 on:
   push:
@@ -17,4 +17,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: rendu
-          path: src/
+          path: src/main/java
