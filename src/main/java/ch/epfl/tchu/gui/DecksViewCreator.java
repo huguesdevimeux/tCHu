@@ -140,7 +140,7 @@ final class DecksViewCreator {
         backgroundButtonGraphic.getStyleClass().add(STYLE_CLASS_BACKGROUND);
         Rectangle foregroundButtonGraphic = new Rectangle(BUTTON_GAUGE_WIDTH, BUTTON_GAUGE_HEIGHT);
         foregroundButtonGraphic.getStyleClass().add(STYLE_CLASS_FOREGROUND);
-        foregroundButtonGraphic.widthProperty().bind(percentageProperty.divide(DIVIDE_PERCENTAGE));
+        foregroundButtonGraphic.widthProperty().bind(percentageProperty.multiply(BUTTON_GAUGE_WIDTH).divide(100));
 
         itemPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
         return itemPile;
