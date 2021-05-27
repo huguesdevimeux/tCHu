@@ -20,16 +20,16 @@ public class MainMenuClientController {
                     System.out.println(IpField.getText());
                     System.out.println(Integer.parseInt(port.getText()));
                 });
+
         joinGame.setOnMouseClicked(
                 e ->
-                        ClientMain.main(new String[]{IpField.getText(), port.getText()}));
-//                        new Thread(
-//                                        () ->
-//                                                new RemotePlayerClient(
-//                                                                new GraphicalPlayerAdapter(),
-//                                                                IpField.getText(),
-//                                                                Integer.parseInt(port.getText()))
-//                                                        .run())
-//                                .start());
+                        new Thread(
+                                        () ->
+                                                new RemotePlayerClient(
+                                                                new GraphicalPlayerAdapter(),
+                                                                IpField.getText(),
+                                                                Integer.parseInt(port.getText()))
+                                                        .run())
+                                .start());
     }
 }
