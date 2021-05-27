@@ -4,8 +4,6 @@ import ch.epfl.tchu.net.RemotePlayerClient;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.util.List;
-
 /**
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
@@ -27,7 +25,7 @@ public class ClientMain extends Application {
 //        } else if (params.size() != 0)
 //            throw new Exception("Wrong number of parameters given to the programme. Exiting.");
 
-        MainMenu mainMenu = new MainMenu();
+        MainMenuServer mainMenu = new MainMenuServer();
         mainMenu.mainMenuView().show();
 
         String finalIpTarget = ipTarget;
