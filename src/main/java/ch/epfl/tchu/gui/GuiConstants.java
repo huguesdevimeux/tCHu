@@ -21,7 +21,6 @@ public final class GuiConstants {
     public static final int INNER_RECT_HEIGHT = 70;
     public static final int BUTTON_GAUGE_WIDTH = 50;
     public static final int BUTTON_GAUGE_HEIGHT = 5;
-    public static final int DIVIDE_PERCENTAGE = 2;
 
     // style sheets constants
     public static final String MAP_CSS = "map.css";

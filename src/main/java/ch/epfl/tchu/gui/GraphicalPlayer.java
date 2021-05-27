@@ -77,7 +77,12 @@ public final class GraphicalPlayer {
         observableGameState.setState(newGameState, playerState);
     }
 
-    public void receiveInfo(String message) {
+	/**
+	 * Called when an information has to be transmitted to a player under the form of a String.
+	 *
+	 * @param message information to be transmitted
+	 */
+	public void receiveInfo(String message) {
         assert isFxApplicationThread();
         // remove the first index of the observable list to not have more than VISIBLE_INFOS amount
         // of messages.
@@ -85,7 +90,14 @@ public final class GraphicalPlayer {
         infoProperty.add(new Text(message));
     }
 
-    public void startTurn(
+	/**
+	 * Called to start a turn. Sets all the necessary handlers for the Gui.
+	 *
+	 * @param drawTicketsH The handler to draw tickets.
+	 * @param drawCardH The handler to draw Cards.
+	 * @param claimRouteH The handler to draw routes.
+	 */
+	public void startTurn(
             ActionHandlers.DrawTicketsHandler drawTicketsH,
             ActionHandlers.DrawCardHandler drawCardH,
             ActionHandlers.ClaimRouteHandler claimRouteH) {
