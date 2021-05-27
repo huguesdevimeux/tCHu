@@ -19,7 +19,7 @@ import static javafx.application.Platform.runLater;
  */
 public final class GraphicalPlayerAdapter implements Player {
 
-    private final BlockingQueue<SortedBag<Ticket>> ticketsRetriverQueue =
+    private final BlockingQueue<SortedBag<Ticket>> ticketsRetrieverQueue =
             new ArrayBlockingQueue<>(1);
     private final BlockingQueue<Integer> drawSlotRetrieverQueue = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<Route> claimedRouteRetrieverQueue = new ArrayBlockingQueue<>(1);
@@ -27,8 +27,11 @@ public final class GraphicalPlayerAdapter implements Player {
             new ArrayBlockingQueue<>(1);
     private GraphicalPlayer graphicalPlayer;
 
-    /** Constructor for {@link GraphicalPlayerAdapter}. */
-    public GraphicalPlayerAdapter() {}
+    /**
+     * Constructor for {@link GraphicalPlayerAdapter}.
+     */
+    public GraphicalPlayerAdapter() {
+    }
 
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
@@ -53,12 +56,12 @@ public final class GraphicalPlayerAdapter implements Player {
                 () ->
                         graphicalPlayer.chooseTickets(
                                 tickets,
-                                chosenTickets -> putInQueue(ticketsRetriverQueue, chosenTickets)));
+                                chosenTickets -> putInQueue(ticketsRetrieverQueue, chosenTickets)));
     }
 
     @Override
     public SortedBag<Ticket> chooseInitialTickets() {
-        return retrieveFromQueue(ticketsRetriverQueue);
+        return retrieveFromQueue(ticketsRetrieverQueue);
     }
 
     @Override
@@ -77,9 +80,7 @@ public final class GraphicalPlayerAdapter implements Player {
                     putInQueue(claimedRouteRetrieverQueue, claimedRoute);
                     putInQueue(initialClaimCardsRetrieverQueue, initialClaimCards);
                 };
-        runLater(
-                () ->
-                        graphicalPlayer.startTurn(
+        runLater(() -> graphicalPlayer.startTurn(
                                 drawTicketsHandler, drawCardHandler, claimRouteHandler));
         return retrieveFromQueue(turnKindRetrieverQueue);
     }
@@ -130,7 +131,7 @@ public final class GraphicalPlayerAdapter implements Player {
      *
      * @param value The supplier that provide the desired value.
      * @param queue The blocking queue.
-     * @param <T> Type of the value.
+     * @param <T>   Type of the value.
      * @throws Error If there is an error during the supplier execution.
      */
     private <T> void putInQueue(BlockingQueue<T> queue, T value) {
@@ -145,7 +146,7 @@ public final class GraphicalPlayerAdapter implements Player {
      * Retrieve an element from a blocking queue.
      *
      * @param queue The queue.
-     * @param <T> Type of the element.
+     * @param <T>   Type of the element.
      * @return The element.
      */
     private <T> T retrieveFromQueue(BlockingQueue<T> queue) {
