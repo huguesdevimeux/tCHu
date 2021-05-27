@@ -241,7 +241,8 @@ public final class Game {
                 Random rng) {
             // the player only draws two cards
             int numberOfPossibleCardsToDraw = 2;
-            for (int i = 0; i < numberOfPossibleCardsToDraw; i++) {
+            if (gameState.canDrawCards()) {
+                for (int i = 0; i < numberOfPossibleCardsToDraw; i++) {
                 // if there aren't enough cards to begin with, we shuffle the bigboi
                 gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                     int indexOfChosenCard = currentPlayer.drawSlot();
@@ -260,6 +261,7 @@ public final class Game {
                     gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                     // we update the playerStates after the first card is drawn
                     updatePlayerStates(players, gameState);
+                }
             }
         }
 
