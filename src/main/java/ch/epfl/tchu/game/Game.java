@@ -244,7 +244,6 @@ public final class Game {
             for (int i = 0; i < numberOfPossibleCardsToDraw; i++) {
                 // if there aren't enough cards to begin with, we shuffle the bigboi
                 gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                if (gameState.canDrawCards()) {
                     int indexOfChosenCard = currentPlayer.drawSlot();
                     // method drawSlot returns -1 if the player picks a card from the
                     // deck of cards or a number between 0 and 4 if one of the faceUp cards
@@ -261,7 +260,6 @@ public final class Game {
                     gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
                     // we update the playerStates after the first card is drawn
                     updatePlayerStates(players, gameState);
-                }
             }
         }
 
