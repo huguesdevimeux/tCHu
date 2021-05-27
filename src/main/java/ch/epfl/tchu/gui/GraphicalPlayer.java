@@ -343,10 +343,6 @@ public final class GraphicalPlayer {
 
             Stage popup = new Stage(StageStyle.UTILITY);
             popup.setTitle(title);
-            // This monstrosity adds to the current sets action handler an action that hides the
-            // popup after pressing
-            // the button.
-            // The switch case differs the case when only one item needs to be selected vs multiple.
             confirm.setOnAction(
                     actionEvent -> {
                         switch (choicesDisplayed.getSelectionModel().getSelectionMode()) {
