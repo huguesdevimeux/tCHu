@@ -17,15 +17,18 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        List<String> params = getParameters().getRaw();
+      //  List<String> params = getParameters().getRaw();
         // Default values.
         String ipTarget = GuiConstants.DEFAULT_IP;
         int port = GuiConstants.DEFAULT_PORT;
-        if (params.size() == 2) {
-            ipTarget = params.get(0);
-            port = Integer.parseInt(params.get(1));
-        } else if (params.size() != 0)
-            throw new Exception("Wrong number of parameters given to the programme. Exiting.");
+//        if (params.size() == 2) {
+//            ipTarget = params.get(0);
+//            port = Integer.parseInt(params.get(1));
+//        } else if (params.size() != 0)
+//            throw new Exception("Wrong number of parameters given to the programme. Exiting.");
+
+        MainMenu mainMenu = new MainMenu();
+        mainMenu.mainMenuView().show();
 
         String finalIpTarget = ipTarget;
         int finalPort = port;

@@ -9,6 +9,7 @@ import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.List;
@@ -20,18 +21,20 @@ import java.util.Random;
  * @author Luca Mouchel (324748)
  */
 public class ServerMain extends Application {
+    public static boolean launched;
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    public static boolean setLaunched() {
+        return true;
+    }
+
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws IOException {
+
         List<String> names = GuiConstants.DEFAULT_NAMES;
-        List<String> params = getParameters().getRaw();
-        if (params.size() == names.size()) names = params;
-        else if (params.size() != 0)
-            throw new Exception("Invalid number of parameters given to the programme. Exiting.");
 
         Map<PlayerId, String> playersNames = new HashMap<>();
 
@@ -40,12 +43,12 @@ public class ServerMain extends Application {
         }
 
         Map<PlayerId, Player> players = new HashMap<>();
-        try (ServerSocket serverSocket = new ServerSocket(GuiConstants.DEFAULT_PORT)) {
-
+        try {
+            ServerSocket serverSocket = new ServerSocket(GuiConstants.DEFAULT_PORT);
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-            for (int i = 1; i < PlayerId.ALL.size(); i++) {
-                players.put(PlayerId.ALL.get(i), new RemotePlayerProxy(serverSocket.accept()));
-            }
+            players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         new Thread(

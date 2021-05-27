@@ -4,22 +4,21 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class MainMenu extends Application {
+public class MainMenu  {
+    public static Button button;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
+    public Stage mainMenuView() throws IOException {
+        Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/MainMenuLayout.fxml"));
         Parent content = loader.load();
-        primaryStage.setScene(new Scene(content, 700,650));
-        primaryStage.show();
+        stage.setScene(new Scene(content, 700,650));
+        return stage;
     }
 }

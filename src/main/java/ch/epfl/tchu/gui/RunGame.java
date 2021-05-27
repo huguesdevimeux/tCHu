@@ -10,5 +10,7 @@ public class RunGame extends Application {
         ClientMain clientMain = new ClientMain();
         ServerMain serverMain = new ServerMain();
         MainMenu mainMenu = new MainMenu();
+        mainMenu.mainMenuView().show();
+        //serverMain.start(new Stage());
     }
 }
