@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.ChMap;
 import ch.epfl.tchu.game.*;
 import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.PlayersIPAddress;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -15,18 +16,26 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class MainMenuServerController {
     @FXML private Button hostGame, configNgrok;
-    @FXML private TextField playerName;
+    @FXML private TextField playerName, IpField;
     @FXML private Button play;
+    @FXML private Button getIP;
+    public String playersIp;
 
     public void setMenuActions() throws Exception {
+        playersIp = PlayersIPAddress.getIPAddress();
+        getIP.setOnMouseClicked(e -> IpField.setText(playersIp));
 
         configNgrok.setOnMouseClicked(
                 e -> {
@@ -66,10 +75,9 @@ public class MainMenuServerController {
                                     }
                                     ServerSocket serverSocket =
                                             new ServerSocket(5108);
+                                    Socket socket = serverSocket.accept();
                                     players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-                                    players.put(
-                                            PlayerId.PLAYER_2,
-                                            new RemotePlayerProxy(serverSocket.accept()));
+                                    players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(socket));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                 }
@@ -93,4 +101,5 @@ public class MainMenuServerController {
     private void disableButtons() {
         hostGame.setDisable(true);
     }
+
 }

@@ -17,8 +17,8 @@ public class MainMenuClientController {
         getIP.setOnMouseClicked(e -> IpField.setText(numericalIp));
         copyIP.setOnMouseClicked(
                 event -> {
-                    System.out.println(IpField.getText());
-                    System.out.println(Integer.parseInt(port.getText()));
+                    //System.out.println(IpField.getText());
+                   // System.out.println(Integer.parseInt(port.getText()));
                 });
 
         joinGame.setOnMouseClicked(
@@ -27,7 +27,7 @@ public class MainMenuClientController {
                                         () ->
                                                 new RemotePlayerClient(
                                                                 new GraphicalPlayerAdapter(),
-                                                                IpField.getText(),
+                                                                "128.179.186.127",
                                                                 Integer.parseInt(port.getText()))
                                                         .run())
                                 .start());

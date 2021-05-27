@@ -10,7 +10,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainMenuServer {
-    public static Button button;
 
 
     public Stage mainMenuView() throws IOException {

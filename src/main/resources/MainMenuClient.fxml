@@ -12,7 +12,7 @@
    <children>
       <Button fx:id="getIP" layoutX="14.0" layoutY="450.0" mnemonicParsing="false" onAction="#setMenuActions" style="-fx-background-insets: 0,0050, 0060, 0070; -fx-background-radius: 10; -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #f3783b 100%), #9d4024, #d86e3a, radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c); -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 ); -fx-font-weight: bold; -fx-font-size: 1.1EM;" text="Obtenir mon addresse IP numérique" textFill="#fff0f0" />
       <Button fx:id="copyIP" layoutX="487.0" layoutY="451.0" mnemonicParsing="false" onAction="#setMenuActions" text="Copier" />
-      <TextField fx:id="IpField" alignment="CENTER" editable="false" layoutX="286.0" layoutY="451.0" onAction="#setMenuActions" prefHeight="25.0" prefWidth="168.0" promptText="IP numérique de l'utilisateur" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
+      <TextField fx:id="IpField" alignment="CENTER" layoutX="286.0" layoutY="451.0" onAction="#setMenuActions" prefHeight="25.0" prefWidth="168.0" promptText="IP numérique de l'utilisateur" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
       <ImageView fitHeight="438.0" fitWidth="700.0">
          <image>
             <Image url="@map.png" />
