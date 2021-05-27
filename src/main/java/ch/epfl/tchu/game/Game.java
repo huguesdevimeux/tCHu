@@ -241,10 +241,10 @@ public final class Game {
                 Random rng) {
             // the player only draws two cards
             int numberOfPossibleCardsToDraw = 2;
-            for (int i = 0; i < numberOfPossibleCardsToDraw; i++) {
+            if (gameState.canDrawCards()) {
+                for (int i = 0; i < numberOfPossibleCardsToDraw; i++) {
                 // if there aren't enough cards to begin with, we shuffle the bigboi
                 gameState = gameState.withCardsDeckRecreatedIfNeeded(rng);
-                if (gameState.canDrawCards()) {
                     int indexOfChosenCard = currentPlayer.drawSlot();
                     // method drawSlot returns -1 if the player picks a card from the
                     // deck of cards or a number between 0 and 4 if one of the faceUp cards
