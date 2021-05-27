@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import static ch.epfl.tchu.net.NetConstants.Network.QUEUE_CAPACITY;
 import static javafx.application.Platform.runLater;
 
 /**
@@ -21,11 +20,11 @@ import static javafx.application.Platform.runLater;
 public final class GraphicalPlayerAdapter implements Player {
 
     private final BlockingQueue<SortedBag<Ticket>> ticketsRetrieverQueue =
-            new ArrayBlockingQueue<>(QUEUE_CAPACITY);
-    private final BlockingQueue<Integer> drawSlotRetrieverQueue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
-    private final BlockingQueue<Route> claimedRouteRetrieverQueue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
+            new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<Integer> drawSlotRetrieverQueue = new ArrayBlockingQueue<>(1);
+    private final BlockingQueue<Route> claimedRouteRetrieverQueue = new ArrayBlockingQueue<>(1);
     private final BlockingQueue<SortedBag<Card>> initialClaimCardsRetrieverQueue =
-            new ArrayBlockingQueue<>(QUEUE_CAPACITY);
+            new ArrayBlockingQueue<>(1);
     private GraphicalPlayer graphicalPlayer;
 
     /**
@@ -36,7 +35,7 @@ public final class GraphicalPlayerAdapter implements Player {
 
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
-        BlockingQueue<GraphicalPlayer> queue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
+        BlockingQueue<GraphicalPlayer> queue = new ArrayBlockingQueue<>(1);
         runLater(() -> queue.add(new GraphicalPlayer(ownId, playerNames)));
         this.graphicalPlayer = retrieveFromQueue(queue);
     }
@@ -67,7 +66,7 @@ public final class GraphicalPlayerAdapter implements Player {
 
     @Override
     public TurnKind nextTurn() {
-        BlockingQueue<TurnKind> turnKindRetrieverQueue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
+        BlockingQueue<TurnKind> turnKindRetrieverQueue = new ArrayBlockingQueue<>(1);
         ActionHandlers.DrawTicketsHandler drawTicketsHandler =
                 () -> putInQueue(turnKindRetrieverQueue, TurnKind.DRAW_TICKETS);
         ActionHandlers.DrawCardHandler drawCardHandler =
@@ -115,7 +114,7 @@ public final class GraphicalPlayerAdapter implements Player {
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        BlockingQueue<SortedBag<Card>> queue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
+        BlockingQueue<SortedBag<Card>> queue = new ArrayBlockingQueue<>(1);
         ActionHandlers.ChooseCardsHandler handler =
                 // usedCardsToClaimRoute is null when nothing as been chosen.
                 usedCardsToClaimRoute ->
