@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @author Hugues Devimeux (327282)
  */
 public final class Game {
-    private static final Map<PlayerId, Info> playersInfo = new HashMap<>();
+    private static final Map<PlayerId, Info> playersInfo = new EnumMap<>(PlayerId.class);
     private static GameState gameState;
 
     /** Not instantiable. */
@@ -152,7 +152,7 @@ public final class Game {
     private static void endGame(Map<PlayerId, Player> players, Map<PlayerId, String> playerNames) {
         updatePlayerStates(players, gameState);
 
-        Map<PlayerId, Integer> points = new HashMap<>();
+        Map<PlayerId, Integer> points = new EnumMap<>(PlayerId.class);
         for (PlayerId playerId : PlayerId.ALL) {
             points.put(playerId, gameState.playerState(playerId).finalPoints());
         }

@@ -140,7 +140,7 @@ public final class ObservableGameState {
     }
 
     private static Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
-        Map<PlayerId, IntegerProperty> map = new HashMap<>();
+        Map<PlayerId, IntegerProperty> map = new EnumMap<>(PlayerId.class);
         PlayerId.ALL.forEach(playerId -> map.put(playerId, new SimpleIntegerProperty()));
         return map;
     }

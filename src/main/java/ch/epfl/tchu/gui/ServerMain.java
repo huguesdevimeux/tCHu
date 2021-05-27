@@ -11,10 +11,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.net.ServerSocket;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Server implementation of tCHu. Used to host and play a game of tchu.
@@ -37,13 +34,13 @@ public final class ServerMain extends Application {
         else if (params.size() != 0)
             throw new Exception("Invalid number of parameters given to the programme. Exiting.");
 
-        Map<PlayerId, String> playersNames = new HashMap<>();
+        Map<PlayerId, String> playersNames = new EnumMap<>(PlayerId.class);
 
         for (int i = 0; i < PlayerId.COUNT; i++) {
             playersNames.put(PlayerId.ALL.get(i), names.get(i));
         }
 
-        Map<PlayerId, Player> players = new HashMap<>();
+        Map<PlayerId, Player> players = new EnumMap<>(PlayerId.class);
         try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT)) {
 
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
