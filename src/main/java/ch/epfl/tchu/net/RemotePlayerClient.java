@@ -1,7 +1,5 @@
 package ch.epfl.tchu.net;
 
-import static ch.epfl.tchu.net.Serdes.*;
-
 import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 
@@ -9,7 +7,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+
+import static ch.epfl.tchu.net.Serdes.*;
 
 /**
  * Represents a remote player.
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class RemotePlayerClient {
+public final class RemotePlayerClient {
 
     private final Player player;
     private final String host;
@@ -32,12 +31,13 @@ public class RemotePlayerClient {
     /** Run the client. Handles the game process through the network. */
     public void run() {
         try (Socket s = new Socket(host, port);
-             BufferedReader inReader =
+			 BufferedReader inReader =
                         new BufferedReader(
-                                new InputStreamReader(s.getInputStream(), NetConstants.ENCODING));
-             BufferedWriter outWriter =
+                                new InputStreamReader(s.getInputStream(), NetConstants.Network.ENCODING));
+			 BufferedWriter outWriter =
                         new BufferedWriter(
-                                new OutputStreamWriter(s.getOutputStream(), NetConstants.ENCODING))) {
+                                new OutputStreamWriter(
+                                        s.getOutputStream(), NetConstants.Network.ENCODING))) {
 
             String respFromNetwork = inReader.readLine();
 
@@ -45,20 +45,20 @@ public class RemotePlayerClient {
                 List<String> splitResp =
                         new ArrayList<>(
                                 Arrays.asList(
-                                        respFromNetwork.split(Pattern.quote(NetConstants.SPACE), -1)));
-                MessageId messageId = MessageId.valueOf(splitResp.get(0));
-                splitResp.remove(0);
+                                        respFromNetwork.split(
+                                                Pattern.quote(NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE), -1)));
+                MessageId messageId = MessageId.valueOf(splitResp.remove(0));
                 Optional<String> toSendBack = handleClientResponse(messageId, splitResp);
                 toSendBack.ifPresent(
                         s1 -> {
                             try {
                                 outWriter.write(s1);
+                                outWriter.write(NetConstants.Network.CHAR_END_MESSAGE);
+                                outWriter.flush();
                             } catch (IOException e) {
                                 throw new UncheckedIOException(e);
                             }
                         });
-                outWriter.write(NetConstants.ENDLINE);
-                outWriter.flush();
                 // Response for the next iteration.
                 respFromNetwork = inReader.readLine();
             }
@@ -69,7 +69,7 @@ public class RemotePlayerClient {
     }
 
     /**
-     * Handles the communication through the network and return an Optional that depicts wether the
+     * Handles the communication through the network and return an Optional that depicts whether the
      * client should send back something to the server.
      *
      * @param messageId The type of message.
@@ -80,19 +80,15 @@ public class RemotePlayerClient {
     private Optional<String> handleClientResponse(MessageId messageId, List<String> args) {
         switch (messageId) {
             case INIT_PLAYERS:
-                // Deserializer handmade. See RemotePlayerProxy l. 48 for serializer implementation.
-                List<String> playersSerialized =
-                        List.of(args.get(1).split(Pattern.quote(COMMA_SEPARATOR), -1)).stream()
-                                .map(stringSerde::deserialize)
-                                .collect(Collectors.toList());
+				EnumMap<PlayerId, String> playerDeserialized = new EnumMap<>(PlayerId.class);
+				List<String> playerNames = stringListSerde.deserialize(args.get(1));
+                for (int i = 0; i < PlayerId.COUNT; i++) {
+                    playerDeserialized.put(PlayerId.ALL.get(i), playerNames.get(i));
+                }
 
                 player.initPlayers(
                         playerIdSerde.deserialize(args.get(0)),
-                        Map.of(
-                                PlayerId.PLAYER_1,
-                                playersSerialized.get(0),
-                                PlayerId.PLAYER_2,
-                                playersSerialized.get(1)));
+                        playerDeserialized);
 
                 return Optional.empty();
             case RECEIVE_INFO:

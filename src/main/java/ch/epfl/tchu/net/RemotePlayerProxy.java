@@ -1,7 +1,5 @@
 package ch.epfl.tchu.net;
 
-import static ch.epfl.tchu.net.Serdes.*;
-
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 
@@ -9,18 +7,20 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
+import static ch.epfl.tchu.net.Serdes.*;
+
 /**
  * Represents a proxy player. Meant to be used by {@link ch.epfl.tchu.game.Game} as a normal Player.
  *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class RemotePlayerProxy implements Player {
+public final class RemotePlayerProxy implements Player {
 
     // NOTE : these are never closed, and this is intended since this class will in theory be run
     // during the WHOLE programme.
-    private final BufferedWriter outRedirect;
-    private final BufferedReader inRedirect;
+    private final BufferedWriter writer;
+    private final BufferedReader reader;
 
     /**
      * Constructor for {@link RemotePlayerProxy}.
@@ -31,12 +31,13 @@ public class RemotePlayerProxy implements Player {
     public RemotePlayerProxy(Socket socket) {
         Objects.requireNonNull(socket);
         try {
-            this.outRedirect =
+            this.writer =
                     new BufferedWriter(
-                            new OutputStreamWriter(socket.getOutputStream(), NetConstants.ENCODING));
-            this.inRedirect =
+                            new OutputStreamWriter(
+                                    socket.getOutputStream(), NetConstants.Network.ENCODING));
+            this.reader =
                     new BufferedReader(
-                            new InputStreamReader(socket.getInputStream(), NetConstants.ENCODING));
+                            new InputStreamReader(socket.getInputStream(), NetConstants.Network.ENCODING));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -44,25 +45,22 @@ public class RemotePlayerProxy implements Player {
 
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
-        // map serialized (handmade with love)
-        String playersNamesSerialized =
-                String.join(
-                        COMMA_SEPARATOR,
-                        stringSerde.serialize(playerNames.get(PlayerId.PLAYER_1)),
-                        stringSerde.serialize(playerNames.get(PlayerId.PLAYER_2)));
-        networkInteractionHandler(
+        Map<PlayerId, String> orderedMap = new EnumMap<>(playerNames);
+        sendInNetwork(
                 MessageId.INIT_PLAYERS,
-                List.of(playerIdSerde.serialize(ownId), playersNamesSerialized));
+                List.of(
+                        playerIdSerde.serialize(ownId),
+                        stringListSerde.serialize(new ArrayList<>(orderedMap.values()))));
     }
 
     @Override
     public void receiveInfo(String info) {
-        networkInteractionHandler(MessageId.RECEIVE_INFO, List.of(stringSerde.serialize(info)));
+        sendInNetwork(MessageId.RECEIVE_INFO, List.of(stringSerde.serialize(info)));
     }
 
     @Override
     public void updateState(PublicGameState newState, PlayerState ownState) {
-        networkInteractionHandler(
+        sendInNetwork(
                 MessageId.UPDATE_STATE,
                 List.of(
                         publicGameStateSerde.serialize(newState),
@@ -71,97 +69,97 @@ public class RemotePlayerProxy implements Player {
 
     @Override
     public void setInitialTicketChoice(SortedBag<Ticket> tickets) {
-        networkInteractionHandler(
-                MessageId.SET_INITIAL_TICKETS, List.of(ticketBagSerde.serialize(tickets)));
+        sendInNetwork(MessageId.SET_INITIAL_TICKETS, List.of(ticketBagSerde.serialize(tickets)));
     }
 
     @Override
     public SortedBag<Ticket> chooseInitialTickets() {
-        return networkInteractionHandler(MessageId.CHOOSE_INITIAL_TICKETS)
-                .map(ticketBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.CHOOSE_INITIAL_TICKETS);
+        return ticketBagSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public TurnKind nextTurn() {
-        return networkInteractionHandler(MessageId.NEXT_TURN)
-                .map(turnKindSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.NEXT_TURN);
+        return turnKindSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public SortedBag<Ticket> chooseTickets(SortedBag<Ticket> options) {
-        return networkInteractionHandler(
-                        MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)))
-                .map(ticketBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.CHOOSE_TICKETS, List.of(ticketBagSerde.serialize(options)));
+        return ticketBagSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public int drawSlot() {
-        return networkInteractionHandler(MessageId.DRAW_SLOT)
-                .map(intSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.DRAW_SLOT);
+        return intSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public Route claimedRoute() {
-        return networkInteractionHandler(MessageId.ROUTE)
-                .map(routeSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.ROUTE);
+        return routeSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public SortedBag<Card> initialClaimCards() {
-        return networkInteractionHandler(MessageId.CARDS)
-                .map(cardBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(MessageId.CARDS);
+        return cardBagSerde.deserialize(readFromNetwork());
     }
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-        return networkInteractionHandler(
-                        MessageId.CHOOSE_ADDITIONAL_CARDS,
-                        List.of(listOfCardBagSerde.serialize(options)))
-                .map(cardBagSerde::deserialize)
-                .orElseThrow(() -> new IllegalStateException("Expected response from network."));
+        sendInNetwork(
+                MessageId.CHOOSE_ADDITIONAL_CARDS, List.of(listOfCardBagSerde.serialize(options)));
+        return cardBagSerde.deserialize(readFromNetwork());
     }
 
-    /**
-     * Handles the sending of method's corresponding message over the network.
-     *
-     * @param messageId The messageId of the message that will be sent.
-     * @return An eventual response of the network. Not deserialized.
-     * @throws UncheckedIOException in case of {@link IOException}.
-     */
-    private Optional<String> networkInteractionHandler(MessageId messageId) {
-        return networkInteractionHandler(messageId, Collections.emptyList());
-    }
-
-    /**
-     * Handles the sending of method's corresponding message over the network.
-     *
-     * @param messageId The messageId of the message that will be sent.
-     * @param serializedArgs The arguments of the methods to be communicate.
-     * @return An eventual response of the network. Not deserialized.
-     * @throws UncheckedIOException in case of {@link IOException}.
-     */
-    private Optional<String> networkInteractionHandler(
-            MessageId messageId, List<String> serializedArgs) {
-        Objects.requireNonNull(serializedArgs);
+	/**
+	 * Reads the network and return a string corresponding to the response.
+	 *
+	 * @return The response.
+	 * @throws IllegalStateException if the end of the stream has been reached
+	 */
+	private String readFromNetwork() {
+        String returnValue;
         try {
-            this.outRedirect.write(messageId.name() + NetConstants.SPACE);
-            if (serializedArgs.size() > 0)
-                this.outRedirect.write(String.join(NetConstants.SPACE, serializedArgs));
-            this.outRedirect.write(NetConstants.SPACE + NetConstants.ENDLINE);
-            this.outRedirect.flush();
-            // The Optional will be empty if readLine returns null.
-            return Optional.ofNullable(this.inRedirect.readLine());
+            returnValue = reader.readLine();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        if (returnValue == null) {
+            throw new IllegalStateException("Expected response from network but gets nothing.");
+        }
+        return returnValue;
+    }
+
+    /**
+     * Sends in the network the passed messageId and eventual args in the right format. Blocking.
+     *
+     * @param messageId The message Id. Can't be null.
+     */
+    private void sendInNetwork(MessageId messageId) {
+        sendInNetwork(messageId, Collections.emptyList());
+    }
+
+    /**
+     * Sends in the network the passed messageId and eventual args in the right format. Blocking.
+     *
+     * @param messageId The message Id. Can't be null.
+     * @param serializedArgs The args serialized. Can't be null but can be empty.
+     */
+    private void sendInNetwork(MessageId messageId, List<String> serializedArgs) {
+        try {
+            this.writer.write(Objects.requireNonNull(messageId).name() + NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE);
+            if (serializedArgs.size() > 0) {
+                this.writer.write(
+                        String.join(NetConstants.Network.SEPARATOR_COMPONENT_MESSAGE, Objects.requireNonNull(serializedArgs)));
+            }
+            this.writer.write(NetConstants.Network.CHAR_END_MESSAGE);
+            this.writer.flush();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 }
-
-// TODO update doc with @throws
-// TODO replace IllegalStateException by IO expections

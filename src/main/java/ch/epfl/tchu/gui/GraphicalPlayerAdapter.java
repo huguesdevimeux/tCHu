@@ -5,6 +5,7 @@ import ch.epfl.tchu.game.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -16,7 +17,7 @@ import static javafx.application.Platform.runLater;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class GraphicalPlayerAdapter implements Player {
+public final class GraphicalPlayerAdapter implements Player {
 
     private final BlockingQueue<SortedBag<Ticket>> ticketsRetriverQueue =
             new ArrayBlockingQueue<>(1);
@@ -32,15 +33,7 @@ public class GraphicalPlayerAdapter implements Player {
     @Override
     public void initPlayers(PlayerId ownId, Map<PlayerId, String> playerNames) {
         BlockingQueue<GraphicalPlayer> queue = new ArrayBlockingQueue<>(1);
-        runLater(
-                () -> {
-                    try {
-                        queue.put(new GraphicalPlayer(ownId, playerNames));
-                    } catch (InterruptedException e) {
-                        throw new Error(e);
-                    }
-                });
-
+        runLater(() -> queue.add(new GraphicalPlayer(ownId, playerNames)));
         this.graphicalPlayer = retrieveFromQueue(queue);
     }
 
@@ -120,10 +113,14 @@ public class GraphicalPlayerAdapter implements Player {
 
     @Override
     public SortedBag<Card> chooseAdditionalCards(List<SortedBag<Card>> options) {
-
         BlockingQueue<SortedBag<Card>> queue = new ArrayBlockingQueue<>(1);
         ActionHandlers.ChooseCardsHandler handler =
-                usedCardsToClaimRoute -> putInQueue(queue, usedCardsToClaimRoute);
+                // usedCardsToClaimRoute is null when nothing as been chosen.
+                usedCardsToClaimRoute ->
+                        putInQueue(
+                                queue,
+                                Objects.requireNonNullElseGet(
+                                        usedCardsToClaimRoute, SortedBag::of));
         runLater(() -> graphicalPlayer.chooseAdditionalCards(options, handler));
         return retrieveFromQueue(queue);
     }

@@ -33,7 +33,7 @@ public final class GameState extends PublicGameState {
 
     /**
      * Returns the initial state of a game of tCHu in which the ticket deck contains the given
-     * tickets and the card deck contains the Constants.ALL_CARDS cards, without the top 8 (2×4),
+     * tickets and the card deck contains the GuiConstants.ALL_CARDS cards, without the top 8 (2×4),
      * dealt to the players; these decks are shuffled with the given random generator, which is also
      * used to randomly choose the identity of the first player.
      *
@@ -42,12 +42,12 @@ public final class GameState extends PublicGameState {
      * @return An instance of {@link GameState} with the specified attributes.
      */
     public static GameState initial(SortedBag<Ticket> tickets, Random rng) {
-        Deck<Card> deckCards = Deck.of(Constants.ALL_CARDS, rng);
+        Deck<Card> deckCards = Deck.of(GameConstants.ALL_CARDS, rng);
         Map<PlayerId, PlayerState> playerStates = new EnumMap<>(PlayerId.class);
         for (PlayerId player : PlayerId.ALL) {
             playerStates.put(
-                    player, PlayerState.initial(deckCards.topCards(Constants.INITIAL_CARDS_COUNT)));
-            deckCards = deckCards.withoutTopCards(Constants.INITIAL_CARDS_COUNT);
+                    player, PlayerState.initial(deckCards.topCards(GameConstants.INITIAL_CARDS_COUNT)));
+            deckCards = deckCards.withoutTopCards(GameConstants.INITIAL_CARDS_COUNT);
         }
 
         return new GameState(

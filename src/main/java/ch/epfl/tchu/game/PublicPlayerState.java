@@ -35,7 +35,7 @@ public class PublicPlayerState {
         this.routes = List.copyOf(routes);
         this.claimPoints = this.routes.stream().mapToInt(Route::claimPoints).sum();
         this.carCount =
-                Constants.INITIAL_CAR_COUNT - this.routes.stream().mapToInt(Route::length).sum();
+                GameConstants.INITIAL_CAR_COUNT - this.routes.stream().mapToInt(Route::length).sum();
     }
 
     /**

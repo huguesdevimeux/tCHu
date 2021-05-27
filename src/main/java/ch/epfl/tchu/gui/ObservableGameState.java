@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ch.epfl.tchu.game.Constants.*;
+import static ch.epfl.tchu.game.GameConstants.*;
 
 /**
  * Representation of the observable state/part of the game.
@@ -18,12 +18,12 @@ import static ch.epfl.tchu.game.Constants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-public class ObservableGameState {
+public final class ObservableGameState {
     // 1st group of properties
     private final IntegerProperty percentageOfTicketsRemaining = new SimpleIntegerProperty();
     private final IntegerProperty percentageOfCardsRemaining = new SimpleIntegerProperty();
     private final List<ObjectProperty<Card>> faceUpCards = createFaceUpCards();
-    private final Map<Route, ObjectProperty<PlayerId>> allRoutes = createMapForRoutesOwners();
+    private final Map<Route, ObjectProperty<PlayerId>> allRoutesOwners = createMapForRoutesOwners();
     // 2nd group of properties
     // to stock the numbers of each players tickets, cards, etc, we use a map to
     // relate each player to the attribute
@@ -43,7 +43,7 @@ public class ObservableGameState {
     // we assign true, false otherwise (false is the default value).
     private final List<BooleanProperty> playerCanClaimRoute = createBooleanPropertyList();
     private final PlayerId correspondingPlayer;
-    private PublicGameState newGameState;
+    private PublicGameState gameState;
     private PlayerState playerState;
 
     /**
@@ -60,10 +60,12 @@ public class ObservableGameState {
      *
      * @param newGameState the new gameState
      * @param playerState  the player state
+     * @throws NullPointerException if the public game state is null
+     * @throws NullPointerException if the player state is null
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
-        this.newGameState = newGameState;
-        this.playerState = playerState;
+        this.gameState = Objects.requireNonNull(newGameState);
+        this.playerState = Objects.requireNonNull(playerState);
         // counting the number of each players' tickets and calculates the percentage remaining
         int numOfTicketsUsed =
                 PlayerId.ALL.stream()
@@ -84,14 +86,10 @@ public class ObservableGameState {
         // for each player, we need to know the tickets, cards, cars count as well as their claim
         // points we put these in lists of object properties of size 2
         for (PlayerId playerId : PlayerId.ALL) {
-            eachPlayersTicketsCount.get(playerId)
-                    .set(newGameState.playerState(playerId).ticketCount());
-            eachPlayersCardsCount.get(playerId)
-                    .set(newGameState.playerState(playerId).cardCount());
-            eachPlayersCarsCount.get(playerId)
-                    .set((newGameState.playerState(playerId).carCount()));
-            eachPlayersClaimPoints.get(playerId)
-                    .set((newGameState.playerState(playerId).claimPoints()));
+            eachPlayersTicketsCount.get(playerId).set(newGameState.playerState(playerId).ticketCount());
+            eachPlayersCardsCount.get(playerId).set(newGameState.playerState(playerId).cardCount());
+            eachPlayersCarsCount.get(playerId).set((newGameState.playerState(playerId).carCount()));
+            eachPlayersClaimPoints.get(playerId).set((newGameState.playerState(playerId).claimPoints()));
         }
 
         // simply setting the object property as the tickets of the player
@@ -104,78 +102,57 @@ public class ObservableGameState {
                     .set((int) playerState.cards().stream().filter(c -> c.equals(card)).count());
         }
 
-        Set<List<Station>> neighbouringRoutes = new HashSet<>();
-        // We first create a set using a list of stations in order to deal with double routes.
-        // If the players' routes are "neighbours",
-        // they have the same "from" and "to" stations, so we add
-        // all the neighboured routes to the set using their stations.
-        newGameState.claimedRoutes().stream()
-                .filter(this::routeHasNeighbour)
-                .forEach(r -> neighbouringRoutes.add(r.stations()));
+        Set<List<Station>> stationsOfDoubleClaimedRoutes = newGameState.claimedRoutes().stream()
+                .filter(Route::isPartOfDouble)
+                .map(Route::stations).collect(Collectors.toSet());
         for (Route route : ChMap.routes()) {
-            // setting the 4th property of the first group that sets the owner of the route
-            for (PlayerId playerId : PlayerId.ALL) {
-                if (newGameState.playerState(playerId).routes().contains(route))
-                    allRoutes.get(route).set(playerId);
-            }
 
             // Setting the last property
             // We create 3 booleans which are conditions to be met in order to claim a route.
             boolean playerIsCurrentPlayer = newGameState.currentPlayerId().equals(correspondingPlayer);
             boolean routeIsNotClaimed =
                     !newGameState.claimedRoutes().contains(route)
-                            && !neighbouringRoutes.contains(route.stations());
+							// The player can't take a a part of a double route which one part has been claimed.
+                            && !stationsOfDoubleClaimedRoutes.contains(route.stations());
             boolean canClaimRoute = playerState.canClaimRoute(route);
-            if (playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute) {
-                // set true if all conditions are met
-                playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(true);
-            }
-        }
-    }
+			playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
 
-    /**
-     * Boolean method to evaluate if the {@code route} has a neighbour.
-     *
-     * @param route to evaluate
-     * @return whether the {@code route} has a neighbour
-     */
-    private boolean routeHasNeighbour(Route route) {
-        return ChMap.routes().stream()
-                .anyMatch(
-                        routeTemp ->
-                                !routeTemp.equals(route)
-                                        && routeTemp.stations().equals(route.stations()));
-    }
+            for (PlayerId playerId : PlayerId.ALL) {
+                if (newGameState.playerState(playerId).routes().contains(route))
+                    allRoutesOwners.get(route).set(playerId);
+            }
+		}
+	}
 
     //Private methods to create lists or maps comprised of n elements of
     //either false if property requires a boolean, 0 or null.
-    private List<ObjectProperty<Card>> createFaceUpCards() {
-        return Stream.generate(() -> new SimpleObjectProperty<Card>(null))
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
+        return Stream.generate(() -> new SimpleObjectProperty<Card>())
                 .limit(FACE_UP_CARDS_COUNT)
                 .collect(Collectors.toList());
     }
 
-    private Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
+    private static Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
         Map<Route, ObjectProperty<PlayerId>> mapRouteToOwner = new HashMap<>();
         for (Route route : ChMap.routes())
-            mapRouteToOwner.put(route, new SimpleObjectProperty<>(null));
+            mapRouteToOwner.put(route, new SimpleObjectProperty<>());
         return mapRouteToOwner;
     }
 
-    private Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
-        Map<PlayerId, IntegerProperty> map = new HashMap<>();
+    private static Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
+        Map<PlayerId, IntegerProperty> map = new EnumMap<>(PlayerId.class);
         PlayerId.ALL.forEach(playerId -> map.put(playerId, new SimpleIntegerProperty()));
         return map;
     }
 
-    private List<IntegerProperty> createPlayersCardsOfEachColor() {
-        return Stream.generate(() -> new SimpleIntegerProperty(0))
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
+        return Stream.generate(SimpleIntegerProperty::new)
                 .limit(Card.COUNT)
                 .collect(Collectors.toList());
     }
 
-    private List<BooleanProperty> createBooleanPropertyList() {
-        return Stream.generate(() -> new SimpleBooleanProperty(false))
+    private static List<BooleanProperty> createBooleanPropertyList() {
+        return Stream.generate(SimpleBooleanProperty::new)
                 .limit(ChMap.routes().size())
                 .collect(Collectors.toList());
     }
@@ -217,7 +194,7 @@ public class ObservableGameState {
      * @return the route's owner, or null if it does not have any
      */
     public ReadOnlyObjectProperty<PlayerId> getRoutesOwner(Route route) {
-        return allRoutes.get(route);
+        return allRoutesOwners.get(route);
     }
 
     /**
@@ -275,7 +252,7 @@ public class ObservableGameState {
      * @param card the card to evaluate it's total amount in the player's cards
      * @return the amount of cards of type {@code card}
      */
-    public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
+    public ReadOnlyIntegerProperty playerNumberOfCards(Card card) {
         return currentPlayersNumberOfEachCards.get(Card.ALL.indexOf(card));
     }
 
@@ -295,8 +272,8 @@ public class ObservableGameState {
      *
      * @return true if the player can draw tickets, else false
      */
-    public ReadOnlyBooleanProperty canDrawTickets() {
-        return new SimpleBooleanProperty(newGameState.canDrawTickets());
+    public boolean canDrawTickets() {
+        return gameState.canDrawTickets();
     }
 
     /**
@@ -304,8 +281,8 @@ public class ObservableGameState {
      *
      * @return true whether the player can draw cards, else false
      */
-    public ReadOnlyBooleanProperty canDrawCards() {
-        return new SimpleBooleanProperty(newGameState.canDrawCards());
+    public boolean canDrawCards() {
+        return gameState.canDrawCards();
     }
 
     /**
@@ -314,7 +291,7 @@ public class ObservableGameState {
      * @param route to extract the possible claim cards from
      * @return the possible claim cards to claim the route
      */
-    public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(Route route) {
-        return new SimpleObjectProperty<>(playerState.possibleClaimCards(route));
+    public List<SortedBag<Card>> possibleClaimCards(Route route) {
+        return playerState.possibleClaimCards(route);
     }
 }

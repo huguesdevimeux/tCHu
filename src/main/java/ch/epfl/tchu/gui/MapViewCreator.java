@@ -27,7 +27,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-class MapViewCreator {
+final class MapViewCreator {
 
 	/** Not instantiable. */
     private MapViewCreator() {}
@@ -38,15 +38,16 @@ class MapViewCreator {
      * @param obsGameState the observable part of the game.
      * @param routeHandler responsible for an attempt to claim a route.
      * @param cardChooser responsible for choosing cards.
-     * @return the pane that contains all elements in the mapView.
+     * @return the node that contains all elements in the mapView - an instance of Pane in this
+     *     case.
      */
     public static Node createMapView(
             ObservableGameState obsGameState,
             ObjectProperty<ClaimRouteHandler> routeHandler,
             CardChooser cardChooser) {
         Pane gameMapPane = new Pane();
-        gameMapPane.getStylesheets().addAll(STYLE_SHEET_MAP, STYLE_SHEET_COLORS);
-        gameMapPane.getChildren().add(new ImageView());
+        gameMapPane.getStylesheets().addAll(MAP_CSS, COLORS_CSS);
+        gameMapPane.getChildren().add(new ImageView());//this adds the background to the pane
 
         IndicationAnimation indicationAnimation =
                 new IndicationAnimation(
@@ -63,29 +64,26 @@ class MapViewCreator {
                     .addAll(
                             STYLE_CLASS_ROUTE,
                             route.level().name(),
-                            route.color() == null
-                                    ? STYLE_CLASS_COLOR_NEUTRAL
-                                    : route.color().name());
+                            convertColorToCssColor(route.color()));
 
             for (int i = 1; i <= route.length(); i++) {
                 Group eachRoutesBlock = new Group();
-                eachRoutesBlock.setId(String.format("%s_%s", route.id(), i));
+                eachRoutesBlock.setId(String.format(ROUTE_RECT_ID, route.id(), i));
 
-                Rectangle rectForTracks = new Rectangle(36, 12);
+                Rectangle rectForTracks = new Rectangle(RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
                 rectForTracks.getStyleClass().addAll(STYLE_CLASS_TRACK, STYLE_CLASS_FILLED);
-                eachRoutesBlock.getChildren().add(rectForTracks);
 
-                Group routesCarsGroup = new Group();
-                routesCarsGroup.getStyleClass().add(STYLE_CLASS_CAR);
+                Group routeCars = new Group();
+                routeCars.getStyleClass().add(STYLE_CLASS_CAR);
 
-                Rectangle rectForCars = new Rectangle(36, 12);
+                Rectangle rectForCars = new Rectangle(RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
                 rectForCars.getStyleClass().add(STYLE_CLASS_FILLED);
-                Circle circle1 = new Circle(12, 6, 3);
-                Circle circle2 = new Circle(24, 6, 3);
+                Circle circle1 = new Circle(CIRCLE1_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
+                Circle circle2 = new Circle(CIRCLE2_CENTER_X, CIRCLE_CENTER_Y, ROUTE_CIRCLE_RADIUS);
+                routeCars.getChildren().addAll(rectForCars, circle1, circle2);
 
                 // established hierarchy : cars group -> block group -> route group
-                routesCarsGroup.getChildren().addAll(rectForCars, circle1, circle2);
-                eachRoutesBlock.getChildren().add(routesCarsGroup);
+                eachRoutesBlock.getChildren().addAll(rectForTracks, routeCars);
                 mainRouteGroup.getChildren().add(eachRoutesBlock);
             }
             gameMapPane.getChildren().add(mainRouteGroup);
@@ -104,15 +102,13 @@ class MapViewCreator {
             obsGameState
                     .getRoutesOwner(route)
                     .addListener(
-                            (observableValue, oldValue, newValue) -> {
-                                animation.play();
-                                mainRouteGroup.getStyleClass().add(newValue.name());
-                            });
+                            (observableValue, oldValue, newValue) ->
+                                    mainRouteGroup.getStyleClass().add(newValue.name()));
 
             mainRouteGroup.setOnMouseClicked(
                     event -> {
                         List<SortedBag<Card>> possibleClaimCards =
-                                obsGameState.possibleClaimCards(route).get();
+                                obsGameState.possibleClaimCards(route);
                         if (possibleClaimCards.size() == 1)
                             routeHandler.get().onClaimRoute(route, possibleClaimCards.get(0));
                         else {
