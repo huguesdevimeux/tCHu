@@ -30,14 +30,14 @@ public final class RemotePlayerClient {
 
     /** Run the client. Handles the game process through the network. */
     public void run() {
-        try (Socket s = new Socket(host, port);
-			 BufferedReader inReader =
+        try (Socket socket = new Socket(host, port);
+             BufferedReader inReader =
                         new BufferedReader(
-                                new InputStreamReader(s.getInputStream(), NetConstants.Network.ENCODING));
-			 BufferedWriter outWriter =
+                                new InputStreamReader(socket.getInputStream(), NetConstants.Network.ENCODING));
+             BufferedWriter outWriter =
                         new BufferedWriter(
                                 new OutputStreamWriter(
-                                        s.getOutputStream(), NetConstants.Network.ENCODING))) {
+                                        socket.getOutputStream(), NetConstants.Network.ENCODING))) {
 
             String respFromNetwork = inReader.readLine();
 
