@@ -29,6 +29,9 @@ public final class NetConstants {
         public static final String CHAR_END_MESSAGE = "\n";
         /* Character used to separate the components in the network messages.*/
         public static final String SEPARATOR_COMPONENT_MESSAGE = " ";
+        /* The totall capacity for the blocking queues in Graphical player adapter.*/
+        public static final int QUEUE_CAPACITY = 1;
+
 
         private Network() {}
     }
