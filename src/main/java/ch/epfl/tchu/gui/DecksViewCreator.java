@@ -37,7 +37,7 @@ final class DecksViewCreator {
      * @param observableGameState the observable game state
      * @param drawTicketsHandler  the handler that manages the action of drawing tickets
      * @param drawCardHandler     the handles that manages the action of drawing cards
-     * @return
+     * @return the node responsible for the cards view in the game
      */
     public static Node createCardsView(
             ObservableGameState observableGameState,
