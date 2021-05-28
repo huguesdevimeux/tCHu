@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -26,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static ch.epfl.tchu.gui.GuiConstants.CHOOSER_CSS;
-import static ch.epfl.tchu.gui.GuiConstants.VISIBLE_INFOS;
+import static ch.epfl.tchu.gui.GuiConstants.*;
 import static javafx.application.Platform.isFxApplicationThread;
 
 /**
@@ -227,6 +227,7 @@ public final class GraphicalPlayer {
         StationViewCreator.createStationsView(
                 MapViewCreator.getGameMapPane(), DecksViewCreator.getTicketsListView());
         Scene innerScene = new Scene(mainPane);
+        root.getIcons().add(new Image(TCHU_ICON));
         root.setScene(innerScene);
         return root;
     }
