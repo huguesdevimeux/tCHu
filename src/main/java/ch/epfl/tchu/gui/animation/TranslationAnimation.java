@@ -6,12 +6,12 @@ import javafx.scene.Node;
 import javafx.util.Duration;
 
 /**
- * Implements a translation animation on hover. Plays back when the mouse exit the node.
+ * Implements a translation animation.
  *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class TranslationOnHoverAnimation implements AnimationAttacher{
+public class TranslationAnimation implements AnimationAttacher{
 
     private final float offsetX;
     private final float offsetY;
@@ -28,7 +28,7 @@ public class TranslationOnHoverAnimation implements AnimationAttacher{
 	 * @param interpolator1 The interpolator for the first way animation.
 	 * @param interpolator2 the interpolator for the second way animation (the return).
 	 */
-    public TranslationOnHoverAnimation(
+    public TranslationAnimation(
             float offsetX,
             float offsetY,
             Duration cycleTime,
@@ -62,7 +62,7 @@ public class TranslationOnHoverAnimation implements AnimationAttacher{
     }
 
 	/**
-	 * Attach a {@link TranslationOnHoverAnimation} to animated
+	 * Attach a {@link TranslationAnimation} to animated
 	 *
 	 * @param animated The node to animate.
 	 */

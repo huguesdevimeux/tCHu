@@ -3,14 +3,14 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.game.Card;
 import ch.epfl.tchu.game.GameConstants;
 import ch.epfl.tchu.game.Ticket;
-import ch.epfl.tchu.gui.animation.*;
-import javafx.animation.FadeTransition;
+import ch.epfl.tchu.gui.animation.AbstractAnimation;
+import ch.epfl.tchu.gui.animation.CustomInterpolators;
+import ch.epfl.tchu.gui.animation.FadeAnimation;
+import ch.epfl.tchu.gui.animation.TranslationAnimation;
 import javafx.animation.Interpolator;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -50,8 +50,8 @@ final class DecksViewCreator {
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
 
-        TranslationOnHoverAnimation translationAnimationFaceUpCards =
-                new TranslationOnHoverAnimation(
+        TranslationAnimation translationAnimationFaceUpCards =
+                new TranslationAnimation(
                         OFFSET_X_DECK_CARDS,
                         OFFSET_Y_CARDS_DECK,
                         Duration.millis(DURATION_ANIMATION_DECK_CARDS),
@@ -112,8 +112,8 @@ final class DecksViewCreator {
         HBox cardsHandPanel = new HBox();
         cardsHandPanel.setId(ID_HAND_PANE);
 
-        TranslationOnHoverAnimation translationAnimationFaceUpCards =
-                new TranslationOnHoverAnimation(
+        TranslationAnimation translationAnimationFaceUpCards =
+                new TranslationAnimation(
                         OFFSET_X_HAND_CARDS,
                         OFFSET_Y_HAND_CARDS,
                         Duration.millis(DURATION_ANIMATION_HAND_CARDS),
