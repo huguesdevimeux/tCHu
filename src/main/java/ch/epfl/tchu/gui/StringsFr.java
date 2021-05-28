@@ -15,6 +15,12 @@ public final class StringsFr {
     public static final String TICKETS = "Billets";
     public static final String CARDS = "Cartes";
     public static final String CHOOSE = "Choisir";
+    /* The description of the possible tickets where a station is used */
+    public static final String STATION_FIGURES_IN_TICKETS =
+            "Cette station ce trouve sur le%s ticket%<s :";
+    /* The description saying the station doesn't figure on any ticket*/
+    public static final String STATION_IS_NOT_ON_TICKETS =
+            "Aucun ticket n'utilise cette station \ncomme station de départ ou d'arrivée.";
     // Titre des fenêtres
     public static final String TICKETS_CHOICE = "Choix de billets";
     public static final String CARDS_CHOICE = "Choix de cartes";

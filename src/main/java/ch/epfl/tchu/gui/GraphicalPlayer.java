@@ -224,6 +224,8 @@ public final class GraphicalPlayer {
                                 playerNames,
                                 observableGameState,
                                 infoProperty));
+        StationViewCreator.createStationsView(
+                MapViewCreator.getGameMapPane(), DecksViewCreator.getTicketsListView());
         Scene innerScene = new Scene(mainPane);
         root.setScene(innerScene);
         return root;
