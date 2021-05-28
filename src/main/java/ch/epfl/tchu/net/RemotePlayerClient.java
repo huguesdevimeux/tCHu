@@ -67,7 +67,7 @@ public class RemotePlayerClient {
             }
 
         } catch (IOException e) {
-            throw new UncheckedIOException(e);
+//            throw new UncheckedIOException(e);
         }
     }
 

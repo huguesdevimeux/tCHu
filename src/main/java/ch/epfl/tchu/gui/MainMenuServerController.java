@@ -16,10 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -31,11 +28,10 @@ public class MainMenuServerController {
     @FXML private TextField playerName, IpField;
     @FXML private Button play;
     @FXML private Button getIP;
-    public String playersIp;
 
     public void setMenuActions() throws Exception {
-        playersIp = PlayersIPAddress.getIPAddress();
-        getIP.setOnMouseClicked(e -> IpField.setText(playersIp));
+        String playersIp = PlayersIPAddress.getIPAddress();
+        getIP.setOnAction(e -> IpField.setText(playersIp));
 
         configNgrok.setOnMouseClicked(
                 e -> {
@@ -73,8 +69,7 @@ public class MainMenuServerController {
                                     for (int i = 0; i < PlayerId.COUNT; i++) {
                                         playersNames.put(PlayerId.ALL.get(i), names[i]);
                                     }
-                                    ServerSocket serverSocket =
-                                            new ServerSocket(5108);
+                                    ServerSocket serverSocket = new ServerSocket(5108);
                                     Socket socket = serverSocket.accept();
                                     players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
                                     players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(socket));

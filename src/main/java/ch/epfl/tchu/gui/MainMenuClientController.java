@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.io.UncheckedIOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class MainMenuClientController {
@@ -17,19 +19,30 @@ public class MainMenuClientController {
         getIP.setOnMouseClicked(e -> IpField.setText(numericalIp));
         copyIP.setOnMouseClicked(
                 event -> {
-                    //System.out.println(IpField.getText());
-                   // System.out.println(Integer.parseInt(port.getText()));
+
                 });
 
         joinGame.setOnMouseClicked(
-                e ->
+                e -> {
+                    try {
+
                         new Thread(
                                         () ->
+                                        {
+                                            try {
                                                 new RemotePlayerClient(
                                                                 new GraphicalPlayerAdapter(),
-                                                                "128.179.186.127",
+                                                        InetAddress.getLocalHost().getHostAddress(),
                                                                 Integer.parseInt(port.getText()))
-                                                        .run())
-                                .start());
+                                                        .run();
+                                            } catch (UnknownHostException unknownHostException) {
+                                                unknownHostException.printStackTrace();
+                                            }
+                                        })
+                                .start();
+                    } catch (UncheckedIOException exception) {
+                        System.out.println("fuck u");
+                    }
+                });
     }
 }
