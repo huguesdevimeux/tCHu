@@ -1,7 +1,6 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Color;
-import ch.epfl.tchu.net.MainMenuServer;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -140,7 +139,7 @@ public final class GuiConstants {
     public static void openNgrokConfigInfoStage(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(MainMenuServer.class.getResource("/NgrokConfig.fxml"));
+            fxmlLoader.setLocation(GuiConstants.class.getResource("/NgrokConfig.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 420, 120);
             Stage stage = new Stage();
             stage.setScene(scene);
