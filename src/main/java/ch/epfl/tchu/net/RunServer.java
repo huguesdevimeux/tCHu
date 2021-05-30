@@ -1,5 +1,6 @@
 package ch.epfl.tchu.net;
 
+import ch.epfl.tchu.game.Server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
