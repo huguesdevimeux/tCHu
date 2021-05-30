@@ -30,6 +30,7 @@ public class MainMenuClientController {
                 });
         joinGame.setOnMouseClicked(
                 e -> {
+                    System.out.println(RunClient.getClient().getReceivePacket().getAddress().getHostAddress());
                     scaleButton(joinGame);
                     if (IpField.getText().isEmpty()) IpField.setText(defaultIp);
                     if (port.getText().isEmpty()) port.setText(String.valueOf(defaultPort));
