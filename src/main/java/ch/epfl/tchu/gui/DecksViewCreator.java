@@ -52,10 +52,9 @@ final class DecksViewCreator {
 
         TranslationAnimation translationAnimationFaceUpCards =
                 new TranslationAnimation(
-                        OFFSET_X_DECK_CARDS,
+					Duration.millis(DURATION_ANIMATION_DECK_CARDS), OFFSET_X_DECK_CARDS,
                         OFFSET_Y_CARDS_DECK,
-                        Duration.millis(DURATION_ANIMATION_DECK_CARDS),
-                        CustomInterpolators.EASE_OUT_SINE,
+					CustomInterpolators.EASE_OUT_SINE,
                         Interpolator.LINEAR);
         FadeAnimation fadeAnimation = new FadeAnimation(CYCLE_TIME_FADE, FROM_FADE, 1);
 
@@ -114,10 +113,9 @@ final class DecksViewCreator {
 
         TranslationAnimation translationAnimationFaceUpCards =
                 new TranslationAnimation(
-                        OFFSET_X_HAND_CARDS,
+					Duration.millis(DURATION_ANIMATION_HAND_CARDS), OFFSET_X_HAND_CARDS,
                         OFFSET_Y_HAND_CARDS,
-                        Duration.millis(DURATION_ANIMATION_HAND_CARDS),
-                        CustomInterpolators.EASE_OUT_SINE,
+					CustomInterpolators.EASE_OUT_SINE,
                         CustomInterpolators.EASE_OUT_BOUNCE);
 
         for (Card card : Card.ALL) {

@@ -11,7 +11,7 @@ import javafx.util.Duration;
  * @author Luca Mouchel (324748)
  */
 public class FadeAnimation implements AnimationAttacher {
-    private final double cycleTime;
+    private final Duration cycleTime;
     private final double from;
     private final double to;
 
@@ -24,7 +24,7 @@ public class FadeAnimation implements AnimationAttacher {
      * @param to Fading value the animation will start from. (it will start at this value in reverse
      *     order).
      */
-    public FadeAnimation(double cycleTime, double from, double to) {
+    public FadeAnimation(Duration cycleTime, double from, double to) {
         this.cycleTime = cycleTime;
         this.from = from;
         this.to = to;
@@ -41,7 +41,7 @@ public class FadeAnimation implements AnimationAttacher {
 
         public Fade(Node animated) {
             super(animated);
-            this.fadeTransition = new FadeTransition(Duration.millis(cycleTime), animated);
+            this.fadeTransition = new FadeTransition(cycleTime, animated);
         }
 
         @Override
