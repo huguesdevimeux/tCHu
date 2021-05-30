@@ -46,14 +46,14 @@ public class MainMenuServerController {
                         e.printStackTrace();
                     }
                     hostGameOnConnectionEstablished();
-                    play.setOnMouseClicked(
-                            e -> {
-                                scaleButton(play);
-                                serverThread().start();
-                                play.setDisable(true);
-                            });
                 });
         pauseTransition.playFromStart();
+    }
+
+    public void playAction(){
+        scaleButton(play);
+        serverThread().start();
+        play.setDisable(true);
     }
 
     public void getIPAction() throws UnknownHostException {
