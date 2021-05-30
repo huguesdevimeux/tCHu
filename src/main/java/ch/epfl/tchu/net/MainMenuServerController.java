@@ -39,11 +39,9 @@ public class MainMenuServerController {
                     String[] names = configureNames();
                     PlayerId.ALL.forEach(playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
                     try {
-                        ServerSocket serverSocket =
-                                new ServerSocket(NetConstants.Network.DEFAULT_PORT);
+                        ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
                         players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-                        players.put(
-                                PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
+                        players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -51,7 +49,7 @@ public class MainMenuServerController {
                     play.setOnMouseClicked(
                             e -> {
                                 scaleButton(play);
-                                launchGame();
+                                serverThread().start();
                             });
                 });
         pauseTransition.playFromStart();
@@ -74,15 +72,12 @@ public class MainMenuServerController {
                 .setContents(new StringSelection(IpField.getText()), null);
     }
 
-    private void launchGame() {
-        new Thread(
-                () ->
-                        Game.play(
+    private Thread serverThread() {
+        return new Thread(() -> Game.play(
                                 players,
                                 playersNames,
                                 SortedBag.of(ChMap.tickets()),
-                                new Random()))
-                .start();
+                                new Random()));
     }
 
     private void scaleButton(Button button) {
@@ -91,13 +86,13 @@ public class MainMenuServerController {
 
     private void hostGameOnPressed() {
         hostGame.setText(hostGame.getText() + "...");
-        awaitingConnectionLabel.setText("En attente d'une connection");
+        awaitingConnectionLabel.setText("En attente d'une connexion");
         awaitingConnectionLabel.setTextFill(Color.RED);
         hostGame.setDisable(true);
     }
 
     private void hostGameOnConnectionEstablished() {
-        awaitingConnectionLabel.setText("Connection établie!");
+        awaitingConnectionLabel.setText("Connexion établie!");
         awaitingConnectionLabel.setTextFill(Color.GREEN);
         hostGame.setText(hostGame.getText().replace("...", ""));
         play.setDisable(false);

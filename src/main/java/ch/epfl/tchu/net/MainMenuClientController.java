@@ -13,16 +13,10 @@ import java.net.UnknownHostException;
 public class MainMenuClientController {
     String defaultIp = NetConstants.Network.DEFAULT_IP;
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
-    @FXML private Button getIP, joinGame, configNgrok;
+    @FXML private Button joinGame, configNgrok;
     @FXML private TextField IpField, port;
 
     public void menuActions() throws UnknownHostException {
-        String serverIP = InetAddress.getLocalHost().getHostAddress();
-        getIP.setOnMouseClicked(
-                e -> {
-                    scaleButton(getIP);
-                    IpField.setText(serverIP);
-                });
         configNgrok.setOnMouseClicked(
                 e -> {
                     scaleButton(configNgrok);
@@ -30,7 +24,6 @@ public class MainMenuClientController {
                 });
         joinGame.setOnMouseClicked(
                 e -> {
-                    System.out.println(RunClient.getClient().getReceivePacket().getAddress().getHostAddress());
                     scaleButton(joinGame);
                     if (IpField.getText().isEmpty()) IpField.setText(defaultIp);
                     if (port.getText().isEmpty()) port.setText(String.valueOf(defaultPort));

@@ -1,23 +1,23 @@
 package ch.epfl.tchu.net;
 
-import ch.epfl.tchu.game.Server;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class RunServer extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Thread discoveryThread = new Thread(Server.getInstance());
-        discoveryThread.start();
         stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/MainMenuLayout.fxml"));
+        loader.setLocation(getClass().getResource("/MainMenuServer.fxml"));
         Parent content = loader.load();
-        stage.setScene(new Scene(content, 700, 650));
+        stage.setTitle("TCHU \u2014 Serveur");
+        stage.getIcons().add(new Image("logo.png"));
+        stage.setScene(new Scene(content, 455, 650));
         stage.show();
     }
 }
