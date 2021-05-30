@@ -1,8 +1,13 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.gui.animation.AbstractAnimation;
+import ch.epfl.tchu.gui.animation.FadeAnimation;
+import ch.epfl.tchu.gui.animation.TranslationAnimation;
+import javafx.animation.Interpolator;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
@@ -51,23 +56,43 @@ final class InfoViewCreator {
                 .getChildren()
                 .addAll(
                         createPlayerInfoView(correspondingPlayer, obsGameState, playerNames),
-                        createPlayerInfoView(correspondingPlayer.next(), obsGameState, playerNames));
+                        createPlayerInfoView(
+                                correspondingPlayer.next(), obsGameState, playerNames));
 
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
-        Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
+        TranslationAnimation translationAnimation =
+                new TranslationAnimation(
+                        DURATION_INFO_ANIMATION, 0, 0, Interpolator.EASE_IN, Interpolator.LINEAR);
+        FadeAnimation fadeAnimation = new FadeAnimation(DURATION_INFO_ANIMATION, 0, 1);
+        infos.addListener(
+                (ListChangeListener<? super Text>)
+                        change -> {
+                            change.next();
+                            if (change.wasAdded()) {
+                                var changed = change.getAddedSubList().get(0);
+                                gameInfoTextFlow.getChildren().add(changed);
+                                changed.setTranslateX(OFFSET_X_INFOS);
+                                AbstractAnimation c = translationAnimation.attachTo(changed);
+                                fadeAnimation.attachTo(changed).play();
+                                c.play();
+                            }
+                            if (change.wasRemoved()) {
+                                gameInfoTextFlow.getChildren().removeAll(change.getRemoved());
+                            }
+                        });
         root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
         return root;
     }
 
     /**
-     * Private method to return a player's info view, ie the player's stats
-     * in the form of a text flow.
+     * Private method to return a player's info view, ie the player's stats in the form of a text
+     * flow.
      *
      * @param player the player's view
      * @param obsGameState the observable game state
      * @param playerNames map with the names of the player
-     * @return a node representing the views with the info. 
+     * @return a node representing the views with the info.
      */
     private static Node createPlayerInfoView(
             PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {

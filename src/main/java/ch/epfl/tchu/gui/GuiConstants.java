@@ -1,6 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Color;
+import javafx.util.Duration;
 
 /**
  * GuiConstants used for the GUI part of the project. Includes .css files, style classes and IDs and
@@ -45,16 +46,9 @@ public final class GuiConstants {
 
     /* "neutral" color. */
     private static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
-    /**
-     * Converts a Color given as parameter to a the css class name used in tCHu. Color can be null,
-     * and in this case the color will be NEUTRAL.
-     *
-     * @param color The color to convert
-     * @return The CSS class name.
-     */
-    public static String convertColorToCssColor(Color color) {
-        return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
-    }
+	public static final int OFFSET_X_INFOS = 30;
+	public static final Duration DURATION_INFO_ANIMATION = Duration.millis(1000);
+    public static final Duration CYCLE_TIME_FADE = Duration.millis(100);
 
     // ID constants
     public static final String ID_TICKETS = "tickets";
@@ -97,6 +91,16 @@ public final class GuiConstants {
 	public static final float SCALING_Y_INDICATION = 0.5f;
 	/*Number of bounces during the indication animation. */
 	public static final int NUMBER_BOUNCES_INDICATION = 4;
-	public static final int CYCLE_TIME_FADE = 10;
+
+	/**
+     * Converts a Color given as parameter to a the css class name used in tCHu. Color can be null,
+     * and in this case the color will be NEUTRAL.
+     *
+     * @param color The color to convert
+     * @return The CSS class name.
+     */
+    public static String convertColorToCssColor(Color color) {
+        return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
+    }
 	public static final double FROM_FADE = 0.5;
 }
