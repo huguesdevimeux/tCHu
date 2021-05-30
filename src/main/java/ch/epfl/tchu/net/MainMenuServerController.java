@@ -50,6 +50,7 @@ public class MainMenuServerController {
                             e -> {
                                 scaleButton(play);
                                 serverThread().start();
+                                play.setDisable(true);
                             });
                 });
         pauseTransition.playFromStart();
