@@ -1,6 +1,14 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Color;
+import javafx.animation.PauseTransition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.io.IOException;
 
 /**
  * GuiConstants used for the GUI part of the project. Includes .css files, style classes and IDs and
@@ -130,4 +138,29 @@ public final class GuiConstants {
     public static String convertColorToCssColor(Color color) {
         return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
     }
+   public static void scaleButton(Button button) {
+        double initialScaleX = button.getScaleX();
+        double initialScaleY = button.getScaleY();
+        button.setScaleX(1.1);
+        button.setScaleY(1.1);
+        PauseTransition pt = new PauseTransition(Duration.millis(300));
+        pt.setOnFinished(
+                ev -> {
+                    button.setScaleX(initialScaleX);
+                    button.setScaleY(initialScaleY);
+                });
+        pt.playFromStart();
+    }
+
+    public static void openNgrokConfigInfoStage(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(GuiConstants.class.getResource("/NgrokConfig.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 420, 120);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
 }

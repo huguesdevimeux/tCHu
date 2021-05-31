@@ -18,6 +18,8 @@
     <orderEntry type="library" name="Maven: org.powermock:powermock-reflect:2.0.9" level="project" />
     <orderEntry type="library" name="Maven: org.powermock:powermock-core:2.0.9" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.27.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:15.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:win:15.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:15.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:15.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:15.0.1" level="project" />

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="74.0" prefWidth="326.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuServerController">
+    <children>
+        <VBox layoutY="4.05078125" style="-fx-spacing: 100; -fx-padding: 20;">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pour utiliser ngrok, l'installer à partir du site : https://dashboard.ngrok.com/get-started/setup et ouvrir le terminal. Il faut authentifier votre authtoken et entrer la commande: &quot; ngrok tcp 5108 --region eu&quot; et copier ce qui ressemble à 4.tcp.eu.ngrok.io 10247." wrappingWidth="373" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
