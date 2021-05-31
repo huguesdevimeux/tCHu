@@ -6,16 +6,27 @@ import ch.epfl.tchu.game.Game;
 import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.net.NetConstants;
+import ch.epfl.tchu.net.ProfileImagesUtils;
 import ch.epfl.tchu.net.RemotePlayerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.util.*;
+import java.net.Socket;
+import java.net.URL;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
- * Server implementation of tCHu. Used to host and play a game of tchu.
- * The whole game is launched from here.
+ * Server implementation of tCHu. Used to host and play a game of tchu. The whole game is launched
+ * from here.
  *
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
@@ -30,8 +41,14 @@ public final class ServerMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> names = NetConstants.Network.DEFAULT_NAMES;
         List<String> params = getParameters().getRaw();
-        if (params.size() == names.size()) names = params;
-        else if (params.size() != 0)
+        String ownProfileImageURL =
+                String.format(
+                        NetConstants.Image.FILENAME_DEFAULT_PROFILE_IMAGE,
+                        PlayerId.PLAYER_1.name());
+        if (params.size() == names.size() + 1) {
+            names = params.subList(1, params.size() - 1);
+            ownProfileImageURL = params.get(0);
+        } else if (params.size() != 0)
             throw new Exception("Invalid number of parameters given to the programme. Exiting.");
 
         Map<PlayerId, String> playersNames = new EnumMap<>(PlayerId.class);
@@ -40,11 +57,61 @@ public final class ServerMain extends Application {
             playersNames.put(PlayerId.ALL.get(i), names.get(i));
         }
 
-        Map<PlayerId, Player> players = new EnumMap<>(PlayerId.class);
-        try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT)) {
+        EnumMap<PlayerId, Player> players = new EnumMap<>(PlayerId.class);
+        EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
+        try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
+                Socket imagesSocket =
+                        new ServerSocket(NetConstants.Network.DEFAULT_PORT + 1).accept()) {
+            System.out.println("Connected !");
 
+            // Store the images of the players. The first player is considered as the host.
+            System.out.println(ownProfileImageURL);
+            images.put(PlayerId.PLAYER_1, ImageIO.read(new URL(ownProfileImageURL)));
+            System.out.println("Seeking for other's image");
+            BufferedImage bufferedImage =
+                    ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
+            System.out.println("Got other's image !");
+            images.put(PlayerId.PLAYER_2, bufferedImage);
+            // Send the images to all the players, so each one gets a copy.
+            System.out.println("Sending other's images");
+			OutputStream outputStream = imagesSocket.getOutputStream();
+
+			// ----- DOES NOT WORK WTF
+
+//			ImageIO.write(bufferedImage, "png", outputStream);
+//            System.out.println("sent first");
+//           	outputStream.flush();
+//			BufferedImage read = ImageIO.read(new URL("file://home/hugues/OneDrive/Desktop/Programmation/JAVA/tCHu/src/main/resources/PLAYER_1.png"));
+//            System.out.println(read);
+//			ImageIO.write(read, "png", imagesSocket.getOutputStream());
+//			outputStream.flush();
+
+
+
+			BufferedImage a = ImageIO.read(new File("//home/hugues/OneDrive/Downloads/mathisbg-min.png"));
+			BufferedImage b = ImageIO.read(new File("//home/hugues/OneDrive/Downloads/836064319941640243.png"));
+			ImageIO.write(a, "png", outputStream);
+			outputStream.flush();
+			System.out.println("First sent");
+			ImageIO.write(b, "png", outputStream);
+			outputStream.flush();
+
+//			ImageIO.write(images.get(PlayerId.PLAYER_2), "png", outputStream);
+//            ProfileImagesUtils.sendImages(imagesSocket.getOutputStream(), images);
+            System.out.println("sent");
+            // Save images locally for the player. Done in the main thread.
+            images.forEach(
+                    (playerId, image) -> {
+                        try {
+                            ProfileImagesUtils.saveImageFor(playerId, image);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+            // Handle image retrieving and send back
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-			players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
+            players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
         }
 
         new Thread(

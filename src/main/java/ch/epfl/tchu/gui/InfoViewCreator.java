@@ -6,6 +6,7 @@ import javafx.beans.binding.StringExpression;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -51,7 +52,8 @@ final class InfoViewCreator {
                 .getChildren()
                 .addAll(
                         createPlayerInfoView(correspondingPlayer, obsGameState, playerNames),
-                        createPlayerInfoView(correspondingPlayer.next(), obsGameState, playerNames));
+                        createPlayerInfoView(
+                                correspondingPlayer.next(), obsGameState, playerNames));
 
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
@@ -61,17 +63,17 @@ final class InfoViewCreator {
     }
 
     /**
-     * Private method to return a player's info view, ie the player's stats
-     * in the form of a text flow.
+     * Private method to return a player's info view, ie the player's stats in the form of a text
+     * flow.
      *
      * @param player the player's view
      * @param obsGameState the observable game state
      * @param playerNames map with the names of the player
-     * @return a node representing the views with the info. 
+     * @return a node representing the views with the info.
      */
     private static Node createPlayerInfoView(
-            PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
-        TextFlow playerN = new TextFlow();
+		PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
+        HBox playerN = new HBox();
         playerN.getStyleClass().add(player.name());
         Circle circle = new Circle(5);
         circle.getStyleClass().add(STYLE_CLASS_FILLED);
@@ -87,7 +89,14 @@ final class InfoViewCreator {
                         obsGameState.playerClaimPoints(player));
         Text playerStatsText = new Text();
         playerStatsText.textProperty().bind(updatedExpression);
-        playerN.getChildren().addAll(circle, playerStatsText);
-        return playerN;
+        HBox playerInfoWithcolo = new HBox(circle, playerStatsText);
+//        ImageView imageView =
+//                new ImageView(playerImage);
+
+//		imageView.setPreserveRatio(true);
+//		imageView.setFitHeight(76);
+		playerN.setSpacing(10);
+        playerN.getChildren().addAll( playerInfoWithcolo );
+		return playerN;
     }
 }
