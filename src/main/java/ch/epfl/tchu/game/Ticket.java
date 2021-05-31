@@ -59,6 +59,14 @@ public final class Ticket implements Comparable<Ticket> {
     }
 
     /**
+     * Returns the list of the trips.
+     * @return the list of the trips.
+     */
+    public List<Trip> getTrips() {
+        return trips;
+    }
+
+    /**
      * Get the amount of points the ticket is worth.
      *
      * @param connectivity Connectivity of the player whose belongs the ticket.
