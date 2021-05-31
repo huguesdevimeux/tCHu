@@ -52,7 +52,7 @@ class RouteTest {
                                 "ID",
                                 s1,
                                 s2,
-                                Constants.MAX_ROUTE_LENGTH + 1,
+                                GameConstants.MAX_ROUTE_LENGTH + 1,
                                 Route.Level.UNDERGROUND,
                                 Color.RED));
         assertThrows(
@@ -62,11 +62,11 @@ class RouteTest {
                                 "ID",
                                 s1,
                                 s2,
-                                Constants.MIN_ROUTE_LENGTH - 1,
+                                GameConstants.MIN_ROUTE_LENGTH - 1,
                                 Route.Level.UNDERGROUND,
                                 Color.RED));
-        new Route("ID", s1, s2, Constants.MIN_ROUTE_LENGTH, Route.Level.UNDERGROUND, Color.RED);
-        new Route("ID", s1, s2, Constants.MAX_ROUTE_LENGTH, Route.Level.UNDERGROUND, Color.RED);
+        new Route("ID", s1, s2, GameConstants.MIN_ROUTE_LENGTH, Route.Level.UNDERGROUND, Color.RED);
+        new Route("ID", s1, s2, GameConstants.MAX_ROUTE_LENGTH, Route.Level.UNDERGROUND, Color.RED);
     }
 
     @Test

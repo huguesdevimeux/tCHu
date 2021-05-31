@@ -7,11 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ch.epfl.tchu.game.Constants.*;
+import static ch.epfl.tchu.game.GameConstants.*;
 
 /**
  * Representation of the observable state/part of the game.
@@ -44,7 +43,7 @@ public final class ObservableGameState {
     // we assign true, false otherwise (false is the default value).
     private final List<BooleanProperty> playerCanClaimRoute = createBooleanPropertyList();
     private final PlayerId correspondingPlayer;
-    private PublicGameState newGameState;
+    private PublicGameState gameState;
     private PlayerState playerState;
 
     /**
@@ -65,7 +64,7 @@ public final class ObservableGameState {
      * @throws NullPointerException if the player state is null
      */
     public void setState(PublicGameState newGameState, PlayerState playerState) {
-        this.newGameState = Objects.requireNonNull(newGameState);
+        this.gameState = Objects.requireNonNull(newGameState);
         this.playerState = Objects.requireNonNull(playerState);
         // counting the number of each players' tickets and calculates the percentage remaining
         int numOfTicketsUsed =
@@ -103,73 +102,56 @@ public final class ObservableGameState {
                     .set((int) playerState.cards().stream().filter(c -> c.equals(card)).count());
         }
 
-        // We first create a set using a list of stations in order to deal with double routes.
-        // If the players' routes are "neighbours",
-        // they have the same "from" and "to" stations, so we add
-        // all the neighboured routes' stations to the set.
-        Set<List<Station>> neighborRoutesStations = newGameState.claimedRoutes().stream()
-                .filter(this::routeHasNeighbour)
+        Set<List<Station>> stationsOfDoubleClaimedRoutes = newGameState.claimedRoutes().stream()
+                .filter(Route::isPartOfDouble)
                 .map(Route::stations).collect(Collectors.toSet());
         for (Route route : ChMap.routes()) {
-            // setting the 4th property of the first group that sets the owner of the route
-            for (PlayerId playerId : PlayerId.ALL) {
-                if (newGameState.playerState(playerId).routes().contains(route))
-                    allRoutesOwners.get(route).set(playerId);
-            }
 
             // Setting the last property
             // We create 3 booleans which are conditions to be met in order to claim a route.
             boolean playerIsCurrentPlayer = newGameState.currentPlayerId().equals(correspondingPlayer);
             boolean routeIsNotClaimed =
                     !newGameState.claimedRoutes().contains(route)
-                            && !neighborRoutesStations.contains(route.stations()); //This condition means
-            //that if any of the routes that have neighbors is claimed, no one can claim the one next to it.
+							// The player can't take a a part of a double route which one part has been claimed.
+                            && !stationsOfDoubleClaimedRoutes.contains(route.stations());
             boolean canClaimRoute = playerState.canClaimRoute(route);
-            BooleanProperty conditionsAreMet = new SimpleBooleanProperty(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
-                playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(conditionsAreMet.get());
-        }
-    }
+			playerCanClaimRoute.get(ChMap.routes().indexOf(route)).set(playerIsCurrentPlayer && routeIsNotClaimed && canClaimRoute);
 
-    /**
-     * Boolean method to evaluate if the {@code route} has a neighbour.
-     *
-     * @param route to evaluate
-     * @return whether the {@code route} has a neighbour
-     */
-    private boolean routeHasNeighbour(Route route) {
-        return ChMap.routes().stream()
-                .anyMatch(routeTemp ->
-                        !routeTemp.equals(route) && routeTemp.stations().equals(route.stations()));
-    }
+            for (PlayerId playerId : PlayerId.ALL) {
+                if (newGameState.playerState(playerId).routes().contains(route))
+                    allRoutesOwners.get(route).set(playerId);
+            }
+		}
+	}
 
     //Private methods to create lists or maps comprised of n elements of
     //either false if property requires a boolean, 0 or null.
-    private List<ObjectProperty<Card>> createFaceUpCards() {
+    private static List<ObjectProperty<Card>> createFaceUpCards() {
         return Stream.generate(() -> new SimpleObjectProperty<Card>())
                 .limit(FACE_UP_CARDS_COUNT)
                 .collect(Collectors.toList());
     }
 
-    private Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
+    private static Map<Route, ObjectProperty<PlayerId>> createMapForRoutesOwners() {
         Map<Route, ObjectProperty<PlayerId>> mapRouteToOwner = new HashMap<>();
         for (Route route : ChMap.routes())
-            mapRouteToOwner.put(route, new SimpleObjectProperty<>(null));
+            mapRouteToOwner.put(route, new SimpleObjectProperty<>());
         return mapRouteToOwner;
     }
 
-    private Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
-        Map<PlayerId, IntegerProperty> map = new HashMap<>();
+    private static Map<PlayerId, IntegerProperty> createMapWithSingleIntProperty() {
+        Map<PlayerId, IntegerProperty> map = new EnumMap<>(PlayerId.class);
         PlayerId.ALL.forEach(playerId -> map.put(playerId, new SimpleIntegerProperty()));
         return map;
     }
 
-    private List<IntegerProperty> createPlayersCardsOfEachColor() {
+    private static List<IntegerProperty> createPlayersCardsOfEachColor() {
         return Stream.generate(SimpleIntegerProperty::new)
                 .limit(Card.COUNT)
                 .collect(Collectors.toList());
     }
 
-    private List<BooleanProperty> createBooleanPropertyList() {
+    private static List<BooleanProperty> createBooleanPropertyList() {
         return Stream.generate(SimpleBooleanProperty::new)
                 .limit(ChMap.routes().size())
                 .collect(Collectors.toList());
@@ -270,7 +252,7 @@ public final class ObservableGameState {
      * @param card the card to evaluate it's total amount in the player's cards
      * @return the amount of cards of type {@code card}
      */
-    public ReadOnlyIntegerProperty playersNumberOfCards(Card card) {
+    public ReadOnlyIntegerProperty playerNumberOfCards(Card card) {
         return currentPlayersNumberOfEachCards.get(Card.ALL.indexOf(card));
     }
 
@@ -290,8 +272,8 @@ public final class ObservableGameState {
      *
      * @return true if the player can draw tickets, else false
      */
-    public ReadOnlyBooleanProperty canDrawTickets() {
-        return new SimpleBooleanProperty(newGameState.canDrawTickets());
+    public boolean canDrawTickets() {
+        return gameState.canDrawTickets();
     }
 
     /**
@@ -299,8 +281,8 @@ public final class ObservableGameState {
      *
      * @return true whether the player can draw cards, else false
      */
-    public ReadOnlyBooleanProperty canDrawCards() {
-        return new SimpleBooleanProperty(newGameState.canDrawCards());
+    public boolean canDrawCards() {
+        return gameState.canDrawCards();
     }
 
     /**
@@ -309,7 +291,7 @@ public final class ObservableGameState {
      * @param route to extract the possible claim cards from
      * @return the possible claim cards to claim the route
      */
-    public ReadOnlyObjectProperty<List<SortedBag<Card>>> possibleClaimCards(Route route) {
-        return new SimpleObjectProperty<>(playerState.possibleClaimCards(route));
+    public List<SortedBag<Card>> possibleClaimCards(Route route) {
+        return playerState.possibleClaimCards(route);
     }
 }

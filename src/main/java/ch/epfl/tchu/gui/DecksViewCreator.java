@@ -1,8 +1,14 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Card;
-import ch.epfl.tchu.game.Constants;
+import ch.epfl.tchu.game.GameConstants;
 import ch.epfl.tchu.game.Ticket;
+import ch.epfl.tchu.gui.animation.AbstractAnimation;
+import ch.epfl.tchu.gui.animation.CustomInterpolators;
+import ch.epfl.tchu.gui.animation.FadeAnimation;
+import ch.epfl.tchu.gui.animation.TranslationAnimation;
+import javafx.animation.Interpolator;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.scene.Group;
@@ -14,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import static ch.epfl.tchu.gui.GuiConstants.*;
 
@@ -25,7 +32,7 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  */
 final class DecksViewCreator {
 
-    // Not instantiable.
+	// Not instantiable.
     private DecksViewCreator() {}
 
     public static Node createCardsView(
@@ -38,40 +45,58 @@ final class DecksViewCreator {
         Button ticketsPile =
                 itemPileWithGauge(StringsFr.TICKETS, observableGameState.percentageTickets());
         ticketsPile.disableProperty().bind(drawTicketsHandler.isNull());
-        ticketsPile.setOnAction(event -> drawTicketsHandler.get().onDrawTickets());
+        ticketsPile.setOnMouseClicked(event -> drawTicketsHandler.get().onDrawTickets());
         VBox cardsView = new VBox(ticketsPile);
         cardsView.setId(ID_CARD_PANE);
         cardsView.getStylesheets().addAll(DECKS_CSS, COLORS_CSS);
 
-        for (int slot : Constants.FACE_UP_CARD_SLOTS) {
+        TranslationAnimation translationAnimationFaceUpCards =
+                new TranslationAnimation(
+					Duration.millis(DURATION_ANIMATION_DECK_CARDS), OFFSET_X_DECK_CARDS,
+                        OFFSET_Y_CARDS_DECK,
+					CustomInterpolators.EASE_OUT_SINE,
+                        Interpolator.LINEAR);
+        FadeAnimation fadeAnimation = new FadeAnimation(CYCLE_TIME_FADE, FROM_FADE, 1);
+
+        for (int slot : GameConstants.FACE_UP_CARD_SLOTS) {
             StackPane displayedCard = individualCard();
+
+            AbstractAnimation translationFaceUpCards =
+                    translationAnimationFaceUpCards.attachTo(displayedCard);
+            AbstractAnimation fade = fadeAnimation.attachTo(displayedCard);
+            displayedCard.setOnMouseEntered(event -> translationFaceUpCards.play());
+            displayedCard.setOnMouseExited(event -> translationFaceUpCards.reversePlay());
             cardsView.getChildren().add(displayedCard);
             displayedCard.disableProperty().bind(drawCardHandler.isNull());
+            displayedCard.disableProperty().addListener((observable, oldValue, newValue) -> {
+				if (!newValue) {
+					fade.play();
+				} else {
+					fade.reversePlay();
+				}
+			});
             displayedCard.setOnMouseClicked(event -> drawCardHandler.get().onDrawCard(slot));
 
             observableGameState
                     .faceUpCard(slot)
                     .addListener(
-                            (observable, oldValue, newValue) -> {
-                                String newColor =
-                                        newValue.color() == null
-                                                ? NEUTRAL
-                                                : newValue.color().name();
-                                // Remove any Color css attribute and replace by the new color.
-                                displayedCard
-                                        .getStyleClass()
-                                        .removeIf(
-                                                (s) ->
-                                                        STYLE_CLASSES_COLOR.contains(s)
-                                                                || s.equals(
-                                                                        STYLE_CLASS_COLOR_NEUTRAL));
-                                displayedCard.getStyleClass().add(newColor);
-                            });
+                            (observable, oldCard, newCard) -> {
+                            	// oldCard is null during the initialization.
+								if (oldCard != null) {
+									displayedCard
+										.getStyleClass()
+										.remove(convertColorToCssColor(oldCard.color()));
+								}
+								displayedCard
+									.getStyleClass()
+									.add(convertColorToCssColor(newCard.color()));
+							});
+
         }
         Button cardsPile =
                 itemPileWithGauge(StringsFr.CARDS, observableGameState.percentageCards());
         cardsPile.disableProperty().bind(drawCardHandler.isNull());
-        cardsPile.setOnAction(e -> drawCardHandler.get().onDrawCard(Constants.DECK_SLOT));
+        cardsPile.setOnMouseClicked(e -> drawCardHandler.get().onDrawCard(GameConstants.DECK_SLOT));
         cardsView.getChildren().add(cardsPile);
         return cardsView;
     }
@@ -83,26 +108,40 @@ final class DecksViewCreator {
         ticketsListView.setItems(observableGameState.playersTicketsList());
         ticketsListView.setId(ID_TICKETS);
 
-        //
         HBox cardsHandPanel = new HBox();
         cardsHandPanel.setId(ID_HAND_PANE);
 
+        TranslationAnimation translationAnimationFaceUpCards =
+                new TranslationAnimation(
+					Duration.millis(DURATION_ANIMATION_HAND_CARDS), OFFSET_X_HAND_CARDS,
+                        OFFSET_Y_HAND_CARDS,
+					CustomInterpolators.EASE_OUT_SINE,
+                        CustomInterpolators.EASE_OUT_BOUNCE);
+
         for (Card card : Card.ALL) {
             StackPane cardOfHand = individualCard();
-            String color = card.color() == null ? NEUTRAL : card.color().name();
-            cardOfHand.getStyleClass().addAll(color);
+            AbstractAnimation translationAnimation =
+                    translationAnimationFaceUpCards.attachTo(cardOfHand);
+            cardOfHand.setOnMouseEntered(event -> translationAnimation.play());
+            cardOfHand.setOnMouseExited(event -> translationAnimation.reversePlay());
+
+            cardOfHand.getStyleClass().add(convertColorToCssColor(card.color()));
             cardOfHand
                     .visibleProperty()
-                    .bind(observableGameState.playersNumberOfCards(card).greaterThan(0));
+                    .bind(
+                            observableGameState
+                                    .playerNumberOfCards(card)
+                                    .greaterThan(MIN_CARDS_REQUIRED));
 
             // Count.
             Text count = new Text();
-            count.textProperty().bind(observableGameState.playersNumberOfCards(card).asString());
+            count.textProperty()
+                    .bind(Bindings.convert(observableGameState.playerNumberOfCards(card)));
             count.visibleProperty()
-                    .bind(
-                            observableGameState
-                                    .playersNumberOfCards(card)
-                                    .greaterThan(MIN_CARDS_NUMBER_DISPLAYED));
+                    .bind(Bindings.greaterThan(
+                                    observableGameState.playerNumberOfCards(card),
+                                    MIN_CARDS_NUMBER_DISPLAYED));
+
             count.getStyleClass().add(STYLE_CLASS_COUNT);
             cardOfHand.getChildren().add(count);
             cardsHandPanel.getChildren().add(cardOfHand);
@@ -115,17 +154,19 @@ final class DecksViewCreator {
 
     private static StackPane individualCard() {
         // Inner icon of cards. Sorted in an exterior fashion.
-        Rectangle inner1 = new Rectangle(60, 90);
+        Rectangle inner1 = new Rectangle(INNER_RECT1_WIDTH, INNER_RECT1_HEIGHT);
         inner1.getStyleClass().add(STYLE_CLASS_OUTSIDE);
-        Rectangle inner2 = new Rectangle(40, 70);
+
+        Rectangle inner2 = new Rectangle(INNER_RECT_WIDTH, INNER_RECT_HEIGHT);
         inner2.getStyleClass().addAll(STYLE_CLASS_FILLED, STYLE_CLASS_INSIDE);
-        Rectangle inner3 = new Rectangle(40, 70);
+
+        Rectangle inner3 = new Rectangle(INNER_RECT_WIDTH, INNER_RECT_HEIGHT);
         inner3.getStyleClass().add(STYLE_CLASS_TRAIN_IMAGE);
 
         // Outer layout.
-        StackPane cardOfHand = new StackPane();
-        cardOfHand.getChildren().addAll(inner1, inner2, inner3);
-        cardOfHand.getStyleClass().add(STYLE_CLASS_CARD);
+        StackPane cardOfHand = new StackPane(inner1, inner2, inner3);
+        cardOfHand.getStyleClass().add(STYLE_CLASS_CARD); // we add the style class here
+        // because this method will be called for the handsView and the cardsView.
         return cardOfHand;
     }
 
@@ -134,11 +175,11 @@ final class DecksViewCreator {
         Button itemPile = new Button(itemName);
         itemPile.getStyleClass().add(STYLE_CLASS_GAUGED);
 
-        Rectangle backgroundButtonGraphic = new Rectangle(50, 5);
+        Rectangle backgroundButtonGraphic = new Rectangle(BUTTON_GAUGE_WIDTH, BUTTON_GAUGE_HEIGHT);
         backgroundButtonGraphic.getStyleClass().add(STYLE_CLASS_BACKGROUND);
-        Rectangle foregroundButtonGraphic = new Rectangle(50, 5);
+        Rectangle foregroundButtonGraphic = new Rectangle(BUTTON_GAUGE_WIDTH, BUTTON_GAUGE_HEIGHT);
         foregroundButtonGraphic.getStyleClass().add(STYLE_CLASS_FOREGROUND);
-        foregroundButtonGraphic.widthProperty().bind(percentageProperty.divide(2));
+        foregroundButtonGraphic.widthProperty().bind(percentageProperty.multiply(BUTTON_GAUGE_WIDTH).divide(100));
 
         itemPile.setGraphic(new Group(backgroundButtonGraphic, foregroundButtonGraphic));
         return itemPile;

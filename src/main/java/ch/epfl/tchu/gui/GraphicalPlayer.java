@@ -1,8 +1,8 @@
 package ch.epfl.tchu.gui;
 
-import ch.epfl.tchu.Preconditions;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
+import javafx.animation.PathTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -15,11 +15,16 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 import java.util.ArrayList;
@@ -37,7 +42,7 @@ import static javafx.application.Platform.isFxApplicationThread;
  * @author Hugues Devimeux (327282)
  * @author Luca Mouchel (324748)
  */
-public class GraphicalPlayer {
+public final class GraphicalPlayer {
 
     private final ObservableGameState observableGameState;
     private final PlayerId correspondingPlayer;
@@ -78,32 +83,40 @@ public class GraphicalPlayer {
         observableGameState.setState(newGameState, playerState);
     }
 
-    public void receiveInfo(String message) {
+	/**
+	 * Called when an information has to be transmitted to a player under the form of a String.
+	 *
+	 * @param message information to be transmitted
+	 */
+	public void receiveInfo(String message) {
         assert isFxApplicationThread();
-        if (infoProperty.size() < VISIBLE_INFOS) infoProperty.add(new Text(message));
-        else {
-            // we limit the number to VISIBLE_INFOS - 1 because we have to set the text to
-            // the element of the VISIBLE_INFOS th position
-            for (int i = 0; i < VISIBLE_INFOS - 1; i++)
-                infoProperty.get(i).setText(infoProperty.get(i + 1).getText());
-            infoProperty.get(VISIBLE_INFOS - 1).setText(message);
-        }
+        // remove the first index of the observable list to not have more than VISIBLE_INFOS amount
+        // of messages.
+        if (infoProperty.size() == VISIBLE_INFOS) infoProperty.remove(0);
+        infoProperty.add(new Text(message));
     }
 
-    public void startTurn(
+	/**
+	 * Called to start a turn. Sets all the necessary handlers for the Gui.
+	 *
+	 * @param drawTicketsH The handler to draw tickets.
+	 * @param drawCardH The handler to draw Cards.
+	 * @param claimRouteH The handler to draw routes.
+	 */
+	public void startTurn(
             ActionHandlers.DrawTicketsHandler drawTicketsH,
             ActionHandlers.DrawCardHandler drawCardH,
             ActionHandlers.ClaimRouteHandler claimRouteH) {
         assert isFxApplicationThread();
 
-        if (observableGameState.canDrawCards().getValue()) {
+        if (observableGameState.canDrawCards()) {
             drawCardHandler.setValue(
                     indexOfChosenCard -> {
                         drawCardH.onDrawCard(indexOfChosenCard);
                         emptyHandlers();
                     });
         }
-        if (observableGameState.canDrawTickets().getValue()) {
+        if (observableGameState.canDrawTickets()) {
             drawTicketsHandler.setValue(
                     () -> {
                         drawTicketsH.onDrawTickets();
@@ -130,8 +143,7 @@ public class GraphicalPlayer {
             SortedBag<Ticket> choosableTickets,
             ActionHandlers.ChooseTicketsHandler chooseTicketsHandler) {
         assert isFxApplicationThread();
-        Preconditions.checkArgument(choosableTickets.size() == 3 || choosableTickets.size() == 5);
-        int minTickets = choosableTickets.size() - Constants.DISCARDABLE_TICKETS_COUNT;
+        int minTickets = choosableTickets.size() - GameConstants.DISCARDABLE_TICKETS_COUNT;
         String title =
                 String.format(StringsFr.CHOOSE_TICKETS, minTickets, StringsFr.plural(minTickets));
         new PopupChoiceBuilder<Ticket>(title, choosableTickets.toList())
@@ -190,14 +202,14 @@ public class GraphicalPlayer {
                 .setTitle(StringsFr.CARDS_CHOICE)
                 .setSelectionMode(SelectionMode.SINGLE)
                 .setSingleItemChosenHandler(handler::onChooseCards)
-                .setMinimumChoices(GuiConstants.MINIMUM_CHOICES_ADDITIONAL_CARDS)
+                .setMinimumChoices(GuiConstants.MIN_CARDS_REQUIRED)
                 .setCellStringBuilder(new CardBagStringConverter())
                 .build()
                 .show();
     }
 
     /**
-     * Generates the main stage.
+     * Generates the main stage
      *
      * @return The main stage.
      */
@@ -230,7 +242,7 @@ public class GraphicalPlayer {
         takeRouteHandler.set(null);
     }
 
-    private static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
+    private final static class CardBagStringConverter extends StringConverter<SortedBag<Card>> {
         @Override
         public String toString(SortedBag<Card> cards) {
             return Info.displaySortedBagOfCards(cards);
@@ -303,7 +315,8 @@ public class GraphicalPlayer {
         }
 
         /**
-         * Sets the handler in case of multiple choice.
+         * Sets the handler in case of multiple choice. The given value to the consumer will be null
+         * if nothing has been chosen.
          *
          * @param actionHandlerWrapper The handler wrapped in a consumer.
          * @return The object (for chaining).
@@ -315,7 +328,8 @@ public class GraphicalPlayer {
         }
 
         /**
-         * Sets the handler in case of single item choice.
+         * Sets the handler in case of single item choice. The given value to the consumer will be
+         * null if nothing has been chosen.
          *
          * @param actionHandlerWrapper the handler wrapped in a consumer.
          * @return The object (for chaining).
@@ -347,10 +361,6 @@ public class GraphicalPlayer {
 
             Stage popup = new Stage(StageStyle.UTILITY);
             popup.setTitle(title);
-            // This monstrosity adds to the current sets action handler an action that hides the
-            // popup after pressing
-            // the button.
-            // The switch case differs the case when only one item needs to be selected vs multiple.
             confirm.setOnAction(
                     actionEvent -> {
                         switch (choicesDisplayed.getSelectionModel().getSelectionMode()) {
