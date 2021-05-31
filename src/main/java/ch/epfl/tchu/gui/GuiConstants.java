@@ -107,7 +107,7 @@ public final class GuiConstants {
     /* The style we give to the station "from" of the selected tickets, but that goes to another country */
     public static final String SWISS_FROM_STATION_TO_COUNTRY_STYLE = "-fx-fill: #04621f";
     /* The initial and default style of the stations */
-    public static final String SWISS_STATION_STYLE = "-fx-fill: white";
+    public static final String SWISS_STATION_STYLE = "-fx-fill: white; -fx-stroke: grey";
     /* The custom width of the scene that is generated that displays the tickets where the stations appear.*/
     public static final int SCENE_WIDTH_FOR_POSSIBLE_TICKETS = 220;
     /* The custom height of the scene that is generated that displays the tickets where the stations appear.*/
