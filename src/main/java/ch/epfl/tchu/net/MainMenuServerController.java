@@ -7,19 +7,10 @@ import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
-import ch.epfl.tchu.gui.ServerMain;
-import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -36,34 +27,30 @@ public class MainMenuServerController {
     Map<PlayerId, Player> players = new HashMap<>();
     @FXML private Button hostGame, configNgrok, play, getIP;
     @FXML private TextField firstPlayerName, secondPlayerName, thirdPlayerName, IpField;
-    @FXML private Label awaitingConnectionLabel;
+    @FXML private TextField awaitingConnectionText;
     @FXML private CheckBox checkBox;
-    private ServerSocket serverSocket = new ServerSocket(5108);
-    private Socket socket = new Socket();
+    private final ServerSocket serverSocket = new ServerSocket(5108);
+    private final Socket socket = new Socket();
 
-    public MainMenuServerController() throws IOException {
-    }
+    public MainMenuServerController() throws IOException {}
 
     public void hostGameAction() throws IOException {
         hostGameOnPressed();
         players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
-        pauseTransition.setOnFinished(
-                actionEvent -> {
-                    String[] names = configureNames();
-                    PlayerId.ALL.forEach(
-                            playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
-                    new Thread(() -> {
-                        try {
-                            socket = serverSocket.accept();
-                            players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(socket));
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
-                        }
-                    }).start();
-                  hostGameOnConnectionEstablished();
-                });
-        pauseTransition.playFromStart();
+        String[] names = configureNames();
+        PlayerId.ALL.forEach(playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
+        new Thread(
+                        () -> {
+                            try {
+                                players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
+                                play.setDisable(false);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            awaitingConnectionText.setText("Un joueur est connecté!");
+                        })
+                .start();
+        hostGameOnConnectionEstablished();
     }
 
     public void playAction() {
@@ -104,18 +91,11 @@ public class MainMenuServerController {
     }
 
     private void hostGameOnPressed() {
-        hostGame.setText(hostGame.getText() + "...");
-        awaitingConnectionLabel.setText("En attente d'une connexion");
-        awaitingConnectionLabel.setTextFill(Color.RED);
+        awaitingConnectionText.setText("En attente d'une connexion");
         hostGame.setDisable(true);
     }
 
-    private void hostGameOnConnectionEstablished() {
-        awaitingConnectionLabel.setText("Connexion établie!");
-        awaitingConnectionLabel.setTextFill(Color.GREEN);
-        hostGame.setText(hostGame.getText().replace("...", ""));
-        play.setDisable(false);
-    }
+    private void hostGameOnConnectionEstablished() {}
 
     private String[] configureNames() {
         String[] names = new String[PlayerId.COUNT];
