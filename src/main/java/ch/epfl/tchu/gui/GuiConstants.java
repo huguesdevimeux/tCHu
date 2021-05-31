@@ -163,4 +163,5 @@ public final class GuiConstants {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
+    }
 }
