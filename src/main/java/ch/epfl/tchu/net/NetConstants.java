@@ -1,5 +1,6 @@
 package ch.epfl.tchu.net;
 
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -49,11 +50,11 @@ public final class NetConstants {
     }
 
     public static class Image {
+
         public static final String EXTENSION_IMAGE = "png";
-        public static final String FILENAME_PROFILE_IMAGE =
-                "/home/hugues/OneDrive/Desktop/Programmation/JAVA/tCHu/%s.png";
-        public static final String FILENAME_DEFAULT_PROFILE_IMAGE =
-			"file:///home/hugues/OneDrive/Desktop/Programmation/JAVA/tCHu/src/main/resources/%s.png";
+		public static URL URLof(String resource) {
+			return NetConstants.class.getClassLoader().getResource(resource);
+		}
 
     }
 }

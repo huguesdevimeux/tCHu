@@ -1,11 +1,14 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.ProfileImagesUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -90,13 +93,13 @@ final class InfoViewCreator {
         Text playerStatsText = new Text();
         playerStatsText.textProperty().bind(updatedExpression);
         HBox playerInfoWithcolo = new HBox(circle, playerStatsText);
-//        ImageView imageView =
-//                new ImageView(playerImage);
 
-//		imageView.setPreserveRatio(true);
-//		imageView.setFitHeight(76);
+		ImageView imageView =
+                new ImageView(new Image(ProfileImagesUtils.pathOfImageOf(player).toUri().toString()));
+		imageView.setPreserveRatio(true);
+		imageView.setFitHeight(76);
 		playerN.setSpacing(10);
-        playerN.getChildren().addAll( playerInfoWithcolo );
+        playerN.getChildren().addAll(imageView, playerInfoWithcolo );
 		return playerN;
     }
 }

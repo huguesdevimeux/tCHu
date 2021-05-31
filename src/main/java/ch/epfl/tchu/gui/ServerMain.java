@@ -41,13 +41,10 @@ public final class ServerMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> names = NetConstants.Network.DEFAULT_NAMES;
         List<String> params = getParameters().getRaw();
-        String ownProfileImageURL =
-                String.format(
-                        NetConstants.Image.FILENAME_DEFAULT_PROFILE_IMAGE,
-                        PlayerId.PLAYER_1.name());
+        URL ownProfileImageURL = NetConstants.Image.URLof("PLAYER_1.png");
         if (params.size() == names.size() + 1) {
             names = params.subList(1, params.size() - 1);
-            ownProfileImageURL = params.get(0);
+            ownProfileImageURL = new URL(params.get(0));
         } else if (params.size() != 0)
             throw new Exception("Invalid number of parameters given to the programme. Exiting.");
 
@@ -59,55 +56,26 @@ public final class ServerMain extends Application {
 
         EnumMap<PlayerId, Player> players = new EnumMap<>(PlayerId.class);
         EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
-        try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
-                Socket imagesSocket =
-                        new ServerSocket(NetConstants.Network.DEFAULT_PORT + 1).accept()) {
-            System.out.println("Connected !");
+        try (ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT)) {
+            Socket imagesSocket = serverSocket.accept();
 
             // Store the images of the players. The first player is considered as the host.
-            System.out.println(ownProfileImageURL);
-            images.put(PlayerId.PLAYER_1, ImageIO.read(new URL(ownProfileImageURL)));
+            images.put(PlayerId.PLAYER_1, ProfileImagesUtils.validateImage(ImageIO.read(ownProfileImageURL)));
             System.out.println("Seeking for other's image");
             BufferedImage bufferedImage =
                     ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
             System.out.println("Got other's image !");
             images.put(PlayerId.PLAYER_2, bufferedImage);
-            // Send the images to all the players, so each one gets a copy.
-            System.out.println("Sending other's images");
-			OutputStream outputStream = imagesSocket.getOutputStream();
 
-			// ----- DOES NOT WORK WTF
-
-//			ImageIO.write(bufferedImage, "png", outputStream);
-//            System.out.println("sent first");
-//           	outputStream.flush();
-//			BufferedImage read = ImageIO.read(new URL("file://home/hugues/OneDrive/Desktop/Programmation/JAVA/tCHu/src/main/resources/PLAYER_1.png"));
-//            System.out.println(read);
-//			ImageIO.write(read, "png", imagesSocket.getOutputStream());
-//			outputStream.flush();
-
-
-
-			BufferedImage a = ImageIO.read(new File("//home/hugues/OneDrive/Downloads/mathisbg-min.png"));
-			BufferedImage b = ImageIO.read(new File("//home/hugues/OneDrive/Downloads/836064319941640243.png"));
-			ImageIO.write(a, "png", outputStream);
-			outputStream.flush();
-			System.out.println("First sent");
-			ImageIO.write(b, "png", outputStream);
-			outputStream.flush();
-
-//			ImageIO.write(images.get(PlayerId.PLAYER_2), "png", outputStream);
-//            ProfileImagesUtils.sendImages(imagesSocket.getOutputStream(), images);
-            System.out.println("sent");
-            // Save images locally for the player. Done in the main thread.
-            images.forEach(
-                    (playerId, image) -> {
-                        try {
-                            ProfileImagesUtils.saveImageFor(playerId, image);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+            OutputStream outputStream = imagesSocket.getOutputStream();
+			for (PlayerId playerid : PlayerId.ALL) {
+				ProfileImagesUtils.saveImageFor(playerid, images.get(playerid));
+				ImageIO.write(
+					 ProfileImagesUtils.loadImageFor(playerid),
+					NetConstants.Image.EXTENSION_IMAGE,
+					outputStream);
+				outputStream.flush();
+			}
 
             // Handle image retrieving and send back
             players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());

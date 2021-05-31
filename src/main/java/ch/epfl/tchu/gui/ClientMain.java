@@ -34,37 +34,26 @@ public final class ClientMain extends Application {
         // Default values.
         String ipTarget = NetConstants.Network.DEFAULT_IP;
         int port = NetConstants.Network.DEFAULT_PORT;
-        // TODO Change this. The server should send itseld the default profile image.
-        String profileImageURL =
-                String.format(
-                        NetConstants.Image.FILENAME_DEFAULT_PROFILE_IMAGE,
-                        PlayerId.PLAYER_1.name());
+        URL profileImageURL = NetConstants.Image.URLof("PLAYER_2.png");
         if (params.size() == NetConstants.Network.NUMBER_PARAMETERS_REQUIRED) {
             ipTarget = params.get(0);
             port = Integer.parseInt(params.get(1));
-            profileImageURL = params.get(2);
+            profileImageURL = new URL(params.get(2));
         } else if (params.size() != 0)
             throw new Exception("Wrong number of parameters given to the programme. Exiting.");
 
-        try (Socket imageSocket = new Socket(ipTarget, port + 1)) {
-            System.out.println(profileImageURL);
-			BufferedImage read = ImageIO.read(new URL(profileImageURL));
-			ProfileImagesUtils.sendImage(
-                    imageSocket.getOutputStream(), read);
-            System.out.println("Sent image");
+        try (Socket imageSocket = new Socket(ipTarget, port)) {
+            System.out.println("Established image socket.");
+            ProfileImagesUtils.sendImage(
+                    imageSocket.getOutputStream(),
+                    ProfileImagesUtils.validateImage(ImageIO.read(profileImageURL)));
             // Get images from network.
-            EnumMap<PlayerId, BufferedImage> images =
-                    ProfileImagesUtils.retrieveImages(imageSocket.getInputStream());
+            var images = ProfileImagesUtils.retrieveImages(imageSocket.getInputStream());
             // Save locally the images.
-            Objects.requireNonNull(images)
-                    .forEach(
-                            (playerId, image) -> {
-                                try {
-                                    ProfileImagesUtils.saveImageFor(playerId, image);
-                                } catch (IOException e) {
-                                    throw new UncheckedIOException(e);
-                                }
-                            });
+            for (var playerAndPicture : Objects.requireNonNull(images).entrySet()) {
+                ProfileImagesUtils.saveImageFor(
+                        playerAndPicture.getKey(), playerAndPicture.getValue());
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
