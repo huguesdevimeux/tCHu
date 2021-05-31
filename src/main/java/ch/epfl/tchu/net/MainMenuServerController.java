@@ -32,23 +32,21 @@ public class MainMenuServerController {
 
     public MainMenuServerController() throws IOException {}
 
+    private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
+    private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
     public void hostGameAction() {
-        awaitingConnectionText.setText("En attente d'une connexion");
+        awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
         scaleButton(hostGame);
         hostGame.setDisable(true);
         players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
         new Thread(() -> {
             try {
-                if (checkBox.isSelected())
-                    for (int i = 1; i < PlayerId.COUNT; i++)
-                        players.put(PlayerId.ALL.get(i), new RemotePlayerProxy(serverSocket.accept()));
-                    else
-                        players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
-                    play.setDisable(false);
+                players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
+                play.setDisable(false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            awaitingConnectionText.setText("Un joueur est connecté!");
+            awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
         }).start();
     }
 
