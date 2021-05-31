@@ -7,18 +7,25 @@ import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import ch.epfl.tchu.gui.ServerMain;
 import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,29 +35,38 @@ public class MainMenuServerController {
     Map<PlayerId, String> playersNames = new HashMap<>();
     Map<PlayerId, Player> players = new HashMap<>();
     @FXML private Button hostGame, configNgrok, play, getIP;
-    @FXML private TextField firstPlayerName, secondPlayerName, IpField;
+    @FXML private TextField firstPlayerName, secondPlayerName, thirdPlayerName, IpField;
     @FXML private Label awaitingConnectionLabel;
+    @FXML private CheckBox checkBox;
+    private ServerSocket serverSocket = new ServerSocket(5108);
+    private Socket socket = new Socket();
 
-    public void hostGameAction() {
+    public MainMenuServerController() throws IOException {
+    }
+
+    public void hostGameAction() throws IOException {
         hostGameOnPressed();
+        players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
         PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
         pauseTransition.setOnFinished(
                 actionEvent -> {
                     String[] names = configureNames();
-                    PlayerId.ALL.forEach(playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
-                    try {
-                        ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
-                        players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-                        players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    hostGameOnConnectionEstablished();
+                    PlayerId.ALL.forEach(
+                            playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
+                    new Thread(() -> {
+                        try {
+                            socket = serverSocket.accept();
+                            players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(socket));
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+                    }).start();
+                  hostGameOnConnectionEstablished();
                 });
         pauseTransition.playFromStart();
     }
 
-    public void playAction(){
+    public void playAction() {
         scaleButton(play);
         serverThread().start();
         play.setDisable(true);
@@ -74,7 +90,9 @@ public class MainMenuServerController {
     }
 
     private Thread serverThread() {
-        return new Thread(() -> Game.play(
+        return new Thread(
+                () ->
+                        Game.play(
                                 players,
                                 playersNames,
                                 SortedBag.of(ChMap.tickets()),
@@ -104,5 +122,9 @@ public class MainMenuServerController {
         names[0] = firstPlayerName.getText().isEmpty() ? "Joueur 1" : firstPlayerName.getText();
         names[1] = secondPlayerName.getText().isEmpty() ? "Joueur 2" : secondPlayerName.getText();
         return names;
+    }
+
+    public void checkBoxAction() {
+        thirdPlayerName.setVisible(checkBox.isSelected());
     }
 }
