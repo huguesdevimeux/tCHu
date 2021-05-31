@@ -1,8 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
-import ch.epfl.tchu.net.ChatClientMain;
-import ch.epfl.tchu.net.ChatServerMain;
+import ch.epfl.tchu.net.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.collections.ObservableList;
@@ -66,14 +65,16 @@ final class InfoViewCreator {
         chat.getChildren().add(toChat);
         chat.setAlignment(Pos.CENTER);
 
-        toChat.setOnAction(e -> {
-            try {
-                new ChatServerMain().start(new Stage());
-                new ChatClientMain().start(new Stage());
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+        toChat.setOnAction(
+                e -> {
+                    try {
+                        if (ChatApp.isServer){
+                            MainMenuServerController.serverChat.start(new Stage());
+                        }else MainMenuClientController.clientChat.start(new Stage());
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                });
 
         root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow, chat);        return root;
     }

@@ -19,5 +19,13 @@ public class RunServer extends Application {
         stage.getIcons().add(new Image("logo.png"));
         stage.setScene(new Scene(content, 455, 650));
         stage.show();
+        new Thread(() -> {
+            ChatApp.isServer = true;
+            try {
+                new ChatApp().init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

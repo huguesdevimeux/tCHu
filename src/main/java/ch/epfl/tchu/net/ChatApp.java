@@ -12,9 +12,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ChatApp extends Application {
-    private static boolean isServer = false;
+    public static boolean isServer;
     private static TextArea messages = new TextArea();
     private static final ChattingConnection connection = isServer ? createServer() : createClient();
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        System.out.println(isServer);
+        connection.startConnection();
+        stage.setScene(new Scene(createContent()));
+        stage.show();
+    }
 
     public static Parent createContent() {
         messages.setPrefHeight(550);
@@ -25,7 +33,7 @@ public class ChatApp extends Application {
             message += input.getText();
             input.clear();
 
-            messages.appendText(message + System.lineSeparator());
+            messages.appendText(message + "\n");
             try {
                 connection.send(message);
             } catch (IOException exception) {
@@ -61,15 +69,5 @@ public class ChatApp extends Application {
                                 () -> {
                                     messages.appendText(data + "\n");
                                 }));
-    }
-
-    public void init() {
-      //  connection.startConnection();
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        stage.setScene(new Scene(createContent()));
-        stage.show();
     }
 }
