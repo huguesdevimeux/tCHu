@@ -24,13 +24,13 @@
                 <Image url="@logo.png" />
             </image>
         </ImageView>
-        <Text layoutX="167.0" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="137.0">
+        <Text layoutX="164.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="158.39999999999986">
             <font>
-                <Font name="Franklin Gothic Demi Italic" size="55.0" />
+                <Font name="System Bold Italic" size="55.0" />
             </font>
         </Text>
       <TextField fx:id="thirdPlayerName" alignment="CENTER" layoutX="167.0" layoutY="368.0" onAction="#hostGameAction" prefHeight="35.0" prefWidth="158.0" promptText="Nom du troisième Joueur" style="-fx-border-color: grEy; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" visible="false" />
       <CheckBox fx:id="checkBox" layoutX="68.0" layoutY="377.0" mnemonicParsing="false" onAction="#checkBoxAction" text="Jouer à trois" />
-      <TextField fx:id="awaitingConnectionText" alignment="CENTER" editable="false" layoutX="-4.0" layoutY="575.0" prefHeight="26.0" prefWidth="241.0" promptText="Aucun joueur connecté" style="-fx-border-width: 0 0 0 0; -fx-background-color: transparent;" />
+      <TextField fx:id="awaitingConnectionText" alignment="CENTER" editable="false" layoutX="-10.0" layoutY="575.0" prefHeight="26.0" prefWidth="241.0" promptText="Aucun joueur connecté" style="-fx-border-width: 0 0 0 0; -fx-background-color: transparent;" />
     </children>
 </AnchorPane>

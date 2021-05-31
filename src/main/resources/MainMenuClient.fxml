@@ -7,33 +7,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<AnchorPane prefHeight="570.0" prefWidth="390.0" style="-fx-background-color: white;"
-            xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="ch.epfl.tchu.net.MainMenuClientController">
+
+<AnchorPane prefHeight="570.0" prefWidth="390.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuClientController">
     <children>
-        <TextField fx:id="IpField" alignment="CENTER" layoutX="88.0" layoutY="360.0" onAction="#menuActions"
-                   prefHeight="26.0" prefWidth="219.0" promptText="IP du serveur ou adresse Ngrok"
-                   style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;"/>
-        <Text layoutX="130.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU"
-              wrappingWidth="135.5999755859375">
-            <font>
-                <Font name="Franklin Gothic Demi Italic" size="55.0"/>
-            </font>
-        </Text>
-        <TextField fx:id="port" alignment="CENTER" layoutX="114.0" layoutY="401.0" onAction="#menuActions"
-                   prefHeight="25.0" prefWidth="168.0" promptText="Port"
-                   style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;"/>
-        <Button fx:id="joinGame" layoutX="120.0" layoutY="448.0" mnemonicParsing="false" onAction="#menuActions"
-                style="-fx-background-color: #60a3bc; -fx-padding: 10; -fx-border-radius: 50; -fx-font-weight: bold; -fx-font-size: 1.1EM;"
-                text="Rejoindre une partie" textFill="#fff0f0"/>
-        <Button fx:id="configNgrok" layoutX="14.0" layoutY="529.0" mnemonicParsing="false" onAction="#menuActions"
-                prefHeight="26.0" prefWidth="100.0"
-                style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;"
-                text="Configurer Ngrok" textFill="#fff0f0"/>
+        <TextField fx:id="IpField" alignment="CENTER" layoutX="88.0" layoutY="360.0" onAction="#menuActions" prefHeight="26.0" prefWidth="219.0" promptText="IP du serveur ou adresse Ngrok" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
+        <TextField fx:id="port" alignment="CENTER" layoutX="114.0" layoutY="401.0" onAction="#menuActions" prefHeight="25.0" prefWidth="168.0" promptText="Port" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
+        <Button fx:id="joinGame" layoutX="120.0" layoutY="448.0" mnemonicParsing="false" onAction="#menuActions" style="-fx-background-color: #60a3bc; -fx-padding: 10; -fx-border-radius: 50; -fx-font-weight: bold; -fx-font-size: 1.1EM;" text="Rejoindre une partie" textFill="#fff0f0" />
+        <Button fx:id="configNgrok" layoutX="14.0" layoutY="529.0" mnemonicParsing="false" onAction="#menuActions" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Configurer Ngrok" textFill="#fff0f0" />
         <ImageView fitHeight="271.0" fitWidth="361.0" layoutX="27.0">
             <image>
-                <Image url="@logo.png"/>
+                <Image url="@logo.png" />
             </image>
         </ImageView>
+        <Text layoutX="120.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="155.2000274658203">
+            <font>
+                <Font name="System Bold Italic" size="55.0" />
+            </font>
+        </Text>
     </children>
 </AnchorPane>

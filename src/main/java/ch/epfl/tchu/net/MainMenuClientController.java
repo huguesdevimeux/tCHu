@@ -25,10 +25,16 @@ public class MainMenuClientController {
         joinGame.setOnMouseClicked(
                 e -> {
                     scaleButton(joinGame);
-                    if (IpField.getText().isEmpty()) IpField.setText(defaultIp);
-                    if (port.getText().isEmpty()) port.setText(String.valueOf(defaultPort));
-                    String ip = IpField.getText().isEmpty() ? defaultIp : IpField.getText();
-                    int port = this.port.getText().isEmpty() ? defaultPort : Integer.parseInt(this.port.getText());
+                    String ip;
+                    int port;
+                    if (IpField.getText().isEmpty()){
+                        IpField.setText(defaultIp);
+                        ip = defaultIp;
+                    } else ip = IpField.getText();
+                    if (this.port.getText().isEmpty()) {
+                        this.port.setText(String.valueOf(defaultPort));
+                        port = defaultPort;
+                    } else port = Integer.parseInt(this.port.getText());
                     clientThread(ip, port).start();
                 });
     }
@@ -38,7 +44,6 @@ public class MainMenuClientController {
     }
 
     private Thread clientThread(String ip, int port) {
-        return new Thread(
-                () -> new RemotePlayerClient(new GraphicalPlayerAdapter(), ip, port).run());
+        return new Thread(() -> new RemotePlayerClient(new GraphicalPlayerAdapter(), ip, port).run());
     }
 }
