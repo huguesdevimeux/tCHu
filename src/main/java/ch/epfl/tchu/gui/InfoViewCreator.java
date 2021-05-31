@@ -1,15 +1,20 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.ChatClientMain;
+import ch.epfl.tchu.net.ChatServerMain;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 
 import java.util.Map;
 
@@ -56,8 +61,21 @@ final class InfoViewCreator {
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
         Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
-        root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
-        return root;
+        VBox chat = new VBox();
+        Button toChat = new Button("Chat");
+        chat.getChildren().add(toChat);
+        chat.setAlignment(Pos.CENTER);
+
+        toChat.setOnAction(e -> {
+            try {
+                new ChatServerMain().start(new Stage());
+                new ChatClientMain().start(new Stage());
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow, chat);        return root;
     }
 
     /**
