@@ -35,7 +35,7 @@ public final class Game {
             SortedBag<Ticket> tickets,
             Random rng) {
         gameState = GameState.initial(tickets, rng);
-//        Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
+        Preconditions.checkArgument(players.size() == 2 && playerNames.size() == 2);
 
         // putting all of the elements of playerNames in a map where values are of class Info
         // for receiving infos purposes
