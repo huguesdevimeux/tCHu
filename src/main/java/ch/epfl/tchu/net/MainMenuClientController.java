@@ -5,6 +5,7 @@ import ch.epfl.tchu.gui.GuiConstants;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.net.UnknownHostException;
 
@@ -23,7 +24,7 @@ public class MainMenuClientController {
         GuiConstants.openNgrokConfigInfoStage();
     }
 
-    public void joinGameAction() {
+    public void joinGameAction() throws Exception {
         scaleButton(joinGame);
         String ip;
         int port;
@@ -36,6 +37,9 @@ public class MainMenuClientController {
             this.port.setText(String.valueOf(defaultPort));
             port = defaultPort;
         } else port = Integer.parseInt(this.port.getText());
+        ChatApp a = new ChatApp();
+        a.tryToConnect();
+        a.start(new Stage());
         clientThread(ip, port).start();
     }
 

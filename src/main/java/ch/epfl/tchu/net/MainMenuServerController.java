@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -34,16 +35,20 @@ public class MainMenuServerController {
 
     private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
     private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
-    public void hostGameAction() {
+    public void hostGameAction() throws Exception {
         awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
         scaleButton(hostGame);
         hostGame.setDisable(true);
+        ChatApp a = new ChatApp();
+        a.init();
+        a.start(new Stage());
         players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
         new Thread(() -> {
             try {
                 players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
+                ChatApp.isServer = true;
                 play.setDisable(false);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             awaitingConnectionText.setText(CONNECTION_ESTABLISHED);

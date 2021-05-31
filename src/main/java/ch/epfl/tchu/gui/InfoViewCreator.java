@@ -1,6 +1,9 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.ChatApp;
+import ch.epfl.tchu.net.MainMenuClientController;
+import ch.epfl.tchu.net.MainMenuServerController;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
@@ -8,12 +11,15 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.Map;
@@ -88,13 +94,21 @@ final class InfoViewCreator {
         ticketPointsText.textProperty().bind(ticketPoints);
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
+        VBox chat = new VBox();
+        Button toChat = new Button("Chat");
+        chat.getChildren().add(toChat);
+        chat.setAlignment(Pos.CENTER);
+
+        toChat.setOnAction(
+                e -> {});
         root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);        return root;
+                        gameInfoTextFlow, chat);
+        return root;
     }
 
     /**

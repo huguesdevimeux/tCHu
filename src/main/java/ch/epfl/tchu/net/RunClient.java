@@ -16,5 +16,6 @@ public class RunClient extends Application {
         stage.getIcons().add(new Image("logo.png"));
         stage.setScene(new Scene(loader.load(), 390, 570));
         stage.show();
+//        new ChatApp().start(new Stage());
     }
 }
