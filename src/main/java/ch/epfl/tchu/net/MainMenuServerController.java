@@ -61,7 +61,7 @@ public class MainMenuServerController {
     }
 
     public void getIPAction() throws UnknownHostException {
-        String playersIp = PlayerIPAddress.getIPAddress();
+        String playersIp = PlayerIPAddress.getPublicIPAddress();
         IpField.setText(playersIp);
         scaleButton(getIP);
     }
