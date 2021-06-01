@@ -19,6 +19,7 @@
         <Button fx:id="configNgrok" layoutX="345.0" layoutY="609.0" mnemonicParsing="false" onAction="#ngrokConfigAction" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Configurer Ngrok" textFill="#fff0f0" />
         <TextField fx:id="secondPlayerName" alignment="CENTER" layoutX="266.0" layoutY="292.0" onAction="#hostGameAction" prefHeight="35.0" prefWidth="158.0" promptText="Nom du second Joueur" style="-fx-border-color: grEy; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
         <Button layoutX="388.0" layoutY="447.0" mnemonicParsing="false" onAction="#copyIpAction" text="Copier" />
+        <Button fx:id="setPicture" layoutX="0.0" layoutY="0.0" mnemonicParsing="false" onMouseClicked="#setPicture" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Selectionner une photo de profil" textFill="#fff0f0" />
         <ImageView fitHeight="271.0" fitWidth="361.0" layoutX="63.0" layoutY="-10.0">
             <image>
                 <Image url="@logo.png" />

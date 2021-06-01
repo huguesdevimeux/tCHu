@@ -53,6 +53,7 @@ public final class NetConstants {
 
         public static final String EXTENSION_IMAGE = "png";
 		public static final int MAX_TRIES_RETRIEVING_IMAGE = 10000;
+		public static final URL DEFAULT_PROFILE_CLIENT = Image.URLof("PLAYER_2.png");
 
 		public static URL URLof(String resource) {
 			return NetConstants.class.getClassLoader().getResource(resource);

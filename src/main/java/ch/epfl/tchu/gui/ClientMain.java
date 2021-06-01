@@ -24,7 +24,8 @@ import java.util.Objects;
  * @author Luca Mouchel (324748)
  */
 public final class ClientMain extends Application {
-    public static void main(String[] args) {
+
+	public static void main(String[] args) {
         launch(args);
     }
 
@@ -34,7 +35,7 @@ public final class ClientMain extends Application {
         // Default values.
         String ipTarget = NetConstants.Network.DEFAULT_IP;
         int port = NetConstants.Network.DEFAULT_PORT;
-        URL profileImageURL = NetConstants.Image.URLof("PLAYER_2.png");
+        URL profileImageURL = NetConstants.Image.DEFAULT_PROFILE_CLIENT;
         if (params.size() == NetConstants.Network.NUMBER_PARAMETERS_REQUIRED) {
             ipTarget = params.get(0);
             port = Integer.parseInt(params.get(1));
