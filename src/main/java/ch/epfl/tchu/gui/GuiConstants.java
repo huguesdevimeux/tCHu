@@ -2,7 +2,6 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Color;
 import javafx.util.Duration;
-=======
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,20 +16,6 @@ import java.io.IOException;
  * other GuiConstants in general.
  */
 public final class GuiConstants {
-    // Geometric values constants for mapViewCreator
-    public static final int RECTANGLE_WIDTH = 36;
-    public static final int RECTANGLE_HEIGHT = 12;
-    public static final int CIRCLE1_CENTER_X = 12;
-    public static final int CIRCLE2_CENTER_X = 24;
-    public static final int CIRCLE_CENTER_Y = 6;
-    public static final int ROUTE_CIRCLE_RADIUS = 3;
-    // Geometric constants for DecksViewCreator
-    public static final int INNER_RECT1_WIDTH = 60;
-    public static final int INNER_RECT1_HEIGHT = 90;
-    public static final int INNER_RECT_WIDTH = 40;
-    public static final int INNER_RECT_HEIGHT = 70;
-    public static final int BUTTON_GAUGE_WIDTH = 50;
-    public static final int BUTTON_GAUGE_HEIGHT = 5;
 
     // style sheets constants
     // Width used for the rectangles in the game
@@ -97,8 +82,6 @@ public final class GuiConstants {
     // train image style class
     public static final String STYLE_CLASS_TRAIN_IMAGE = "train-image";
 
-    /* "neutral" color. */
-    private static final String STYLE_CLASS_COLOR_NEUTRAL = "NEUTRAL";
 	public static final int OFFSET_X_INFOS = 30;
 	public static final Duration DURATION_INFO_ANIMATION = Duration.millis(1000);
     public static final Duration CYCLE_TIME_FADE = Duration.millis(100);

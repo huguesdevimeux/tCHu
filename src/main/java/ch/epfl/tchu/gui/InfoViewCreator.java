@@ -157,35 +157,4 @@ final class InfoViewCreator {
         playerN.getChildren().addAll(circle, playerStatsText);
         return playerN;
     }
-
-    /**
-     * Private method to return a player's info view, ie the player's stats in the form of a text
-     * flow.
-     *
-     * @param player the player's view
-     * @param obsGameState the observable game state
-     * @param playerNames map with the names of the player
-     * @return a node representing the views with the info.
-     */
-    private static Node createPlayerInfoView(
-            PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
-        TextFlow playerN = new TextFlow();
-        playerN.getStyleClass().add(player.name());
-        Circle circle = new Circle(5);
-        circle.getStyleClass().add(STYLE_CLASS_FILLED);
-
-        // StringExpression will update the properties automatically when they are changed.
-        StringExpression updatedExpression =
-                Bindings.format(
-                        StringsFr.PLAYER_STATS,
-                        playerNames.get(player),
-                        obsGameState.playerTicketCount(player),
-                        obsGameState.playerCardCount(player),
-                        obsGameState.playerCarCount(player),
-                        obsGameState.playerClaimPoints(player));
-        Text playerStatsText = new Text();
-        playerStatsText.textProperty().bind(updatedExpression);
-        playerN.getChildren().addAll(circle, playerStatsText);
-        return playerN;
-    }
 }
