@@ -4,11 +4,9 @@ import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.net.UnknownHostException;
 
@@ -28,7 +26,7 @@ public class MainMenuClientController {
         GuiConstants.openNgrokConfigInfoStage();
     }
     public static BooleanProperty isNgrokUsed = new SimpleBooleanProperty();
-    public void joinGameAction() throws Exception {
+    public void joinGameAction() {
         IpFieldText = IpField.getText();
         if (IpField.getText().contains("ngrok")) isNgrokUsed.set(true);
         RunClient.connection = RunClient.createClient(IpFieldText);

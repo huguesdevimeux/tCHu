@@ -7,12 +7,10 @@ import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
-import ch.epfl.tchu.gui.InfoViewCreator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -50,7 +48,6 @@ public class MainMenuServerController {
             }
             awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
         }).start();
-        //RunServer.showChatPage();
     }
 
     public void playAction() {

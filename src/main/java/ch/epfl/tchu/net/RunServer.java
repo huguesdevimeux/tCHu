@@ -22,12 +22,12 @@ public class RunServer extends Application {
     private static TextArea messages = new TextArea();
     private static final ChattingConnection connection = createServer();
 
-    public static Parent createContent() {
+    public static Parent createContent(String name) {
         messages.setPrefHeight(500);
         TextField input = new TextField();
         input.setOnAction(
                 e -> {
-                    String message = "server: " + input.getText();
+                    String message = name + ": " + input.getText();
                     input.clear();
                     messages.appendText(message + "\n");
                     try {
@@ -67,13 +67,6 @@ public class RunServer extends Application {
 //        Stage chat = new Stage();
 //        chat.setScene(new Scene(createContent()));
 //        chat.show();
-    }
-
-    public static void showChatPage(){
-        Stage chat = new Stage();
-        chat.setTitle("Server");
-        chat.setScene(new Scene(createContent()));
-        chat.show();
     }
 
     public void tryToConnect() throws IOException {

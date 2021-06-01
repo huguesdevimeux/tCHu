@@ -25,12 +25,12 @@ public class RunClient extends Application {
     public static StringProperty IP = new SimpleStringProperty();
     public static ChattingConnection connection;
 
-    public static Parent createContent() {
+    public static Parent createContent(String name) {
         messages.setPrefHeight(500);
         TextField input = new TextField();
         input.setOnAction(
                 e -> {
-                    String message ="client: " + input.getText();
+                    String message = name + ":  " + input.getText();
                     input.clear();
                     messages.appendText(message + "\n");
                     try {

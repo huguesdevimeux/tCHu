@@ -4,21 +4,16 @@ import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.net.MainMenuClientController;
 import ch.epfl.tchu.net.RunClient;
 import ch.epfl.tchu.net.RunServer;
-import com.sun.tools.javac.Main;
 import javafx.animation.PauseTransition;
-import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -99,18 +94,19 @@ public final class InfoViewCreator {
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
 
-        Parent parent = ObservableGameState.isServer.get() ? RunServer.createContent() : RunClient.createContent();
+        Parent parent =
+                ObservableGameState.isServer.get()
+                        ? RunServer.createContent(playerNames.get(PlayerId.PLAYER_1))
+                        : RunClient.createContent(playerNames.get(PlayerId.PLAYER_2));
+
         root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);
-        if (!MainMenuClientController.isNgrokUsed.get()){
-            System.out.println("fre");
-            root.getChildren().add(parent);
-        }
+                        gameInfoTextFlow,
+                        parent);
         return root;
     }
 
