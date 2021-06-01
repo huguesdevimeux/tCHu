@@ -52,6 +52,8 @@ public final class NetConstants {
     public static class Image {
 
         public static final String EXTENSION_IMAGE = "png";
+		public static final int MAX_TRIES_RETRIEVING_IMAGE = 10000;
+
 		public static URL URLof(String resource) {
 			return NetConstants.class.getClassLoader().getResource(resource);
 		}
