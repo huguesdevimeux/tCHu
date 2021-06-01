@@ -1,8 +1,11 @@
 package ch.epfl.tchu.net;
 
 import ch.epfl.tchu.gui.InfoViewCreator;
+import ch.epfl.tchu.gui.ObservableGameState;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,12 +20,12 @@ import java.net.ServerSocket;
 
 public class RunServer extends Application {
 
-    public static boolean isServer = true;
+    public static BooleanProperty isServer = new SimpleBooleanProperty();
     private static TextArea messages = new TextArea();
     private static final ChattingConnection connection = createServer();
 
     public static Parent createContent() {
-        messages.setPrefHeight(200);
+        messages.setPrefHeight(500);
         TextField input = new TextField();
         input.setOnAction(
                 e -> {
@@ -53,6 +56,7 @@ public class RunServer extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        ObservableGameState.isServer.set(true);
         stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/MainMenuServer.fxml"));

@@ -50,6 +50,7 @@ public class MainMenuServerController {
             }
             awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
         }).start();
+        //RunServer.showChatPage();
     }
 
     public void playAction() {
@@ -58,7 +59,6 @@ public class MainMenuServerController {
         scaleButton(play);
         serverThread().start();
         play.setDisable(true);
-        RunServer.showChatPage();
     }
 
     public void getIPAction() throws UnknownHostException {

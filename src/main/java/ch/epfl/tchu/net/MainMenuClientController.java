@@ -38,6 +38,7 @@ public class MainMenuClientController {
             port = defaultPort;
         } else port = Integer.parseInt(this.port.getText());
         clientThread(ip, port).start();
+       // RunClient.showChatPage();
     }
 
     private void scaleButton(Button button) {

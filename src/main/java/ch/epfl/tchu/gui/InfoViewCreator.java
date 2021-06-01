@@ -4,6 +4,7 @@ import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.net.RunClient;
 import ch.epfl.tchu.net.RunServer;
 import javafx.animation.PauseTransition;
+import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -34,7 +35,6 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  */
 public final class InfoViewCreator {
     public static VBox root;
-
     /** Not Instantiable. */
     private InfoViewCreator() {}
 
@@ -96,18 +96,15 @@ public final class InfoViewCreator {
         ticketPointsText.textProperty().bind(ticketPoints);
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
-        VBox chat = new VBox();
-        Button toChat = new Button("Chat");
-        chat.getChildren().add(toChat);
-        chat.setAlignment(Pos.CENTER);
 
+        Parent parent = ObservableGameState.isServer.get() ? RunServer.createContent() : RunClient.createContent();
         root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);
+                        gameInfoTextFlow, parent);
         return root;
     }
 

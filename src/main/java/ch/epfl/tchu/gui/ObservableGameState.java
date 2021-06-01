@@ -47,6 +47,7 @@ public final class ObservableGameState {
     private PublicGameState gameState;
     private PlayerState playerState;
 
+    public static BooleanProperty isServer = new SimpleBooleanProperty();
     /**
      * Instantiable constructor.
      *
