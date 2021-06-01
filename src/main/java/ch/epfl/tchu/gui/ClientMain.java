@@ -43,7 +43,6 @@ public final class ClientMain extends Application {
             throw new Exception("Wrong number of parameters given to the programme. Exiting.");
 
         try (Socket imageSocket = new Socket(ipTarget, port)) {
-            System.out.println("Established image socket.");
             ProfileImagesUtils.sendImage(
                     imageSocket.getOutputStream(),
                     ProfileImagesUtils.validateImage(ImageIO.read(profileImageURL)));

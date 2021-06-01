@@ -61,10 +61,8 @@ public final class ServerMain extends Application {
 
             // Store the images of the players. The first player is considered as the host.
             images.put(PlayerId.PLAYER_1, ProfileImagesUtils.validateImage(ImageIO.read(ownProfileImageURL)));
-            System.out.println("Seeking for other's image");
             BufferedImage bufferedImage =
                     ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
-            System.out.println("Got other's image !");
             images.put(PlayerId.PLAYER_2, bufferedImage);
 
             OutputStream outputStream = imagesSocket.getOutputStream();
