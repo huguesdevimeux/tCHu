@@ -37,14 +37,19 @@ public class ProfileImagesUtils {
                 Objects.requireNonNull(image), NetConstants.Image.EXTENSION_IMAGE, outputStream);
     }
 
-	public static EnumMap<PlayerId, BufferedImage> retrieveImages(InputStream inputStream)
+    public static EnumMap<PlayerId, BufferedImage> retrieveImages(InputStream inputStream)
             throws IOException {
         var ret = new EnumMap<PlayerId, BufferedImage>(PlayerId.class);
         for (PlayerId playerId : PlayerId.ALL) {
-            ret.put(
-                    playerId,
-                    Objects.requireNonNull(
-                            ImageIO.read(ImageIO.createImageInputStream(inputStream))));
+            BufferedImage read = ImageIO.read(ImageIO.createImageInputStream(inputStream));
+            int i = 0;
+            while (read == null) {
+                read = ImageIO.read(ImageIO.createImageInputStream(inputStream));
+                if (i++ > NetConstants.Image.MAX_TRIES_RETRIEVING_IMAGE) {
+                    throw new Error("Couldn't get the image !");
+                }
+            }
+            ret.put(playerId, read);
         }
         return ret;
     }
