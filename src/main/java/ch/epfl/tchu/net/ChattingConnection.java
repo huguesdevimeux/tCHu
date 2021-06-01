@@ -64,7 +64,7 @@ public abstract class ChattingConnection {
                     onReceiveCallBack.accept(data);
                 }
             } catch (Exception e) {
-                onReceiveCallBack.accept("connection closed");
+                onReceiveCallBack.accept("Player has left the game");
             }
         }
     }

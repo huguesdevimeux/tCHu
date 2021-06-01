@@ -1,8 +1,10 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.MainMenuClientController;
 import ch.epfl.tchu.net.RunClient;
 import ch.epfl.tchu.net.RunServer;
+import com.sun.tools.javac.Main;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -104,7 +106,11 @@ public final class InfoViewCreator {
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow, parent);
+                        gameInfoTextFlow);
+        if (!MainMenuClientController.isNgrokUsed.get()){
+            System.out.println("fre");
+            root.getChildren().add(parent);
+        }
         return root;
     }
 

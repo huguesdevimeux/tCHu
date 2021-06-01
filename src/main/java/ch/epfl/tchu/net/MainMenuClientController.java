@@ -2,6 +2,8 @@ package ch.epfl.tchu.net;
 
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,9 +27,10 @@ public class MainMenuClientController {
         scaleButton(configNgrok);
         GuiConstants.openNgrokConfigInfoStage();
     }
-
+    public static BooleanProperty isNgrokUsed = new SimpleBooleanProperty();
     public void joinGameAction() throws Exception {
         IpFieldText = IpField.getText();
+        if (IpField.getText().contains("ngrok")) isNgrokUsed.set(true);
         RunClient.connection = RunClient.createClient(IpFieldText);
         RunClient.connection.startConnection();
         scaleButton(joinGame);
