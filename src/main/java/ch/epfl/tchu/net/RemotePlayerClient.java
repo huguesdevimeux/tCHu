@@ -30,6 +30,7 @@ public final class RemotePlayerClient {
 
     /** Run the client. Handles the game process through the network. */
     public void run() {
+
         try (Socket socket = new Socket(host, port);
              BufferedReader inReader =
                         new BufferedReader(

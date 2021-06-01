@@ -15,6 +15,12 @@ public final class StringsFr {
     public static final String TICKETS = "Billets";
     public static final String CARDS = "Cartes";
     public static final String CHOOSE = "Choisir";
+    /* The description of the possible tickets where a station is used */
+    public static final String STATION_FIGURES_IN_TICKETS =
+            "Cette station se trouve sur le%s ticket%<s :";
+    /* The description saying the station doesn't figure on any ticket*/
+    public static final String STATION_IS_NOT_ON_TICKETS =
+            "Aucun ticket n'utilise cette station \ncomme station de départ ou d'arrivée.";
     // Titre des fenêtres
     public static final String TICKETS_CHOICE = "Choix de billets";
     public static final String CARDS_CHOICE = "Choix de cartes";
@@ -52,6 +58,12 @@ public final class StringsFr {
     // Statistiques des joueurs
     public static final String PLAYER_STATS =
             " %s :\n– %s billets,\n– %s cartes,\n– %s wagons,\n– %s points.";
+    //les points reservés aux tickets du joueur
+    public static final String PLAYER_TICKET_POINTS =
+            "\nVous avez actuellement %s points \nréservés à vos tickets.\n" +
+                    "%s";
+    // phrase à faire apparaitre quand un ticket est validé
+    public static final String VALIDATED_TICKET = "Vous avez validé un ticket!\n";
     // Séparateurs textuels
     public static final String AND_SEPARATOR = " et ";
     public static final String EN_DASH_SEPARATOR = " – ";

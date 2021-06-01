@@ -2,8 +2,20 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.net.ProfileImagesUtils;
+import ch.epfl.tchu.gui.animation.AbstractAnimation;
+import ch.epfl.tchu.gui.animation.FadeAnimation;
+import ch.epfl.tchu.gui.animation.TranslationAnimation;
+import javafx.animation.Interpolator;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
+import javafx.collections.ListChangeListener;
+
+import javafx.animation.PauseTransition;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringExpression;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
@@ -14,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 
 import java.util.Map;
 
@@ -60,8 +73,61 @@ final class InfoViewCreator {
 
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
-        Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
-        root.getChildren().addAll(playerStats, new Separator(), gameInfoTextFlow);
+        TranslationAnimation translationAnimation =
+                new TranslationAnimation(
+                        DURATION_INFO_ANIMATION, 0, 0, Interpolator.EASE_IN, Interpolator.LINEAR);
+        FadeAnimation fadeAnimation = new FadeAnimation(DURATION_INFO_ANIMATION, 0, 1);
+        infos.addListener(
+                (ListChangeListener<? super Text>)
+                        change -> {
+                            change.next();
+                            if (change.wasAdded()) {
+                                var changed = change.getAddedSubList().get(0);
+                                gameInfoTextFlow.getChildren().add(changed);
+                                changed.setTranslateX(OFFSET_X_INFOS);
+                                AbstractAnimation c = translationAnimation.attachTo(changed);
+                                fadeAnimation.attachTo(changed).play();
+                                c.play();
+                            }
+                            if (change.wasRemoved()) {
+                                gameInfoTextFlow.getChildren().removeAll(change.getRemoved());
+                            }
+                        });
+      
+        // instantiate two properties, one is the player's ticket points and the other
+        // represents a sentence that will appear once a ticket is completed by the player.
+        ReadOnlyIntegerProperty points = obsGameState.playerTicketPoints();
+        StringProperty isTicketCompleted = new SimpleStringProperty("");
+        points.addListener(
+                (observableValue, oldV, newV) -> {
+                    // we can detect if a ticket is completed if the player's ticket points change
+                    // hence the old value != new value. We also have to put the condition that the
+                    // player's ticket list isn't empty as at the beginning of the game, each
+                    // player's ticket points
+                    // goes from 0 to (-n) so the game would perceive it as a completed ticket but
+                    // it isn't
+                    if (!oldV.equals(newV) && !obsGameState.playersTicketsList().isEmpty()) {
+                        isTicketCompleted.setValue(StringsFr.VALIDATED_TICKET);
+                        // we display the message only for a limited amount of time and once
+                        // finished, we reset the string property's value to an empty string.
+                        PauseTransition pt = new PauseTransition(Duration.seconds(5));
+                        pt.setOnFinished(actionEvent -> isTicketCompleted.setValue(""));
+                        pt.playFromStart();
+                    }
+                });
+        StringExpression ticketPoints =
+                Bindings.format(StringsFr.PLAYER_TICKET_POINTS, points, isTicketCompleted);
+        Text ticketPointsText = new Text();
+        ticketPointsText.textProperty().bind(ticketPoints);
+        VBox displayTicketPoints = new VBox(ticketPointsText);
+        displayTicketPoints.setId(ID_PLAYER_STATS);
+        root.getChildren()
+                .addAll(
+                        playerStats,
+                        new Separator(),
+                        displayTicketPoints,
+                        new Separator(),
+                        gameInfoTextFlow);        
         return root;
     }
 
