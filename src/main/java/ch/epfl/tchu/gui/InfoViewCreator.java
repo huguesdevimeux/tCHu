@@ -1,6 +1,14 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.gui.animation.AbstractAnimation;
+import ch.epfl.tchu.gui.animation.FadeAnimation;
+import ch.epfl.tchu.gui.animation.TranslationAnimation;
+import javafx.animation.Interpolator;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringExpression;
+import javafx.collections.ListChangeListener;
+
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
@@ -56,11 +64,32 @@ final class InfoViewCreator {
                 .getChildren()
                 .addAll(
                         createPlayerInfoView(correspondingPlayer, obsGameState, playerNames),
-                        createPlayerInfoView(correspondingPlayer.next(), obsGameState, playerNames));
+                        createPlayerInfoView(
+                                correspondingPlayer.next(), obsGameState, playerNames));
 
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
-        Bindings.bindContent(gameInfoTextFlow.getChildren(), infos);
+        TranslationAnimation translationAnimation =
+                new TranslationAnimation(
+                        DURATION_INFO_ANIMATION, 0, 0, Interpolator.EASE_IN, Interpolator.LINEAR);
+        FadeAnimation fadeAnimation = new FadeAnimation(DURATION_INFO_ANIMATION, 0, 1);
+        infos.addListener(
+                (ListChangeListener<? super Text>)
+                        change -> {
+                            change.next();
+                            if (change.wasAdded()) {
+                                var changed = change.getAddedSubList().get(0);
+                                gameInfoTextFlow.getChildren().add(changed);
+                                changed.setTranslateX(OFFSET_X_INFOS);
+                                AbstractAnimation c = translationAnimation.attachTo(changed);
+                                fadeAnimation.attachTo(changed).play();
+                                c.play();
+                            }
+                            if (change.wasRemoved()) {
+                                gameInfoTextFlow.getChildren().removeAll(change.getRemoved());
+                            }
+                        });
+      
         // instantiate two properties, one is the player's ticket points and the other
         // represents a sentence that will appear once a ticket is completed by the player.
         ReadOnlyIntegerProperty points = obsGameState.playerTicketPoints();
@@ -94,7 +123,8 @@ final class InfoViewCreator {
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);        return root;
+                        gameInfoTextFlow);        
+        return root;
     }
 
     /**

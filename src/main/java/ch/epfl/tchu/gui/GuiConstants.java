@@ -1,6 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.Color;
+import javafx.util.Duration;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +16,8 @@ import java.io.IOException;
  * other GuiConstants in general.
  */
 public final class GuiConstants {
-    // Geometric values constants for mapViewCreator
+
+    // style sheets constants
     // Width used for the rectangles in the game
     public static final int RECTANGLE_WIDTH = 36;
     // Height used for the rectangles in the game
@@ -79,6 +81,11 @@ public final class GuiConstants {
     public static final String STYLE_CLASS_OUTSIDE = "outside";
     // train image style class
     public static final String STYLE_CLASS_TRAIN_IMAGE = "train-image";
+
+	public static final int OFFSET_X_INFOS = 30;
+	public static final Duration DURATION_INFO_ANIMATION = Duration.millis(1000);
+    public static final Duration CYCLE_TIME_FADE = Duration.millis(100);
+
     // station style class
     public static final String STYLE_CLASS_STATION = "station";
     // ID constants
@@ -92,6 +99,7 @@ public final class GuiConstants {
     public static final String ID_PLAYER_STATS = "player-stats";
     // game info id
     public static final String ID_GAME_INFO = "game-info";
+
     /* Constant for the route id and the rectangles composing the route.*/
     public static final String ROUTE_RECT_ID = "%s_%s";
     /* Number of visible information.*/
@@ -104,6 +112,31 @@ public final class GuiConstants {
     public static final int MINIMUM_CHOICES_CLAIM_CARDS = 1;
     /* The title of the holy tCHu window. */
     public static final String TCHU_TITLE = "tCHu \u2014 %s";
+
+	/* Offset Y of the hand's cards animations */
+	public static final int OFFSET_Y_HAND_CARDS = -40;
+	/* Offset X of the hand's cards animations */
+	public static final int OFFSET_X_HAND_CARDS = 0;
+	/* Duration of the translation animation of teh hand's cards. */
+	public static final int DURATION_ANIMATION_HAND_CARDS = 400;
+	/* Offset X of the deck's cards animations */
+	public static final int OFFSET_X_DECK_CARDS = -20;
+	/* Offset Y of the deck's cards animations */
+	public static final int OFFSET_Y_CARDS_DECK = 0;
+	/* Duration of the translation animation of deck's cards. */
+	public static final int DURATION_ANIMATION_DECK_CARDS = 400;
+
+	/*Duration of the indication animation. In Ms;*/
+	public static final int DURATION_ANIMATION = 200;
+	/*Added x value during the indication animation. */
+	public static final float SCALING_X_INDICATION = 0.5f;
+	/*Added y value during the indication animation. */
+	public static final float SCALING_Y_INDICATION = 0.5f;
+	/*Number of bounces during the indication animation. */
+	public static final int NUMBER_BOUNCES_INDICATION = 4;
+
+	/**
+=======
     /* The radius of the stations circles on the map.*/
     public static final int STATION_CIRCLE_RADIUS = 6;
     /* The radius of the stations circles that is increased when pressing on a ticket.*/
@@ -138,6 +171,8 @@ public final class GuiConstants {
     public static String convertColorToCssColor(Color color) {
         return (color == null) ? STYLE_CLASS_COLOR_NEUTRAL : color.name();
     }
+	public static final double FROM_FADE = 0.5;
+  
    public static void scaleButton(Button button) {
         double initialScaleX = button.getScaleX();
         double initialScaleY = button.getScaleY();
