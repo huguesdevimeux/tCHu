@@ -31,10 +31,19 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  */
 final class DecksViewCreator {
+    private static ListView<Ticket> ticketsListView;
 
 	// Not instantiable.
-    private DecksViewCreator() {}
 
+    /**
+     * Creates the cards view (right side of the game) with two buttons
+     * and the five face up cards.
+     *
+     * @param observableGameState the observable game state
+     * @param drawTicketsHandler  the handler that manages the action of drawing tickets
+     * @param drawCardHandler     the handles that manages the action of drawing cards
+     * @return the node responsible for the cards view in the game
+     */
     public static Node createCardsView(
             ObservableGameState observableGameState,
             ObjectProperty<ActionHandlers.DrawTicketsHandler> drawTicketsHandler,
@@ -81,7 +90,7 @@ final class DecksViewCreator {
                     .faceUpCard(slot)
                     .addListener(
                             (observable, oldCard, newCard) -> {
-                            	// oldCard is null during the initialization.
+                 // oldCard is null during the initialization.
 								if (oldCard != null) {
 									displayedCard
 										.getStyleClass()
@@ -101,10 +110,17 @@ final class DecksViewCreator {
         return cardsView;
     }
 
+    /**
+     * Creates the hand view section of the game.
+     * Contains the player's cards and tickets.
+     *
+     * @param observableGameState the observable game state
+     * @return the node responsible for the hand view of the game
+     */
     public static Node createHandView(ObservableGameState observableGameState) {
 
         // TICKETS HAND VIEW
-        ListView<Ticket> ticketsListView = new ListView<>();
+        ticketsListView = new ListView<>();
         ticketsListView.setItems(observableGameState.playersTicketsList());
         ticketsListView.setId(ID_TICKETS);
 
@@ -139,9 +155,8 @@ final class DecksViewCreator {
                     .bind(Bindings.convert(observableGameState.playerNumberOfCards(card)));
             count.visibleProperty()
                     .bind(Bindings.greaterThan(
-                                    observableGameState.playerNumberOfCards(card),
-                                    MIN_CARDS_NUMBER_DISPLAYED));
-
+                            observableGameState.playerNumberOfCards(card),
+                            MIN_CARDS_NUMBER_DISPLAYED));
             count.getStyleClass().add(STYLE_CLASS_COUNT);
             cardOfHand.getChildren().add(count);
             cardsHandPanel.getChildren().add(cardOfHand);
@@ -152,6 +167,14 @@ final class DecksViewCreator {
         return handView;
     }
 
+    public static ListView<Ticket> getTicketsListView() {
+        return ticketsListView;
+    }
+
+    /**
+     * Returns a stack pane of different rectangles that together represent a card.
+     * @return an individual card in the form of a stakc pane
+     */
     private static StackPane individualCard() {
         // Inner icon of cards. Sorted in an exterior fashion.
         Rectangle inner1 = new Rectangle(INNER_RECT1_WIDTH, INNER_RECT1_HEIGHT);
@@ -170,6 +193,13 @@ final class DecksViewCreator {
         return cardOfHand;
     }
 
+    /**
+     * Creates a button with a gauge.
+     *
+     * @param itemName the visible text on the button
+     * @param percentageProperty the percentage to represent on the gauge (tickets or cards remaining)
+     * @return a new button with a gauge
+     */
     private static Button itemPileWithGauge(
             String itemName, ReadOnlyIntegerProperty percentageProperty) {
         Button itemPile = new Button(itemName);
