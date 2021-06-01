@@ -2,6 +2,7 @@ package ch.epfl.tchu.net;
 
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -15,6 +16,7 @@ public class MainMenuClientController {
     @FXML private Button joinGame, configNgrok, setFirstNumbers;
     @FXML private TextField IpField, port;
 
+    public static String IpFieldText;
     public void setFirstNumbers() throws UnknownHostException {
         IpField.setText("128.179.");
     }
@@ -25,6 +27,9 @@ public class MainMenuClientController {
     }
 
     public void joinGameAction() throws Exception {
+        IpFieldText = IpField.getText();
+        RunClient.connection = RunClient.createClient(IpFieldText);
+        RunClient.connection.startConnection();
         scaleButton(joinGame);
         String ip;
         int port;
@@ -38,7 +43,6 @@ public class MainMenuClientController {
             port = defaultPort;
         } else port = Integer.parseInt(this.port.getText());
         clientThread(ip, port).start();
-       // RunClient.showChatPage();
     }
 
     private void scaleButton(Button button) {

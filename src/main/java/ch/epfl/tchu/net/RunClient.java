@@ -6,6 +6,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,12 +21,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class RunClient extends Application {
-    public static BooleanProperty isServer = new SimpleBooleanProperty();
     private static TextArea messages = new TextArea();
-    private static final ChattingConnection connection = createClient();
+    public static StringProperty IP = new SimpleStringProperty();
+    public static ChattingConnection connection;
 
     public static Parent createContent() {
-        messages.setPrefHeight(200);
+        messages.setPrefHeight(500);
         TextField input = new TextField();
         input.setOnAction(
                 e -> {
@@ -39,7 +41,7 @@ public class RunClient extends Application {
                 });
 
         VBox root = new VBox(20, messages, input);
-        root.setPrefSize(100, 100);
+        root.setPrefSize(100, 300);
         return root;
     }
 
@@ -47,9 +49,9 @@ public class RunClient extends Application {
         launch(args);
     }
 
-    private static ChattingClient createClient() {
+    public static ChattingClient createClient(String IP) {
         return new ChattingClient(
-                "localhost",
+                IP,
                 5010,
                 data ->
                         Platform.runLater(
@@ -70,15 +72,8 @@ public class RunClient extends Application {
         stage.show();
     }
 
-    public static void showChatPage(){
-        Stage chat = new Stage();
-        chat.setTitle("client");
-        chat.setScene(new Scene(createContent()));
-        chat.show();
-    }
-
     @Override
     public void init() throws Exception {
-        connection.startConnection();
+        //connection.startConnection();
     }
 }

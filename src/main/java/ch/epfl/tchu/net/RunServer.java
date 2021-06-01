@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class RunServer extends Application {
-
-    public static BooleanProperty isServer = new SimpleBooleanProperty();
     private static TextArea messages = new TextArea();
     private static final ChattingConnection connection = createServer();
 
@@ -40,7 +38,7 @@ public class RunServer extends Application {
                 });
 
         VBox root = new VBox(20, messages, input);
-        root.setPrefSize(100, 100);
+        root.setPrefSize(100, 300);
         return root;
     }
 
