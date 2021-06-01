@@ -41,7 +41,7 @@ public class RunClient extends Application {
                 });
 
         VBox root = new VBox(20, messages, input);
-        root.setPrefSize(100, 300);
+        root.setPrefSize(100, 250);
         return root;
     }
 
