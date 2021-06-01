@@ -7,6 +7,7 @@ import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import ch.epfl.tchu.gui.InfoViewCreator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -35,20 +36,16 @@ public class MainMenuServerController {
 
     private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
     private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
-    public void hostGameAction() throws Exception {
+    public void hostGameAction() {
         awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
         scaleButton(hostGame);
         hostGame.setDisable(true);
-        ChatApp a = new ChatApp();
-        a.init();
-        a.start(new Stage());
         players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
         new Thread(() -> {
             try {
                 players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
-                ChatApp.isServer = true;
                 play.setDisable(false);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
@@ -61,6 +58,7 @@ public class MainMenuServerController {
         scaleButton(play);
         serverThread().start();
         play.setDisable(true);
+        RunServer.showChatPage();
     }
 
     public void getIPAction() throws UnknownHostException {
@@ -82,12 +80,11 @@ public class MainMenuServerController {
 
     private Thread serverThread() {
         return new Thread(
-                () ->
-                        Game.play(
-                                players,
-                                playersNames,
-                                SortedBag.of(ChMap.tickets()),
-                                new Random()));
+                () -> Game.play(
+                        players,
+                        playersNames,
+                        SortedBag.of(ChMap.tickets()),
+                        new Random()));
     }
 
     private void scaleButton(Button button) {

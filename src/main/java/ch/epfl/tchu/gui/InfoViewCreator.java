@@ -1,9 +1,8 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
-import ch.epfl.tchu.net.ChatApp;
-import ch.epfl.tchu.net.MainMenuClientController;
-import ch.epfl.tchu.net.MainMenuServerController;
+import ch.epfl.tchu.net.RunClient;
+import ch.epfl.tchu.net.RunServer;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
@@ -13,13 +12,14 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.Map;
@@ -32,7 +32,8 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Luca Mouchel (324748)
  * @author Hugues Devimeux (327282)
  */
-final class InfoViewCreator {
+public final class InfoViewCreator {
+    public static VBox root;
 
     /** Not Instantiable. */
     private InfoViewCreator() {}
@@ -52,7 +53,7 @@ final class InfoViewCreator {
             Map<PlayerId, String> playerNames,
             ObservableGameState obsGameState,
             ObservableList<Text> infos) {
-        VBox root = new VBox();
+        root = new VBox();
         root.getStylesheets().addAll(INFO_CSS, COLORS_CSS);
 
         VBox playerStats = new VBox();
@@ -62,7 +63,8 @@ final class InfoViewCreator {
                 .getChildren()
                 .addAll(
                         createPlayerInfoView(correspondingPlayer, obsGameState, playerNames),
-                        createPlayerInfoView(correspondingPlayer.next(), obsGameState, playerNames));
+                        createPlayerInfoView(
+                                correspondingPlayer.next(), obsGameState, playerNames));
 
         TextFlow gameInfoTextFlow = new TextFlow();
         gameInfoTextFlow.setId(ID_GAME_INFO);
@@ -99,26 +101,28 @@ final class InfoViewCreator {
         chat.getChildren().add(toChat);
         chat.setAlignment(Pos.CENTER);
 
-        toChat.setOnAction(
-                e -> {});
         root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow, chat);
+                        gameInfoTextFlow);
+        return root;
+    }
+
+    public static VBox getRoot() {
         return root;
     }
 
     /**
-     * Private method to return a player's info view, ie the player's stats
-     * in the form of a text flow.
+     * Private method to return a player's info view, ie the player's stats in the form of a text
+     * flow.
      *
      * @param player the player's view
      * @param obsGameState the observable game state
      * @param playerNames map with the names of the player
-     * @return a node representing the views with the info. 
+     * @return a node representing the views with the info.
      */
     private static Node createPlayerInfoView(
             PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {

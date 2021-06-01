@@ -37,9 +37,6 @@ public class MainMenuClientController {
             this.port.setText(String.valueOf(defaultPort));
             port = defaultPort;
         } else port = Integer.parseInt(this.port.getText());
-        ChatApp a = new ChatApp();
-        a.tryToConnect();
-        a.start(new Stage());
         clientThread(ip, port).start();
     }
 

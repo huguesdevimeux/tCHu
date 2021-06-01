@@ -20,13 +20,10 @@ public class ChatApp extends Application {
     public static Parent createContent() {
         messages.setPrefHeight(550);
         TextField input = new TextField();
-
         input.setOnAction(
                 e -> {
-                    String message = isServer ? "server: " : "client: ";
-                    message += input.getText();
+                    String message = "server: " + input.getText();
                     input.clear();
-
                     messages.appendText(message + "\n");
                     try {
                         connection.send(message);
@@ -43,9 +40,7 @@ public class ChatApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    public void tryToConnect() throws IOException {
-        connection.tryToConnect(new ServerSocket(5108));
-    }
+
     private static ChattingServer createServer() {
         return new ChattingServer(
                 5108,

@@ -2,6 +2,8 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
+import ch.epfl.tchu.net.RunClient;
+import ch.epfl.tchu.net.RunServer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -226,6 +228,7 @@ public final class GraphicalPlayer {
                                 infoProperty));
         StationViewCreator.createStationsView(
                 MapViewCreator.getGameMapPane(), DecksViewCreator.getTicketsListView());
+
         Scene innerScene = new Scene(mainPane);
         root.getIcons().add(new Image(TCHU_ICON));
         root.setScene(innerScene);

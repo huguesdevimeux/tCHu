@@ -51,7 +51,7 @@ public abstract class ChattingConnection {
         public void run() {
             System.out.println("before connection");
             try {
-                ServerSocket server = isServer() ? new ServerSocket(5108) : null;
+                ServerSocket server = isServer() ? new ServerSocket(5010) : null;
                  Socket socket = isServer() ? server.accept() : new Socket(getIP(), getPort());
                  ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                  ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
@@ -60,7 +60,7 @@ public abstract class ChattingConnection {
                 this.out = out;
                 socket.setTcpNoDelay(true);
                 while (true) {
-                    String data = stringSerde.deserialize((String) in.readObject());
+                    String data = stringSerde.deserialize((String) in.readObject()) + "\n";
                     onReceiveCallBack.accept(data);
                 }
             } catch (Exception e) {
