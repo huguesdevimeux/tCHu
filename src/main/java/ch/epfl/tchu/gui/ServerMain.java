@@ -41,7 +41,7 @@ public final class ServerMain extends Application {
     public void start(Stage stage) throws Exception {
         List<String> names = NetConstants.Network.DEFAULT_NAMES;
         List<String> params = getParameters().getRaw();
-        URL ownProfileImageURL = new URL("https://www.pngitem.com/pimgs/m/115-1159091_minecraft-png-steve-minecraft-steve-transparent-background-png.png"); //NetConstants.Image.URLof("PLAYER_1.png");
+        URL ownProfileImageURL = NetConstants.Image.DEFAULT_PROFILE_SERVER;
         if (params.size() == names.size() + 1) {
             names = params.subList(1, params.size() - 1);
             ownProfileImageURL = new URL(params.get(0));
