@@ -42,10 +42,9 @@ public class MainMenuServerController {
     @FXML
     private TextField firstPlayerName,
             secondPlayerName,
-            thirdPlayerName,
             IpField,
             awaitingConnectionText;
-    @FXML private CheckBox checkBox, otherServicesUsed;
+    @FXML private CheckBox otherServicesUsed;
 
     public MainMenuServerController() throws IOException {}
 
@@ -153,9 +152,7 @@ public class MainMenuServerController {
         String[] names = new String[PlayerId.COUNT];
         names[0] = firstPlayerName.getText().isEmpty() ? "Joueur 1" : firstPlayerName.getText();
         names[1] = secondPlayerName.getText().isEmpty() ? "Joueur 2" : secondPlayerName.getText();
-        if (checkBox.isSelected())
-            names[2] = thirdPlayerName.getText().isEmpty() ? "Joueur 3" : thirdPlayerName.getText();
-        return names;
+       return names;
     }
 
     @FXML
