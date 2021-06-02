@@ -5,16 +5,39 @@ import ch.epfl.tchu.gui.GuiConstants;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
-import java.net.UnknownHostException;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.util.Objects;
 
 public class MainMenuClientController {
     String defaultIp = NetConstants.Network.DEFAULT_IP;
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
-    @FXML private Button joinGame, configNgrok, setFirstNumbers;
+    @FXML private Button joinGame, configNgrok, setFirstNumbers, setPicture;
     @FXML private TextField IpField, port;
 
-    public void setFirstNumbers() throws UnknownHostException {
+    private Window currentWindow;
+    private final FileChooser fileChooser = createFileChooser();
+    private URL chosenPictureURL = NetConstants.Image.DEFAULT_PROFILE_CLIENT;
+
+    public void setStage(Stage stage) {
+    	currentWindow = stage.getScene().getWindow();
+	}
+
+	private FileChooser createFileChooser() {
+		FileChooser temp = new FileChooser();
+		temp.getExtensionFilters().add(new FileChooser.ExtensionFilter("Only png images", "*.png"));
+		return temp;
+	}
+	public void setFirstNumbers() {
         IpField.setText("128.179.");
     }
 
@@ -36,8 +59,29 @@ public class MainMenuClientController {
             this.port.setText(String.valueOf(defaultPort));
             port = defaultPort;
         } else port = Integer.parseInt(this.port.getText());
-        clientThread(ip, port).start();
-    }
+
+		try (Socket imageSocket = new Socket(ip, port)) {
+			ProfileImagesUtils.sendImage(
+				imageSocket.getOutputStream(),
+				ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
+			// Get images from network.
+			var images = ProfileImagesUtils.retrieveImages(imageSocket.getInputStream());
+			// Save locally the images.
+			for (var playerAndPicture : Objects.requireNonNull(images).entrySet()) {
+				ProfileImagesUtils.saveImageFor(
+					playerAndPicture.getKey(), playerAndPicture.getValue());
+			}
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+		clientThread(ip, port).start();
+	}
+
+	@FXML
+	public void setPicture() throws MalformedURLException {
+		File f =  fileChooser.showOpenDialog(currentWindow);
+		if (f != null) chosenPictureURL = f.toURI().toURL();
+	}
 
     private void scaleButton(Button button) {
         GuiConstants.scaleButton(button);

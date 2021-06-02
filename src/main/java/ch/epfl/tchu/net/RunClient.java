@@ -15,6 +15,7 @@ public class RunClient extends Application {
         stage.setTitle("TCHU \u2014 Client");
         stage.getIcons().add(new Image("logo.png"));
         stage.setScene(new Scene(loader.load(), 390, 570));
+		((MainMenuClientController) loader.getController()).setStage(stage);
         stage.show();
     }
 }

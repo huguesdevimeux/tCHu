@@ -1,10 +1,11 @@
 package ch.epfl.tchu.net;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * GuiConstants ans settings commonly used in the package through tCHu.
@@ -24,7 +25,7 @@ public final class NetConstants {
         /* Default names for the players.*/
         public static final List<String> DEFAULT_NAMES = List.of("Ada", "Charles");
         /* Required number of paramaters */
-        public static final int NUMBER_PARAMETERS_REQUIRED = 2;
+        public static final int NUMBER_PARAMETERS_REQUIRED = 3;
         /* End line char used in network messages.*/
         public static final String CHAR_END_MESSAGE = "\n";
         /* Character used to separate the components in the network messages.*/
@@ -46,5 +47,17 @@ public final class NetConstants {
         public static final String DEFAULT_VALUE_EMPTINESS = "";
 
         private Serdes() {}
+    }
+
+    public static class Image {
+
+        public static final String EXTENSION_IMAGE = "png";
+		public static final int MAX_TRIES_RETRIEVING_IMAGE = 10000;
+		public static final URL DEFAULT_PROFILE_CLIENT = Image.URLof("PLAYER_2.png");
+
+		public static URL URLof(String resource) {
+			return NetConstants.class.getClassLoader().getResource(resource);
+		}
+
     }
 }

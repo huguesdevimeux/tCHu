@@ -1,6 +1,7 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
+import ch.epfl.tchu.net.ProfileImagesUtils;
 import ch.epfl.tchu.gui.animation.AbstractAnimation;
 import ch.epfl.tchu.gui.animation.FadeAnimation;
 import ch.epfl.tchu.gui.animation.TranslationAnimation;
@@ -18,6 +19,9 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -128,17 +132,17 @@ final class InfoViewCreator {
     }
 
     /**
-     * Private method to return a player's info view, ie the player's stats
-     * in the form of a text flow.
+     * Private method to return a player's info view, ie the player's stats in the form of a text
+     * flow.
      *
      * @param player the player's view
      * @param obsGameState the observable game state
      * @param playerNames map with the names of the player
-     * @return a node representing the views with the info. 
+     * @return a node representing the views with the info.
      */
     private static Node createPlayerInfoView(
-            PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
-        TextFlow playerN = new TextFlow();
+		PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
+        HBox playerN = new HBox();
         playerN.getStyleClass().add(player.name());
         Circle circle = new Circle(5);
         circle.getStyleClass().add(STYLE_CLASS_FILLED);
@@ -154,7 +158,14 @@ final class InfoViewCreator {
                         obsGameState.playerClaimPoints(player));
         Text playerStatsText = new Text();
         playerStatsText.textProperty().bind(updatedExpression);
-        playerN.getChildren().addAll(circle, playerStatsText);
-        return playerN;
+        HBox playerInfoWithcolo = new HBox(circle, playerStatsText);
+
+		ImageView imageView =
+                new ImageView(new Image(ProfileImagesUtils.pathOfImageOf(player).toUri().toString()));
+		imageView.setPreserveRatio(true);
+		imageView.setFitHeight(76);
+		playerN.setSpacing(10);
+        playerN.getChildren().addAll(imageView, playerInfoWithcolo );
+		return playerN;
     }
 }

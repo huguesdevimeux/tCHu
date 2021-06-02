@@ -11,12 +11,20 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.UnknownHostException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.net.*;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -26,28 +34,77 @@ public class MainMenuServerController {
     Map<PlayerId, String> playersNames = new HashMap<>();
     Map<PlayerId, Player> players = new HashMap<>();
     @FXML private Button hostGame, configNgrok, play, getIP;
-    @FXML private TextField firstPlayerName, secondPlayerName, thirdPlayerName,
-            IpField, awaitingConnectionText;
+    @FXML
+    private TextField firstPlayerName,
+            secondPlayerName,
+            thirdPlayerName,
+            IpField,
+            awaitingConnectionText;
     @FXML private CheckBox checkBox;
-
-    public MainMenuServerController() throws IOException {}
 
     private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
     private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
+
+    private Window currentWindow;
+    private final FileChooser fileChooser = createFileChooser();
+    private URL chosenPictureURL = NetConstants.Image.DEFAULT_PROFILE_CLIENT;
+
+    public MainMenuServerController() throws IOException {}
+
+    public void setStage(Stage stage) {
+        currentWindow = stage.getScene().getWindow();
+    }
+
+    private FileChooser createFileChooser() {
+        FileChooser temp = new FileChooser();
+        temp.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Only png images", "png"));
+        return temp;
+    }
+
     public void hostGameAction() {
-        awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
-        scaleButton(hostGame);
-        hostGame.setDisable(true);
-        players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-        new Thread(() -> {
-            try {
-                players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
-                play.setDisable(false);
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
+            scaleButton(hostGame);
+            hostGame.setDisable(true);
+            players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
+
+            EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
+
+            Socket imagesSocket = serverSocket.accept();
+            // Store the images of the players. The first player is considered as the host.
+            images.put(
+                    PlayerId.PLAYER_1,
+                    ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
+            BufferedImage bufferedImage =
+                    ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
+            images.put(PlayerId.PLAYER_2, bufferedImage);
+
+            OutputStream outputStream = imagesSocket.getOutputStream();
+            for (PlayerId playerid : PlayerId.ALL) {
+                ProfileImagesUtils.saveImageFor(playerid, images.get(playerid));
+                ImageIO.write(
+                        ProfileImagesUtils.loadImageFor(playerid),
+                        NetConstants.Image.EXTENSION_IMAGE,
+                        outputStream);
+                outputStream.flush();
             }
-            awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
-        }).start();
+
+            new Thread(
+                            () -> {
+                                try {
+                                    players.put(
+                                            PlayerId.PLAYER_2,
+                                            new RemotePlayerProxy(serverSocket.accept()));
+                                    play.setDisable(false);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
+                            })
+                    .start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void playAction() {
@@ -96,6 +153,12 @@ public class MainMenuServerController {
         if (checkBox.isSelected())
             names[2] = thirdPlayerName.getText().isEmpty() ? "Joueur 3" : thirdPlayerName.getText();
         return names;
+    }
+
+    @FXML
+    public void setPicture() throws MalformedURLException {
+        File f = fileChooser.showOpenDialog(currentWindow);
+        if (f != null) chosenPictureURL = f.toURI().toURL();
     }
 
     public void checkBoxAction() {

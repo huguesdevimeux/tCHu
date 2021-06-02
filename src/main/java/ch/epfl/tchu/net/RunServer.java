@@ -18,6 +18,7 @@ public class RunServer extends Application {
         stage.setTitle("TCHU \u2014 Serveur");
         stage.getIcons().add(new Image("logo.png"));
         stage.setScene(new Scene(content, 455, 650));
+		((MainMenuServerController) loader.getController()).setStage(stage);
         stage.show();
     }
 }
