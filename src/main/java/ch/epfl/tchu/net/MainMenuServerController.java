@@ -63,49 +63,46 @@ public class MainMenuServerController {
     }
 
     public void hostGameAction() {
-        try {
-            awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
-            scaleButton(hostGame);
-            hostGame.setDisable(true);
-            players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
+        awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
+        scaleButton(hostGame);
+        hostGame.setDisable(true);
+        players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
 
-            EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
+        EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
 
-            Socket imagesSocket = serverSocket.accept();
-            // Store the images of the players. The first player is considered as the host.
-            images.put(
-                    PlayerId.PLAYER_1,
-                    ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
-            BufferedImage bufferedImage =
-                    ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
-            images.put(PlayerId.PLAYER_2, bufferedImage);
+        new Thread(
+                        () -> {
+                            try{
+                            Socket imagesSocket = serverSocket.accept();
+                            // Store the images of the players. The first player is considered as the host.
+                            images.put(
+                                    PlayerId.PLAYER_1,
+                                    ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
+                            BufferedImage bufferedImage =
+                                    ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
+                            images.put(PlayerId.PLAYER_2, bufferedImage);
 
-            OutputStream outputStream = imagesSocket.getOutputStream();
-            for (PlayerId playerid : PlayerId.ALL) {
-                ProfileImagesUtils.saveImageFor(playerid, images.get(playerid));
-                ImageIO.write(
-                        ProfileImagesUtils.loadImageFor(playerid),
-                        NetConstants.Image.EXTENSION_IMAGE,
-                        outputStream);
-                outputStream.flush();
-            }
+                            OutputStream outputStream = imagesSocket.getOutputStream();
+                            for (PlayerId playerid : PlayerId.ALL) {
+                                ProfileImagesUtils.saveImageFor(playerid, images.get(playerid));
+                                ImageIO.write(
+                                        ProfileImagesUtils.loadImageFor(playerid),
+                                        NetConstants.Image.EXTENSION_IMAGE,
+                                        outputStream);
+                                outputStream.flush();
+                            }
 
-            new Thread(
-                            () -> {
-                                try {
-                                    players.put(
-                                            PlayerId.PLAYER_2,
-                                            new RemotePlayerProxy(serverSocket.accept()));
-                                    play.setDisable(false);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
-                            })
-                    .start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+                                players.put(
+                                        PlayerId.PLAYER_2,
+                                        new RemotePlayerProxy(serverSocket.accept()));
+                                play.setDisable(false);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
+                        })
+                .start();
     }
 
     public void playAction() {
