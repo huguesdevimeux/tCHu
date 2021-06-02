@@ -199,4 +199,17 @@ public final class GuiConstants {
             ioException.printStackTrace();
         }
     }
+
+    public static void openIndications(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(GuiConstants.class.getResource("/Indications.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 290, 185);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
 }

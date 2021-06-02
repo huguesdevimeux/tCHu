@@ -125,8 +125,14 @@ final class InfoViewCreator {
 
         Parent chatApp =
                 ObservableGameState.isServer.get()
-                        ? createContent(playerNames.get(PlayerId.PLAYER_1), RunServer.messages, RunServer.connection)
-                        : createContent(playerNames.get(PlayerId.PLAYER_2), RunClient.messages, RunClient.connection);
+                        ? createContent(
+                                playerNames.get(PlayerId.PLAYER_1),
+                                RunServer.messages,
+                                RunServer.connection)
+                        : createContent(
+                                playerNames.get(PlayerId.PLAYER_2),
+                                RunClient.messages,
+                                RunClient.connection);
         root.getChildren()
                 .addAll(
                         playerStats,
@@ -134,9 +140,9 @@ final class InfoViewCreator {
                         displayTicketPoints,
                         new Separator(),
                         gameInfoTextFlow);
-        if (!MainMenuServerController.checkBoxSelected
-                && !MainMenuClientController.checkBoxSelected) root.getChildren().add(chatApp);
 
+        if (MainMenuServerController.checkBoxSelected || MainMenuClientController.checkBoxSelected)
+            root.getChildren().add(chatApp);
         return root;
     }
 
@@ -150,7 +156,7 @@ final class InfoViewCreator {
      * @return a node representing the views with the info.
      */
     private static Node createPlayerInfoView(
-		PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
+            PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
         HBox playerN = new HBox();
         playerN.getStyleClass().add(player.name());
         Circle circle = new Circle(5);
@@ -169,16 +175,18 @@ final class InfoViewCreator {
         playerStatsText.textProperty().bind(updatedExpression);
         HBox playerInfoWithcolo = new HBox(circle, playerStatsText);
 
-		ImageView imageView =
-                new ImageView(new Image(ProfileImagesUtils.pathOfImageOf(player).toUri().toString()));
-		imageView.setPreserveRatio(true);
-		imageView.setFitHeight(76);
-		playerN.setSpacing(10);
-        playerN.getChildren().addAll(imageView, playerInfoWithcolo );
-		return playerN;
+        ImageView imageView =
+                new ImageView(
+                        new Image(ProfileImagesUtils.pathOfImageOf(player).toUri().toString()));
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(76);
+        playerN.setSpacing(10);
+        playerN.getChildren().addAll(imageView, playerInfoWithcolo);
+        return playerN;
     }
 
-    public static Parent createContent(String name, TextArea messages, ChattingConnection connection) {
+    public static Parent createContent(
+            String name, TextArea messages, ChattingConnection connection) {
         messages.setEditable(false);
         TextField input = new TextField();
         input.setStyle("-fx-background-color: grey");

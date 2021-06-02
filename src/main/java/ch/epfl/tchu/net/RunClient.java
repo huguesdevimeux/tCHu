@@ -1,24 +1,13 @@
 package ch.epfl.tchu.net;
 
-import ch.epfl.tchu.gui.GuiConstants;
 import ch.epfl.tchu.gui.ObservableGameState;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.ServerSocket;
 
 public class RunClient extends Application {
     public static TextArea messages = new TextArea();
@@ -45,7 +34,7 @@ public class RunClient extends Application {
         loader.setLocation(getClass().getResource("/MainMenuClient.fxml"));
         stage.setTitle("TCHU \u2014 Client");
         stage.getIcons().add(new Image("logo.png"));
-        stage.setScene(new Scene(loader.load(), 390, 570));
+        stage.setScene(new Scene(loader.load(), 390, 650));
 		((MainMenuClientController) loader.getController()).setStage(stage);
         stage.show();
     }

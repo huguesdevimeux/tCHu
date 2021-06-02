@@ -7,8 +7,6 @@ import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -24,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
 import java.net.*;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -38,13 +35,13 @@ public class MainMenuServerController {
     private final ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
     Map<PlayerId, String> playersNames = new HashMap<>();
     Map<PlayerId, Player> players = new HashMap<>();
-    @FXML private Button hostGame, configNgrok, play, getIP;
+    @FXML private Button hostGame, configNgrok, play, getIP, indications;
     @FXML
     private TextField firstPlayerName,
             secondPlayerName,
             IpField,
             awaitingConnectionText;
-    @FXML private CheckBox otherServicesUsed;
+    @FXML private CheckBox multiPortEnabled;
 
     public MainMenuServerController() throws IOException {}
 
@@ -54,6 +51,9 @@ public class MainMenuServerController {
 
     public void setStage(Stage stage) {
         currentWindow = stage.getScene().getWindow();
+    }
+    public void openIndications(){
+        GuiConstants.openIndications();
     }
 
     private FileChooser createFileChooser() {
@@ -106,7 +106,7 @@ public class MainMenuServerController {
     }
 
     public void playAction() {
-        checkBoxSelected = otherServicesUsed.isSelected();
+        checkBoxSelected = multiPortEnabled.isSelected();
         String[] names = configureNames();
         PlayerId.ALL.forEach(playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
         scaleButton(play);

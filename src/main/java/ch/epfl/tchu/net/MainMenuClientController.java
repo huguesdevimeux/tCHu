@@ -2,9 +2,6 @@ package ch.epfl.tchu.net;
 
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
-import ch.epfl.tchu.gui.ObservableGameState;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -25,9 +22,9 @@ import java.util.Objects;
 public class MainMenuClientController {
     String defaultIp = NetConstants.Network.DEFAULT_IP;
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
-    @FXML private Button joinGame, configNgrok;
-    @FXML private TextField IpField, port;
-    @FXML private CheckBox otherServicesUsed;
+    @FXML private Button joinGame, configNgrok, indications;
+    @FXML private TextField IpField, port, chatPort;
+    @FXML private CheckBox multiPortEnabled;
     public static boolean checkBoxSelected;
 
     private Window currentWindow;
@@ -38,14 +35,19 @@ public class MainMenuClientController {
     	currentWindow = stage.getScene().getWindow();
 	}
 
+	public void openIndications(){
+        GuiConstants.openIndications();
+    }
+
 	private FileChooser createFileChooser() {
 		FileChooser temp = new FileChooser();
 		temp.getExtensionFilters().add(new FileChooser.ExtensionFilter("Only png images", "*.png"));
 		return temp;
 	}
     public static String IpFieldText;
-    public void setFirstNumbers() {
-        IpField.setText("128.179.");
+
+    public void setFieldVisible() {
+       chatPort.setVisible(multiPortEnabled.isSelected());
     }
 
     public void ngrokConfigAction() {
@@ -53,11 +55,11 @@ public class MainMenuClientController {
         GuiConstants.openNgrokConfigInfoStage();
     }
     public void joinGameAction() {
-        checkBoxSelected = otherServicesUsed.isSelected();
+        scaleButton(joinGame);
+        checkBoxSelected = multiPortEnabled.isSelected();
         IpFieldText = IpField.getText();
         RunClient.connection = RunClient.createClient(IpFieldText);
         RunClient.connection.startConnection();
-        scaleButton(joinGame);
         String ip;
         int port;
         if (IpField.getText().isEmpty()) {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="290.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Text layoutX="8.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Par défaut, le port utilisé pour jouer avec des addresses IP est 5108." wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Par défaut, le port utilisé pour jouer avec le chat, c'est à dire jouer avec la box multi-port supporté cochée, est 5010." wrappingWidth="274.13677978515625" />
+   </children>
+</AnchorPane>

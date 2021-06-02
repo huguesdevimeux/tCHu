@@ -31,7 +31,8 @@
             </font>
         </Text>
       <TextField fx:id="awaitingConnectionText" alignment="CENTER" editable="false" layoutX="-10.0" layoutY="575.0" prefHeight="26.0" prefWidth="241.0" promptText="Aucun joueur connecté" style="-fx-border-width: 0 0 0 0; -fx-background-color: transparent;" />
-      <CheckBox fx:id="otherServicesUsed" layoutX="279.0" layoutY="306.0" mnemonicParsing="false" />
-      <Text layoutX="303.0" layoutY="303.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Utilisation d'autres moyens de connexion qu'adresse IP (Ngrok)" wrappingWidth="136.0" />
+      <CheckBox fx:id="multiPortEnabled" layoutX="318.0" layoutY="306.0" mnemonicParsing="false" />
+      <Text layoutX="341.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Multi-port supporté" wrappingWidth="108.0" />
+      <Button fx:id="indications" layoutX="377.0" layoutY="14.0" mnemonicParsing="false" onAction="#openIndications" text="Indications" />
     </children>
 </AnchorPane>
