@@ -37,10 +37,8 @@ public class MainMenuServerController {
     @FXML
     private TextField firstPlayerName,
             secondPlayerName,
-            thirdPlayerName,
             IpField,
             awaitingConnectionText;
-    @FXML private CheckBox checkBox;
 
     private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
     private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
@@ -150,8 +148,6 @@ public class MainMenuServerController {
         String[] names = new String[PlayerId.COUNT];
         names[0] = firstPlayerName.getText().isEmpty() ? "Joueur 1" : firstPlayerName.getText();
         names[1] = secondPlayerName.getText().isEmpty() ? "Joueur 2" : secondPlayerName.getText();
-        if (checkBox.isSelected())
-            names[2] = thirdPlayerName.getText().isEmpty() ? "Joueur 3" : thirdPlayerName.getText();
         return names;
     }
 
@@ -159,9 +155,5 @@ public class MainMenuServerController {
     public void setPicture() throws MalformedURLException {
         File f = fileChooser.showOpenDialog(currentWindow);
         if (f != null) chosenPictureURL = f.toURI().toURL();
-    }
-
-    public void checkBoxAction() {
-        thirdPlayerName.setVisible(checkBox.isSelected());
     }
 }
