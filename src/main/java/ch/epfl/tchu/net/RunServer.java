@@ -22,6 +22,7 @@ public class RunServer extends Application {
     public static Parent createContent(String name) {
         messages.setEditable(false);
         TextField input = new TextField();
+        input.setStyle("-fx-background-color: grey");
         input.setPromptText("Envoyer un message ici");
         input.setOnAction(
                 e -> {
