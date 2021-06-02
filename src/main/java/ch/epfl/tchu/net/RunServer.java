@@ -1,22 +1,22 @@
 package ch.epfl.tchu.net;
 
+import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.ObservableGameState;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+import java.util.Map;
 
 public class RunServer extends Application {
-    public static TextArea messages = new TextArea();
+    public static ObservableList<Map.Entry<PlayerId, String>> messages =
+            FXCollections.observableArrayList();
     public static final ChattingConnection connection = createServer();
 
     private static ChattingServer createServer() {
@@ -24,9 +24,7 @@ public class RunServer extends Application {
                 NetConstants.Network.CHAT_DEFAULT_PORT,
                 data ->
                         Platform.runLater(
-                                () -> {
-                                    messages.appendText(data);
-                                }));
+                                () -> messages.add(Map.entry(PlayerId.PLAYER_2, data))));
     }
 
     @Override
@@ -40,7 +38,7 @@ public class RunServer extends Application {
         stage.setTitle("TCHU \u2014 Serveur");
         stage.getIcons().add(new Image("logo.png"));
         stage.setScene(new Scene(content, 455, 650));
-		((MainMenuServerController) loader.getController()).setStage(stage);
+        ((MainMenuServerController) loader.getController()).setStage(stage);
         stage.show();
     }
 }

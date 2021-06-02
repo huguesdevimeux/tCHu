@@ -14,15 +14,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -125,12 +127,14 @@ final class InfoViewCreator {
 
         Parent chatApp =
                 ObservableGameState.isServer.get()
-                        ? createContent(
-                                playerNames.get(PlayerId.PLAYER_1),
+                        ? createChatPanel(
+                                PlayerId.PLAYER_1,
+                                playerNames,
                                 RunServer.messages,
                                 RunServer.connection)
-                        : createContent(
-                                playerNames.get(PlayerId.PLAYER_2),
+                        : createChatPanel(
+                                PlayerId.PLAYER_2,
+                                playerNames,
                                 RunClient.messages,
                                 RunClient.connection);
         root.getChildren()
@@ -142,7 +146,7 @@ final class InfoViewCreator {
                         gameInfoTextFlow);
 
         if (MainMenuServerController.checkBoxSelected || MainMenuClientController.checkBoxSelected)
-            root.getChildren().add(chatApp);
+            root.getChildren().addAll(new Separator(), chatApp);
         return root;
     }
 
@@ -185,17 +189,27 @@ final class InfoViewCreator {
         return playerN;
     }
 
-    public static Parent createContent(
-            String name, TextArea messages, ChattingConnection connection) {
-        messages.setEditable(false);
+    public static Parent createChatPanel(
+            PlayerId corresponsingPlayer,
+            Map<PlayerId, String> names,
+            ObservableList<Map.Entry<PlayerId, String>> messages,
+            ChattingConnection connection) {
+
         TextField input = new TextField();
         input.setStyle("-fx-background-color: grey");
-        input.setPromptText("Envoyer un message ici");
+        input.setPromptText("Message");
+
+        String borderCss = "-fx-border-insets: 5;\n" + "-fx-border-width: 1;\n";
+
+        VBox messagesStack = new VBox();
+        messagesStack.setStyle(borderCss);
+        messagesStack.setMinHeight(250);
+
         input.setOnAction(
                 e -> {
-                    String message = name + ":  " + input.getText();
-                    if (!input.getText().isEmpty()) {
-                        messages.appendText(message + "\n");
+                    String message = input.getText();
+                    if (!input.getText().isBlank()) {
+                        messages.add(Map.entry(corresponsingPlayer, message));
                         try {
                             connection.send(message);
                         } catch (IOException exception) {
@@ -204,8 +218,40 @@ final class InfoViewCreator {
                     }
                     input.clear();
                 });
-        VBox root = new VBox(20, messages, input);
+        ScrollPane scrollPane = new ScrollPane(messagesStack);
+        scrollPane.setMinHeight(250);
+        scrollPane.setMaxHeight(250);
+        messages.addListener(
+                (ListChangeListener<? super Map.Entry<PlayerId, String>>)
+                        c -> {
+                            c.next();
+                            PlayerId playerId = c.getAddedSubList().get(0).getKey();
+                            HBox individualMessage =
+                                    getIndividualMessage(
+                                            playerId,
+                                            names.get(playerId),
+                                            c.getAddedSubList().get(0).getValue());
+                            messagesStack.getChildren().add(individualMessage);
+                        });
+        messagesStack
+                .heightProperty()
+                .addListener((observable, oldValue, newValue) -> scrollPane.setVvalue(1.0));
+        VBox root = new VBox(20, scrollPane, input);
         root.setPrefSize(100, 250);
         return root;
+    }
+
+    private static HBox getIndividualMessage(PlayerId playerId, String name, String message) {
+        Text playerName = new Text(name + " : ");
+        playerName.setStyle("-fx-font-weight: bold");
+        Circle profilePicture = new Circle(20);
+        profilePicture.setFill(
+                new ImagePattern(
+                        new Image(ProfileImagesUtils.pathOfImageOf(playerId).toUri().toString())));
+        HBox individualMessage = new HBox(profilePicture, playerName, new Text(message));
+        individualMessage.setAlignment(Pos.CENTER_LEFT);
+        String messageBorderCSS = "-fx-border-insets: 5;\n" + "-fx-border-width: 0.5;";
+        individualMessage.setStyle(messageBorderCSS);
+        return individualMessage;
     }
 }
