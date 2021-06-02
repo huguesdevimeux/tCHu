@@ -204,7 +204,7 @@ public final class GuiConstants {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(GuiConstants.class.getResource("/Indications.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 290, 185);
+            Scene scene = new Scene(fxmlLoader.load(), 290, 450);
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.show();

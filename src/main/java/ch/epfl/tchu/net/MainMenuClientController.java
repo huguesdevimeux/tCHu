@@ -20,40 +20,40 @@ import java.net.URL;
 import java.util.Objects;
 
 public class MainMenuClientController {
+    public static boolean checkBoxSelected;
+    public static String IpFieldText;
+    private final FileChooser fileChooser = createFileChooser();
     String defaultIp = NetConstants.Network.DEFAULT_IP;
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
     @FXML private Button joinGame, configNgrok, indications;
     @FXML private TextField IpField, port, chatPort;
     @FXML private CheckBox multiPortEnabled;
-    public static boolean checkBoxSelected;
-
     private Window currentWindow;
-    private final FileChooser fileChooser = createFileChooser();
     private URL chosenPictureURL = NetConstants.Image.DEFAULT_PROFILE_CLIENT;
 
     public void setStage(Stage stage) {
-    	currentWindow = stage.getScene().getWindow();
-	}
+        currentWindow = stage.getScene().getWindow();
+    }
 
-	public void openIndications(){
+    public void openIndications() {
         GuiConstants.openIndications();
     }
 
-	private FileChooser createFileChooser() {
-		FileChooser temp = new FileChooser();
-		temp.getExtensionFilters().add(new FileChooser.ExtensionFilter("Only png images", "*.png"));
-		return temp;
-	}
-    public static String IpFieldText;
+    private FileChooser createFileChooser() {
+        FileChooser temp = new FileChooser();
+        temp.getExtensionFilters().add(new FileChooser.ExtensionFilter("Only png images", "*.png"));
+        return temp;
+    }
 
     public void setFieldVisible() {
-       chatPort.setVisible(multiPortEnabled.isSelected());
+        chatPort.setVisible(multiPortEnabled.isSelected());
     }
 
     public void ngrokConfigAction() {
         scaleButton(configNgrok);
         GuiConstants.openNgrokConfigInfoStage();
     }
+
     public void joinGameAction() {
         scaleButton(joinGame);
         checkBoxSelected = multiPortEnabled.isSelected();
@@ -72,28 +72,31 @@ public class MainMenuClientController {
             port = defaultPort;
         } else port = Integer.parseInt(this.port.getText());
 
-		try (Socket imageSocket = new Socket(ip, port)) {
-			ProfileImagesUtils.sendImage(
-				imageSocket.getOutputStream(),
-				ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
-			// Get images from network.
-			var images = ProfileImagesUtils.retrieveImages(imageSocket.getInputStream());
-			// Save locally the images.
-			for (var playerAndPicture : Objects.requireNonNull(images).entrySet()) {
-				ProfileImagesUtils.saveImageFor(
-					playerAndPicture.getKey(), playerAndPicture.getValue());
-			}
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-		clientThread(ip, port).start();
-	}
+        if (chatPort.getText().isEmpty())
+            chatPort.setText(String.valueOf(NetConstants.Network.CHAT_DEFAULT_PORT));
 
-	@FXML
-	public void setPicture() throws MalformedURLException {
-		File f =  fileChooser.showOpenDialog(currentWindow);
-		if (f != null) chosenPictureURL = f.toURI().toURL();
-	}
+        try (Socket imageSocket = new Socket(ip, port)) {
+            ProfileImagesUtils.sendImage(
+                    imageSocket.getOutputStream(),
+                    ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
+            // Get images from network.
+            var images = ProfileImagesUtils.retrieveImages(imageSocket.getInputStream());
+            // Save locally the images.
+            for (var playerAndPicture : Objects.requireNonNull(images).entrySet()) {
+                ProfileImagesUtils.saveImageFor(
+                        playerAndPicture.getKey(), playerAndPicture.getValue());
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        clientThread(ip, port).start();
+    }
+
+    @FXML
+    public void setPicture() throws MalformedURLException {
+        File f = fileChooser.showOpenDialog(currentWindow);
+        if (f != null) chosenPictureURL = f.toURI().toURL();
+    }
 
     private void scaleButton(Button button) {
         GuiConstants.scaleButton(button);

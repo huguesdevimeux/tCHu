@@ -3,10 +3,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="290.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="449.0" prefWidth="290.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="8.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Par défaut, le port utilisé pour jouer avec des addresses IP est 5108." wrappingWidth="274.13677978515625" />
-      <Text layoutX="8.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Par défaut, le port utilisé pour jouer avec le chat, c'est à dire jouer avec la box multi-port supporté cochée, est 5010." wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Par défaut, le port utilisé pour jouer avec des adresses IP est 5108." wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pour jouer avec le chat, cocher la box &quot;multi-port supporté&quot;. Par défaut, le port utilisé pour jouer avec le chat est 5010. " wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="158.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Préférablement, cochez si vous utilisez une adresse IP EPFL. Ça ne marchera pas d'une autre manière (avec ngrok notamment)." wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="287.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le menu du serveur va héberger la partie et attendre la connexion du client. Celui ci choisira le nom des deux joueurs et ne pourra lancer la partie qu' après que le client se soit connecté." wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quant au client, celui ci pourra renseigner l'adresse IP du serveur et un port spécifique pour se connecter à celui-ci.  Si le joueur décide de jouer avec le chat, rentrer le port par défaut pour jouer avec le chat (5010)." wrappingWidth="274.13677978515625" />
+      <Text layoutX="8.0" layoutY="219.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pour jouer en local, le client peut directement cliquer sur rejoindre une partie. La partie va se lancer automatiquement avec localhost." wrappingWidth="274.13677978515625" />
    </children>
 </AnchorPane>
