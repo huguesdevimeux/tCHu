@@ -137,13 +137,16 @@ final class InfoViewCreator {
                                 playerNames,
                                 RunClient.messages,
                                 RunClient.connection);
-        root.getChildren()
+		ScrollPane scrollPaneInfos = new ScrollPane(gameInfoTextFlow);
+		scrollPaneInfos.setFitToHeight(true);
+		infos.addListener((ListChangeListener<? super Text>) change -> scrollPaneInfos.setVvalue(1.0));
+		root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);
+					scrollPaneInfos);
 
         if (MainMenuServerController.checkBoxSelected || MainMenuClientController.checkBoxSelected)
             root.getChildren().addAll(chatApp);
@@ -196,7 +199,7 @@ final class InfoViewCreator {
             ChattingConnection connection) {
 
         TextField input = new TextField();
-        input.setStyle("-fx-background-color: grey");
+        input.setStyle("-fx-background-color: #cfcfcf ");
         input.setPromptText("Message");
 
         String borderCss = "-fx-border-insets: 5;\n" + "-fx-border-width: 1;\n";
@@ -236,7 +239,7 @@ final class InfoViewCreator {
         messagesStack
                 .heightProperty()
                 .addListener((observable, oldValue, newValue) -> scrollPane.setVvalue(1.0));
-        VBox root = new VBox(20, scrollPane, input);
+        VBox root = new VBox(5, scrollPane, input);
         root.setPrefSize(100, 250);
         return root;
     }
