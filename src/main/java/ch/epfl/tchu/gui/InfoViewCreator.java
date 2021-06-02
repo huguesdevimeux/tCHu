@@ -1,14 +1,10 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
-import ch.epfl.tchu.net.ProfileImagesUtils;
 import ch.epfl.tchu.gui.animation.AbstractAnimation;
 import ch.epfl.tchu.gui.animation.FadeAnimation;
 import ch.epfl.tchu.gui.animation.TranslationAnimation;
-import ch.epfl.tchu.net.MainMenuClientController;
-import ch.epfl.tchu.net.MainMenuServerController;
-import ch.epfl.tchu.net.RunClient;
-import ch.epfl.tchu.net.RunServer;
+import ch.epfl.tchu.net.*;
 import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
@@ -21,6 +17,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -30,6 +28,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static ch.epfl.tchu.gui.GuiConstants.*;
@@ -126,8 +125,8 @@ final class InfoViewCreator {
 
         Parent chatApp =
                 ObservableGameState.isServer.get()
-                        ? RunServer.createContent(playerNames.get(PlayerId.PLAYER_1))
-                        : RunClient.createContent(playerNames.get(PlayerId.PLAYER_2));
+                        ? createContent(playerNames.get(PlayerId.PLAYER_1), RunServer.messages, RunServer.connection)
+                        : createContent(playerNames.get(PlayerId.PLAYER_2), RunClient.messages, RunClient.connection);
         root.getChildren()
                 .addAll(
                         playerStats,
@@ -177,5 +176,28 @@ final class InfoViewCreator {
 		playerN.setSpacing(10);
         playerN.getChildren().addAll(imageView, playerInfoWithcolo );
 		return playerN;
+    }
+
+    public static Parent createContent(String name, TextArea messages, ChattingConnection connection) {
+        messages.setEditable(false);
+        TextField input = new TextField();
+        input.setStyle("-fx-background-color: grey");
+        input.setPromptText("Envoyer un message ici");
+        input.setOnAction(
+                e -> {
+                    String message = name + ":  " + input.getText();
+                    if (!input.getText().isEmpty()) {
+                        messages.appendText(message + "\n");
+                        try {
+                            connection.send(message);
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    input.clear();
+                });
+        VBox root = new VBox(20, messages, input);
+        root.setPrefSize(100, 250);
+        return root;
     }
 }

@@ -21,31 +21,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class RunClient extends Application {
-    private static TextArea messages = new TextArea();
+    public static TextArea messages = new TextArea();
     public static ChattingConnection connection;
-
-    public static Parent createContent(String name) {
-        messages.setEditable(false);
-        TextField input = new TextField();
-        input.setStyle("-fx-background-color: grey");
-        input.setPromptText("Envoyer un message ici");
-        input.setOnAction(
-                e -> {
-                    String message = name + ":  " + input.getText();
-                    if (!input.getText().isEmpty()) {
-                        messages.appendText(message + "\n");
-                        try {
-                            connection.send(message);
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
-                        }
-                    }
-                    input.clear();
-                });
-        VBox root = new VBox(20, messages, input);
-        root.setPrefSize(100, 250);
-        return root;
-    }
 
     public static void main(String[] args) {
         launch(args);
