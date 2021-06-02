@@ -3,6 +3,8 @@ package ch.epfl.tchu.gui;
 import ch.epfl.tchu.SortedBag;
 import ch.epfl.tchu.game.*;
 import javafx.animation.PathTransition;
+import ch.epfl.tchu.net.RunClient;
+import ch.epfl.tchu.net.RunServer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,7 +27,6 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 import java.util.ArrayList;
@@ -209,7 +210,7 @@ public final class GraphicalPlayer {
     }
 
     /**
-     * Generates the main stage
+     * Generates the main stage.
      *
      * @return The main stage.
      */

@@ -9,6 +9,10 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.collections.ListChangeListener;
 
+import ch.epfl.tchu.net.MainMenuClientController;
+import ch.epfl.tchu.net.MainMenuServerController;
+import ch.epfl.tchu.net.RunClient;
+import ch.epfl.tchu.net.RunServer;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
@@ -17,6 +21,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -89,7 +94,7 @@ final class InfoViewCreator {
                                 gameInfoTextFlow.getChildren().removeAll(change.getRemoved());
                             }
                         });
-      
+
         // instantiate two properties, one is the player's ticket points and the other
         // represents a sentence that will appear once a ticket is completed by the player.
         ReadOnlyIntegerProperty points = obsGameState.playerTicketPoints();
@@ -123,7 +128,10 @@ final class InfoViewCreator {
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);        
+                        gameInfoTextFlow);
+        if (!MainMenuServerController.checkBoxSelected
+                && !MainMenuClientController.checkBoxSelected) root.getChildren().add(chatApp);
+
         return root;
     }
 

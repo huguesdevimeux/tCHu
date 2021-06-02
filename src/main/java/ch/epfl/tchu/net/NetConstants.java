@@ -19,6 +19,8 @@ public final class NetConstants {
         public static final Charset ENCODING = US_ASCII;
         /* The default port used for connection */
         public static final int DEFAULT_PORT = 5108;
+        /* The default port used for the chatting connection */
+        public static final int CHAT_DEFAULT_PORT = 5010;
         /* The default IP used for connection */
         public static final String DEFAULT_IP = "localhost";
         /* Default names for the players.*/
