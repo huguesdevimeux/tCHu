@@ -21,7 +21,7 @@ import java.util.Objects;
 public class MainMenuClientController {
     String defaultIp = NetConstants.Network.DEFAULT_IP;
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
-    @FXML private Button joinGame, configNgrok, setFirstNumbers, setPicture;
+    @FXML private Button joinGame, configNgrok;
     @FXML private TextField IpField, port;
 
     private Window currentWindow;
@@ -37,9 +37,6 @@ public class MainMenuClientController {
 		temp.getExtensionFilters().add(new FileChooser.ExtensionFilter("Only png images", "*.png"));
 		return temp;
 	}
-	public void setFirstNumbers() {
-        IpField.setText("128.179.");
-    }
 
     public void ngrokConfigAction() {
         scaleButton(configNgrok);
