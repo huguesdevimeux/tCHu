@@ -146,7 +146,7 @@ final class InfoViewCreator {
                         gameInfoTextFlow);
 
         if (MainMenuServerController.checkBoxSelected || MainMenuClientController.checkBoxSelected)
-            root.getChildren().addAll(new Separator(), chatApp);
+            root.getChildren().addAll(chatApp);
         return root;
     }
 
