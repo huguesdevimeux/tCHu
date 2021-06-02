@@ -8,7 +8,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorPane" prefHeight="570.0" prefWidth="390.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuClientController">
+<?import javafx.scene.control.CheckBox?>
+<AnchorPane prefHeight="570.0" prefWidth="390.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuClientController">
     <children>
         <TextField fx:id="IpField" alignment="CENTER" layoutX="88.0" layoutY="386.0" prefHeight="26.0" prefWidth="219.0" promptText="IP du serveur" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
         <TextField fx:id="port" alignment="CENTER" layoutX="115.0" layoutY="429.0" prefHeight="25.0" prefWidth="168.0" promptText="Port" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
@@ -20,10 +21,13 @@
                 <Image url="@logo.png" />
             </image>
         </ImageView>
-        <Text layoutX="121.0" layoutY="285.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="155.2000274658203">
+        <Text layoutX="120.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="155.2000274658203">
             <font>
                 <Font name="System Bold Italic" size="55.0" />
             </font>
         </Text>
+      <Button fx:id="setFirstNumbers" layoutX="341.0" layoutY="449.0" mnemonicParsing="false" onMouseClicked="#setFirstNumbers" text="Début d'IP EPFL " />
+      <Text layoutX="317.0" layoutY="344.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Utilisation d'autres moyens de connexion qu'adresse IP (Ngrok)" wrappingWidth="136.0" />
+      <CheckBox fx:id="otherServicesUsed" layoutX="290.0" layoutY="346.0" mnemonicParsing="false" />
     </children>
 </AnchorPane>

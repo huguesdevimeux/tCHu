@@ -5,19 +5,21 @@ import ch.epfl.tchu.net.ProfileImagesUtils;
 import ch.epfl.tchu.gui.animation.AbstractAnimation;
 import ch.epfl.tchu.gui.animation.FadeAnimation;
 import ch.epfl.tchu.gui.animation.TranslationAnimation;
+import ch.epfl.tchu.net.MainMenuClientController;
+import ch.epfl.tchu.net.MainMenuServerController;
+import ch.epfl.tchu.net.RunClient;
+import ch.epfl.tchu.net.RunServer;
 import javafx.animation.Interpolator;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
-import javafx.collections.ListChangeListener;
-
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Separator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -93,7 +95,7 @@ final class InfoViewCreator {
                                 gameInfoTextFlow.getChildren().removeAll(change.getRemoved());
                             }
                         });
-      
+
         // instantiate two properties, one is the player's ticket points and the other
         // represents a sentence that will appear once a ticket is completed by the player.
         ReadOnlyIntegerProperty points = obsGameState.playerTicketPoints();
@@ -121,13 +123,21 @@ final class InfoViewCreator {
         ticketPointsText.textProperty().bind(ticketPoints);
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
+
+        Parent chatApp =
+                ObservableGameState.isServer.get()
+                        ? RunServer.createContent(playerNames.get(PlayerId.PLAYER_1))
+                        : RunClient.createContent(playerNames.get(PlayerId.PLAYER_2));
         root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);        
+                        gameInfoTextFlow);
+        if (!MainMenuServerController.checkBoxSelected
+                && !MainMenuClientController.checkBoxSelected) root.getChildren().add(chatApp);
+
         return root;
     }
 

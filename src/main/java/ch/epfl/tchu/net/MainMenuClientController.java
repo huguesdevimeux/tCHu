@@ -2,8 +2,12 @@ package ch.epfl.tchu.net;
 
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import ch.epfl.tchu.gui.ObservableGameState;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -23,6 +27,8 @@ public class MainMenuClientController {
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
     @FXML private Button joinGame, configNgrok;
     @FXML private TextField IpField, port;
+    @FXML private CheckBox otherServicesUsed;
+    public static boolean checkBoxSelected;
 
     private Window currentWindow;
     private final FileChooser fileChooser = createFileChooser();
@@ -37,13 +43,20 @@ public class MainMenuClientController {
 		temp.getExtensionFilters().add(new FileChooser.ExtensionFilter("Only png images", "*.png"));
 		return temp;
 	}
+    public static String IpFieldText;
+    public void setFirstNumbers() {
+        IpField.setText("128.179.");
+    }
 
     public void ngrokConfigAction() {
         scaleButton(configNgrok);
         GuiConstants.openNgrokConfigInfoStage();
     }
-
     public void joinGameAction() {
+        checkBoxSelected = otherServicesUsed.isSelected();
+        IpFieldText = IpField.getText();
+        RunClient.connection = RunClient.createClient(IpFieldText);
+        RunClient.connection.startConnection();
         scaleButton(joinGame);
         String ip;
         int port;
