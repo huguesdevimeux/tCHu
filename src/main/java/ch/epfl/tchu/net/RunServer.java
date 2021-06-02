@@ -1,11 +1,8 @@
 package ch.epfl.tchu.net;
 
-import ch.epfl.tchu.gui.InfoViewCreator;
 import ch.epfl.tchu.gui.ObservableGameState;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,20 +20,22 @@ public class RunServer extends Application {
     private static final ChattingConnection connection = createServer();
 
     public static Parent createContent(String name) {
-        messages.setPrefHeight(500);
+        messages.setEditable(false);
         TextField input = new TextField();
+        input.setPromptText("Envoyer un message ici");
         input.setOnAction(
                 e -> {
                     String message = name + ": " + input.getText();
-                    input.clear();
-                    messages.appendText(message + "\n");
-                    try {
-                        connection.send(message);
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
+                    if (!input.getText().isEmpty()) {
+                        messages.appendText(message + "\n");
+                        try {
+                            connection.send(message);
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
                     }
+                    input.clear();
                 });
-
         VBox root = new VBox(20, messages, input);
         root.setPrefSize(100, 250);
         return root;
@@ -44,7 +43,7 @@ public class RunServer extends Application {
 
     private static ChattingServer createServer() {
         return new ChattingServer(
-                5010,
+                NetConstants.Network.CHAT_DEFAULT_PORT,
                 data ->
                         Platform.runLater(
                                 () -> {
@@ -55,6 +54,7 @@ public class RunServer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         ObservableGameState.isServer.set(true);
+        connection.startConnection();
         stage = new Stage();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/MainMenuServer.fxml"));
@@ -63,18 +63,5 @@ public class RunServer extends Application {
         stage.getIcons().add(new Image("logo.png"));
         stage.setScene(new Scene(content, 455, 650));
         stage.show();
-
-//        Stage chat = new Stage();
-//        chat.setScene(new Scene(createContent()));
-//        chat.show();
-    }
-
-    public void tryToConnect() throws IOException {
-        connection.tryToConnect(new ServerSocket(5108));
-    }
-
-    @Override
-    public void init() throws Exception {
-        connection.startConnection();
     }
 }

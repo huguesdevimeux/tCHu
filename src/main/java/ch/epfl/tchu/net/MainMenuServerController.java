@@ -7,6 +7,8 @@ import ch.epfl.tchu.game.Player;
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -22,35 +24,45 @@ import java.util.Map;
 import java.util.Random;
 
 public class MainMenuServerController {
+    private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
+    private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
+    public static boolean checkBoxSelected;
     private final ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
     Map<PlayerId, String> playersNames = new HashMap<>();
     Map<PlayerId, Player> players = new HashMap<>();
     @FXML private Button hostGame, configNgrok, play, getIP;
-    @FXML private TextField firstPlayerName, secondPlayerName, thirdPlayerName,
-            IpField, awaitingConnectionText;
-    @FXML private CheckBox checkBox;
+    @FXML
+    private TextField firstPlayerName,
+            secondPlayerName,
+            thirdPlayerName,
+            IpField,
+            awaitingConnectionText;
+    @FXML private CheckBox checkBox, otherServicesUsed;
 
     public MainMenuServerController() throws IOException {}
 
-    private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
-    private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
     public void hostGameAction() {
         awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
         scaleButton(hostGame);
         hostGame.setDisable(true);
         players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
-        new Thread(() -> {
-            try {
-                players.put(PlayerId.PLAYER_2, new RemotePlayerProxy(serverSocket.accept()));
-                play.setDisable(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
-        }).start();
+        new Thread(
+                        () -> {
+                            try {
+                                players.put(
+                                        PlayerId.PLAYER_2,
+                                        new RemotePlayerProxy(serverSocket.accept()));
+                                play.setDisable(false);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
+                        })
+                .start();
     }
 
     public void playAction() {
+        checkBoxSelected = otherServicesUsed.isSelected();
         String[] names = configureNames();
         PlayerId.ALL.forEach(playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
         scaleButton(play);

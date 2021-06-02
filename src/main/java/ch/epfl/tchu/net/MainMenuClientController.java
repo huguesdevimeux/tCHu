@@ -2,10 +2,12 @@ package ch.epfl.tchu.net;
 
 import ch.epfl.tchu.gui.GraphicalPlayerAdapter;
 import ch.epfl.tchu.gui.GuiConstants;
+import ch.epfl.tchu.gui.ObservableGameState;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 
 import java.net.UnknownHostException;
@@ -13,11 +15,13 @@ import java.net.UnknownHostException;
 public class MainMenuClientController {
     String defaultIp = NetConstants.Network.DEFAULT_IP;
     int defaultPort = NetConstants.Network.DEFAULT_PORT;
-    @FXML private Button joinGame, configNgrok, setFirstNumbers;
+    @FXML private Button joinGame, configNgrok;
     @FXML private TextField IpField, port;
+    @FXML private CheckBox otherServicesUsed;
+    public static boolean checkBoxSelected;
 
     public static String IpFieldText;
-    public void setFirstNumbers() throws UnknownHostException {
+    public void setFirstNumbers() {
         IpField.setText("128.179.");
     }
 
@@ -25,10 +29,9 @@ public class MainMenuClientController {
         scaleButton(configNgrok);
         GuiConstants.openNgrokConfigInfoStage();
     }
-    public static BooleanProperty isNgrokUsed = new SimpleBooleanProperty();
     public void joinGameAction() {
+        checkBoxSelected = otherServicesUsed.isSelected();
         IpFieldText = IpField.getText();
-        if (IpField.getText().contains("ngrok")) isNgrokUsed.set(true);
         RunClient.connection = RunClient.createClient(IpFieldText);
         RunClient.connection.startConnection();
         scaleButton(joinGame);

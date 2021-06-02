@@ -2,6 +2,7 @@ package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.net.MainMenuClientController;
+import ch.epfl.tchu.net.MainMenuServerController;
 import ch.epfl.tchu.net.RunClient;
 import ch.epfl.tchu.net.RunServer;
 import javafx.animation.PauseTransition;
@@ -31,7 +32,6 @@ import static ch.epfl.tchu.gui.GuiConstants.*;
  * @author Hugues Devimeux (327282)
  */
 public final class InfoViewCreator {
-    public static VBox root;
     /** Not Instantiable. */
     private InfoViewCreator() {}
 
@@ -50,7 +50,7 @@ public final class InfoViewCreator {
             Map<PlayerId, String> playerNames,
             ObservableGameState obsGameState,
             ObservableList<Text> infos) {
-        root = new VBox();
+        VBox root = new VBox();
         root.getStylesheets().addAll(INFO_CSS, COLORS_CSS);
 
         VBox playerStats = new VBox();
@@ -94,23 +94,20 @@ public final class InfoViewCreator {
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
 
-        Parent parent =
+        Parent chatApp =
                 ObservableGameState.isServer.get()
                         ? RunServer.createContent(playerNames.get(PlayerId.PLAYER_1))
                         : RunClient.createContent(playerNames.get(PlayerId.PLAYER_2));
-
         root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow,
-                        parent);
-        return root;
-    }
+                        gameInfoTextFlow);
+        if (!MainMenuServerController.checkBoxSelected
+                && !MainMenuClientController.checkBoxSelected) root.getChildren().add(chatApp);
 
-    public static VBox getRoot() {
         return root;
     }
 

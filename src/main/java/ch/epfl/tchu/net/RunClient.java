@@ -22,24 +22,25 @@ import java.net.ServerSocket;
 
 public class RunClient extends Application {
     private static TextArea messages = new TextArea();
-    public static StringProperty IP = new SimpleStringProperty();
     public static ChattingConnection connection;
 
     public static Parent createContent(String name) {
-        messages.setPrefHeight(500);
+        messages.setEditable(false);
         TextField input = new TextField();
+        input.setPromptText("Envoyer un message ici");
         input.setOnAction(
                 e -> {
                     String message = name + ":  " + input.getText();
-                    input.clear();
-                    messages.appendText(message + "\n");
-                    try {
-                        connection.send(message);
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
+                    if (!input.getText().isEmpty()) {
+                        messages.appendText(message + "\n");
+                        try {
+                            connection.send(message);
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
                     }
+                    input.clear();
                 });
-
         VBox root = new VBox(20, messages, input);
         root.setPrefSize(100, 250);
         return root;
@@ -52,12 +53,10 @@ public class RunClient extends Application {
     public static ChattingClient createClient(String IP) {
         return new ChattingClient(
                 IP,
-                5010,
+                NetConstants.Network.CHAT_DEFAULT_PORT,
                 data ->
                         Platform.runLater(
-                                () -> {
-                                    messages.appendText(data);
-                                }));
+                                () -> messages.appendText(data)));
     }
 
     @Override
@@ -68,12 +67,7 @@ public class RunClient extends Application {
         loader.setLocation(getClass().getResource("/MainMenuClient.fxml"));
         stage.setTitle("TCHU \u2014 Client");
         stage.getIcons().add(new Image("logo.png"));
-        stage.setScene(new Scene(loader.load(), 390, 570));
+        stage.setScene(new Scene(loader.load(), 455, 593));
         stage.show();
-    }
-
-    @Override
-    public void init() throws Exception {
-        //connection.startConnection();
     }
 }
