@@ -4,21 +4,18 @@ import ch.epfl.tchu.game.PlayerId;
 import ch.epfl.tchu.gui.animation.AbstractAnimation;
 import ch.epfl.tchu.gui.animation.FadeAnimation;
 import ch.epfl.tchu.gui.animation.TranslationAnimation;
-import javafx.animation.Interpolator;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
-import javafx.collections.ListChangeListener;
-
 import ch.epfl.tchu.net.MainMenuClientController;
 import ch.epfl.tchu.net.MainMenuServerController;
 import ch.epfl.tchu.net.RunClient;
 import ch.epfl.tchu.net.RunServer;
+import javafx.animation.Interpolator;
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -122,6 +119,11 @@ final class InfoViewCreator {
         ticketPointsText.textProperty().bind(ticketPoints);
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
+
+        Parent chatApp =
+                ObservableGameState.isServer.get()
+                        ? RunServer.createContent(playerNames.get(PlayerId.PLAYER_1))
+                        : RunClient.createContent(playerNames.get(PlayerId.PLAYER_2));
         root.getChildren()
                 .addAll(
                         playerStats,
