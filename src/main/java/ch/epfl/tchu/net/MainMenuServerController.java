@@ -47,7 +47,7 @@ public class MainMenuServerController {
 
     private Window currentWindow;
     private final FileChooser fileChooser = createFileChooser();
-    private URL chosenPictureURL = NetConstants.Image.DEFAULT_PROFILE_CLIENT;
+    private URL chosenPictureURL = NetConstants.Image.DEFAULT_PROFILE_SERVER;
 
     public void setStage(Stage stage) {
         currentWindow = stage.getScene().getWindow();
