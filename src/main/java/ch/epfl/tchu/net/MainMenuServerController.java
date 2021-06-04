@@ -22,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UncheckedIOException;
 import java.net.*;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -30,27 +29,31 @@ import java.util.Map;
 import java.util.Random;
 
 public class MainMenuServerController {
+    private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
+    private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
+    public static boolean checkBoxSelected;
     private final ServerSocket serverSocket = new ServerSocket(NetConstants.Network.DEFAULT_PORT);
     Map<PlayerId, String> playersNames = new HashMap<>();
     Map<PlayerId, Player> players = new HashMap<>();
-    @FXML private Button hostGame, configNgrok, play, getIP;
+    @FXML private Button hostGame, configNgrok, play, getIP, indications;
     @FXML
     private TextField firstPlayerName,
             secondPlayerName,
             IpField,
             awaitingConnectionText;
+    @FXML private CheckBox multiPortEnabled;
 
-    private static final String WAITING_FOR_CONNECTION = "En attente d'une connexion";
-    private static final String CONNECTION_ESTABLISHED = "Un joueur est connecté!";
+    public MainMenuServerController() throws IOException {}
 
     private Window currentWindow;
     private final FileChooser fileChooser = createFileChooser();
     private URL chosenPictureURL = NetConstants.Image.DEFAULT_PROFILE_SERVER;
 
-    public MainMenuServerController() throws IOException {}
-
     public void setStage(Stage stage) {
         currentWindow = stage.getScene().getWindow();
+    }
+    public void openIndications(){
+        GuiConstants.openIndications();
     }
 
     private FileChooser createFileChooser() {
@@ -60,52 +63,50 @@ public class MainMenuServerController {
     }
 
     public void hostGameAction() {
-        try {
-            awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
-            scaleButton(hostGame);
-            hostGame.setDisable(true);
-            players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
+        awaitingConnectionText.setText(WAITING_FOR_CONNECTION);
+        scaleButton(hostGame);
+        hostGame.setDisable(true);
+        players.put(PlayerId.PLAYER_1, new GraphicalPlayerAdapter());
 
-            EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
+        EnumMap<PlayerId, BufferedImage> images = new EnumMap<>(PlayerId.class);
 
-            Socket imagesSocket = serverSocket.accept();
-            // Store the images of the players. The first player is considered as the host.
-            images.put(
-                    PlayerId.PLAYER_1,
-                    ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
-            BufferedImage bufferedImage =
-                    ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
-            images.put(PlayerId.PLAYER_2, bufferedImage);
+        new Thread(
+                        () -> {
+                            try{
+                            Socket imagesSocket = serverSocket.accept();
+                            // Store the images of the players. The first player is considered as the host.
+                            images.put(
+                                    PlayerId.PLAYER_1,
+                                    ProfileImagesUtils.validateImage(ImageIO.read(chosenPictureURL)));
+                            BufferedImage bufferedImage =
+                                    ImageIO.read(ImageIO.createImageInputStream(imagesSocket.getInputStream()));
+                            images.put(PlayerId.PLAYER_2, bufferedImage);
 
-            OutputStream outputStream = imagesSocket.getOutputStream();
-            for (PlayerId playerid : PlayerId.ALL) {
-                ProfileImagesUtils.saveImageFor(playerid, images.get(playerid));
-                ImageIO.write(
-                        ProfileImagesUtils.loadImageFor(playerid),
-                        NetConstants.Image.EXTENSION_IMAGE,
-                        outputStream);
-                outputStream.flush();
-            }
+                            OutputStream outputStream = imagesSocket.getOutputStream();
+                            for (PlayerId playerid : PlayerId.ALL) {
+                                ProfileImagesUtils.saveImageFor(playerid, images.get(playerid));
+                                ImageIO.write(
+                                        ProfileImagesUtils.loadImageFor(playerid),
+                                        NetConstants.Image.EXTENSION_IMAGE,
+                                        outputStream);
+                                outputStream.flush();
+                            }
 
-            new Thread(
-                            () -> {
-                                try {
-                                    players.put(
-                                            PlayerId.PLAYER_2,
-                                            new RemotePlayerProxy(serverSocket.accept()));
-                                    play.setDisable(false);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
-                            })
-                    .start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+                                players.put(
+                                        PlayerId.PLAYER_2,
+                                        new RemotePlayerProxy(serverSocket.accept()));
+                                play.setDisable(false);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            awaitingConnectionText.setText(CONNECTION_ESTABLISHED);
+                        })
+                .start();
     }
 
     public void playAction() {
+        checkBoxSelected = multiPortEnabled.isSelected();
         String[] names = configureNames();
         PlayerId.ALL.forEach(playerId -> playersNames.put(playerId, names[playerId.ordinal()]));
         scaleButton(play);
@@ -148,7 +149,7 @@ public class MainMenuServerController {
         String[] names = new String[PlayerId.COUNT];
         names[0] = firstPlayerName.getText().isEmpty() ? "Joueur 1" : firstPlayerName.getText();
         names[1] = secondPlayerName.getText().isEmpty() ? "Joueur 2" : secondPlayerName.getText();
-        return names;
+       return names;
     }
 
     @FXML

@@ -1,33 +1,36 @@
 package ch.epfl.tchu.gui;
 
 import ch.epfl.tchu.game.PlayerId;
-import ch.epfl.tchu.net.ProfileImagesUtils;
 import ch.epfl.tchu.gui.animation.AbstractAnimation;
 import ch.epfl.tchu.gui.animation.FadeAnimation;
 import ch.epfl.tchu.gui.animation.TranslationAnimation;
+import ch.epfl.tchu.net.*;
 import javafx.animation.Interpolator;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
-import javafx.collections.ListChangeListener;
-
 import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.Map;
 
 import static ch.epfl.tchu.gui.GuiConstants.*;
@@ -93,7 +96,7 @@ final class InfoViewCreator {
                                 gameInfoTextFlow.getChildren().removeAll(change.getRemoved());
                             }
                         });
-      
+
         // instantiate two properties, one is the player's ticket points and the other
         // represents a sentence that will appear once a ticket is completed by the player.
         ReadOnlyIntegerProperty points = obsGameState.playerTicketPoints();
@@ -121,13 +124,32 @@ final class InfoViewCreator {
         ticketPointsText.textProperty().bind(ticketPoints);
         VBox displayTicketPoints = new VBox(ticketPointsText);
         displayTicketPoints.setId(ID_PLAYER_STATS);
-        root.getChildren()
+
+        Parent chatApp =
+                ObservableGameState.isServer.get()
+                        ? createChatPanel(
+                                PlayerId.PLAYER_1,
+                                playerNames,
+                                RunServer.messages,
+                                RunServer.connection)
+                        : createChatPanel(
+                                PlayerId.PLAYER_2,
+                                playerNames,
+                                RunClient.messages,
+                                RunClient.connection);
+		ScrollPane scrollPaneInfos = new ScrollPane(gameInfoTextFlow);
+		scrollPaneInfos.setFitToHeight(true);
+		infos.addListener((ListChangeListener<? super Text>) change -> scrollPaneInfos.setVvalue(1.0));
+		root.getChildren()
                 .addAll(
                         playerStats,
                         new Separator(),
                         displayTicketPoints,
                         new Separator(),
-                        gameInfoTextFlow);        
+					scrollPaneInfos);
+
+        if (MainMenuServerController.checkBoxSelected || MainMenuClientController.checkBoxSelected)
+            root.getChildren().addAll(chatApp);
         return root;
     }
 
@@ -141,7 +163,7 @@ final class InfoViewCreator {
      * @return a node representing the views with the info.
      */
     private static Node createPlayerInfoView(
-		PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
+            PlayerId player, ObservableGameState obsGameState, Map<PlayerId, String> playerNames) {
         HBox playerN = new HBox();
         playerN.getStyleClass().add(player.name());
         Circle circle = new Circle(5);
@@ -160,12 +182,79 @@ final class InfoViewCreator {
         playerStatsText.textProperty().bind(updatedExpression);
         HBox playerInfoWithcolo = new HBox(circle, playerStatsText);
 
-		ImageView imageView =
-                new ImageView(new Image(ProfileImagesUtils.pathOfImageOf(player).toUri().toString()));
-		imageView.setPreserveRatio(true);
-		imageView.setFitHeight(76);
-		playerN.setSpacing(10);
-        playerN.getChildren().addAll(imageView, playerInfoWithcolo );
-		return playerN;
+        ImageView imageView =
+                new ImageView(
+                        new Image(ProfileImagesUtils.pathOfImageOf(player).toUri().toString()));
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(76);
+        playerN.setSpacing(10);
+        playerN.getChildren().addAll(imageView, playerInfoWithcolo);
+        return playerN;
+    }
+
+    public static Parent createChatPanel(
+            PlayerId corresponsingPlayer,
+            Map<PlayerId, String> names,
+            ObservableList<Map.Entry<PlayerId, String>> messages,
+            ChattingConnection connection) {
+
+        TextField input = new TextField();
+        input.setStyle("-fx-background-color: #cfcfcf ");
+        input.setPromptText("Message");
+
+        String borderCss = "-fx-border-insets: 5;\n" + "-fx-border-width: 1;\n";
+
+        VBox messagesStack = new VBox();
+        messagesStack.setStyle(borderCss);
+        messagesStack.setMinHeight(250);
+
+        input.setOnAction(
+                e -> {
+                    String message = input.getText();
+                    if (!input.getText().isBlank()) {
+                        messages.add(Map.entry(corresponsingPlayer, message));
+                        try {
+                            connection.send(message);
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    input.clear();
+                });
+        ScrollPane scrollPane = new ScrollPane(messagesStack);
+        scrollPane.setMinHeight(250);
+        scrollPane.setMaxHeight(250);
+        messages.addListener(
+                (ListChangeListener<? super Map.Entry<PlayerId, String>>)
+                        c -> {
+                            c.next();
+                            PlayerId playerId = c.getAddedSubList().get(0).getKey();
+                            HBox individualMessage =
+                                    getIndividualMessage(
+                                            playerId,
+                                            names.get(playerId),
+                                            c.getAddedSubList().get(0).getValue());
+                            messagesStack.getChildren().add(individualMessage);
+                        });
+        messagesStack
+                .heightProperty()
+                .addListener((observable, oldValue, newValue) -> scrollPane.setVvalue(1.0));
+        VBox root = new VBox(5, scrollPane, input);
+        root.setPrefSize(100, 250);
+        return root;
+    }
+
+    private static HBox getIndividualMessage(PlayerId playerId, String name, String message) {
+        Text playerName = new Text(name + " : ");
+        playerName.setStyle("-fx-font-weight: bold");
+        Circle profilePicture = new Circle(20);
+        profilePicture.setFill(
+                new ImagePattern(
+                        new Image(ProfileImagesUtils.pathOfImageOf(playerId).toUri().toString())));
+        HBox individualMessage = new HBox(profilePicture, playerName, new Text(message));
+        individualMessage.setAlignment(Pos.CENTER_LEFT);
+        String messageBorderCSS = "-fx-border-insets: 5;\n" + "-fx-border-width: 0.5;";
+        individualMessage.setStyle(messageBorderCSS);
+        return individualMessage;
     }
 }

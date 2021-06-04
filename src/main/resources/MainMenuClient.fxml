@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,22 +9,26 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorPane" prefHeight="570.0" prefWidth="390.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuClientController">
+<AnchorPane prefHeight="650.0" prefWidth="390.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuClientController">
     <children>
         <TextField fx:id="IpField" alignment="CENTER" layoutX="88.0" layoutY="386.0" prefHeight="26.0" prefWidth="219.0" promptText="IP du serveur" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
         <TextField fx:id="port" alignment="CENTER" layoutX="115.0" layoutY="429.0" prefHeight="25.0" prefWidth="168.0" promptText="Port" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
-        <Button fx:id="joinGame" layoutX="125.0" layoutY="474.0" mnemonicParsing="false" onMouseClicked="#joinGameAction" style="-fx-background-color: #60a3bc; -fx-padding: 10; -fx-border-radius: 50; -fx-font-weight: bold; -fx-font-size: 1.1EM;" text="Rejoindre une partie" textFill="#fff0f0" />
-        <Button fx:id="configNgrok" layoutX="14.0" layoutY="529.0" mnemonicParsing="false" onMouseClicked="#ngrokConfigAction" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Configurer Ngrok" textFill="#fff0f0" />
-        <Button fx:id="setPicture" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" onMouseClicked="#setPicture" prefHeight="26.0" prefWidth="158.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Sélectionner une photo de profil" textFill="#fff0f0" />
+        <Button fx:id="joinGame" layoutX="125.0" layoutY="529.0" mnemonicParsing="false" onMouseClicked="#joinGameAction" style="-fx-background-color: #60a3bc; -fx-padding: 10; -fx-border-radius: 50; -fx-font-weight: bold; -fx-font-size: 1.1EM;" text="Rejoindre une partie" textFill="#fff0f0" />
+        <Button fx:id="configNgrok" layoutX="14.0" layoutY="603.0" mnemonicParsing="false" onMouseClicked="#ngrokConfigAction" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Configurer Ngrok" textFill="#fff0f0" />
+        <Button fx:id="setPicture" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="333.0" mnemonicParsing="false" onMouseClicked="#setPicture" prefHeight="26.0" prefWidth="158.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Sélectionner une photo de profil" textFill="#fff0f0" />
         <ImageView fitHeight="271.0" fitWidth="361.0" layoutX="29.0" layoutY="-9.0">
             <image>
                 <Image url="@logo.png" />
             </image>
         </ImageView>
-        <Text layoutX="121.0" layoutY="285.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="155.2000274658203">
+        <Text layoutX="120.0" layoutY="293.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TCHU" wrappingWidth="155.2000274658203">
             <font>
                 <Font name="System Bold Italic" size="55.0" />
             </font>
         </Text>
+      <Text layoutX="263.0" layoutY="351.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Multi-port supporté" wrappingWidth="113.39996337890625" />
+      <CheckBox fx:id="multiPortEnabled" layoutX="238.0" layoutY="338.0" mnemonicParsing="false" onAction="#setFieldVisible" />
+      <TextField fx:id="chatPort" alignment="CENTER" layoutX="142.0" layoutY="478.0" onAction="#setFieldVisible" prefHeight="26.0" prefWidth="113.0" promptText="Port pour le chat" style="-fx-border-color: grey; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" visible="false" />
+      <Button fx:id="indications" layoutX="307.0" layoutY="14.0" mnemonicParsing="false" onAction="#openIndications" text="Indications" />
     </children>
 </AnchorPane>

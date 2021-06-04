@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -8,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="650.0" prefWidth="454.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuServerController">
+<AnchorPane prefHeight="650.0" prefWidth="465.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.epfl.tchu.net.MainMenuServerController">
     <children>
         <Button fx:id="play" disable="true" layoutX="246.0" layoutY="500.0" mnemonicParsing="false" onAction="#playAction" prefHeight="88.0" prefWidth="178.0" style="-fx-background-insets: 0,0050, 0060, 0070; -fx-background-radius: 8; -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #216f86 0%, #217794 100%), #0c1c24, #083340, radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c); -fx-font-weight: bold; -fx-font-size: 1.1EM;" text="Jouer" textFill="#fff0f0" />
         <TextField fx:id="firstPlayerName" alignment="CENTER" layoutX="33.0" layoutY="374.0" onAction="#hostGameAction" prefHeight="35.0" prefWidth="158.0" promptText="Nom du premier Joueur" style="-fx-border-color: grEy; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
@@ -18,7 +19,7 @@
         <Button fx:id="configNgrok" layoutX="345.0" layoutY="609.0" mnemonicParsing="false" onAction="#ngrokConfigAction" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Configurer Ngrok" textFill="#fff0f0" />
         <TextField fx:id="secondPlayerName" alignment="CENTER" layoutX="256.0" layoutY="374.0" onAction="#hostGameAction" prefHeight="35.0" prefWidth="158.0" promptText="Nom du second Joueur" style="-fx-border-color: grEy; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;" />
         <Button layoutX="388.0" layoutY="447.0" mnemonicParsing="false" onAction="#copyIpAction" text="Copier" />
-        <Button fx:id="setPicture" layoutX="19.0" layoutY="288.0" mnemonicParsing="false" onMouseClicked="#setPicture" prefHeight="26.0" prefWidth="158.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Sélectionner une photo de profil" textFill="#fff0f0" />
+        <Button fx:id="setPicture" layoutX="19.0" layoutY="302.0" mnemonicParsing="false" onMouseClicked="#setPicture" prefHeight="26.0" prefWidth="158.0" style="-fx-background-color: #60a3bc; -fx-padding: 5; -fx-border-radius: 10; -fx-font-weight: bold; -fx-font-size: 0.8EM;" text="Sélectionner une photo de profil" textFill="#fff0f0" />
         <ImageView fitHeight="242.0" fitWidth="355.0" layoutX="69.0" layoutY="-12.0">
             <image>
                 <Image url="@logo.png" />
@@ -30,5 +31,8 @@
             </font>
         </Text>
       <TextField fx:id="awaitingConnectionText" alignment="CENTER" editable="false" layoutX="-10.0" layoutY="575.0" prefHeight="26.0" prefWidth="241.0" promptText="Aucun joueur connecté" style="-fx-border-width: 0 0 0 0; -fx-background-color: transparent;" />
+      <CheckBox fx:id="multiPortEnabled" layoutX="318.0" layoutY="306.0" mnemonicParsing="false" />
+      <Text layoutX="341.0" layoutY="320.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Multi-port supporté" wrappingWidth="108.0" />
+      <Button fx:id="indications" layoutX="377.0" layoutY="14.0" mnemonicParsing="false" onAction="#openIndications" text="Indications" />
     </children>
 </AnchorPane>
